@@ -60,7 +60,7 @@ AUROC of 0.92 is a solid discriminative baseline. Sensitivity (0.86) is notably 
 
 ## Reproducibility
 
-- Trained model checkpoint: `cardio_nexus_ecg_mi_baseline.pt`, saved to `/content/` during the Colab session and not yet committed to this repository (large binary artifact — to be added or tracked via Git LFS/external storage if retained).
+- Trained model checkpoint: [`results/checkpoints/cardio_nexus_ecg_mi_baseline.pt`](checkpoints/cardio_nexus_ecg_mi_baseline.pt) (245 KB, committed to this repository).
 - Next planned step: `notebooks/02_multilabel_ecg_model.ipynb` (multi-label over PTB-XL's five diagnostic superclasses) and `notebooks/03_ecg_explainability.ipynb` (Integrated Gradients on this checkpoint).
 
 ## Limitations
