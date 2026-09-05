@@ -54,15 +54,16 @@ Classification report:
 weighted avg       0.86      0.83      0.84      2198
 ```
 
-## Interpretation
+## Artifacts
 
-AUROC of 0.92 is a solid discriminative baseline. Sensitivity (0.86) is notably higher than precision on the MI class (0.62): the model is tuned, via the positive-class weighting in the loss, to favor catching true MI cases at the cost of more false positives — an appropriate default for a screening-oriented research tool, though it is not a clinical decision and needs review before any downstream use.
+- Trained checkpoint: [`results/checkpoints/cardio_nexus_ecg_mi_baseline.pt`](checkpoints/cardio_nexus_ecg_mi_baseline.pt) (245 KB)
+- Attribution figure: [`results/explainability/`](explainability/)
 
-## Reproducibility
+## Interpretation and limitations
 
-- Trained model checkpoint: [`results/checkpoints/cardio_nexus_ecg_mi_baseline.pt`](checkpoints/cardio_nexus_ecg_mi_baseline.pt) (245 KB, committed to this repository).
-- Next planned step: `notebooks/02_multilabel_ecg_model.ipynb` (multi-label over PTB-XL's five diagnostic superclasses) and `notebooks/03_ecg_explainability.ipynb` (Integrated Gradients on this checkpoint).
+This file is a metric record only. The written analysis of this run — what it means, how it compares to the 8 August baseline, and where it falls short — is maintained in the research documentation repository, which owns interpretation:
 
-## Limitations
+- [Experiment 001 — ECG MI versus non-MI baseline](https://github.com/Cardiac-Nexus-Lab/nexus-research-docs/blob/main/experiments/001_ecg_mi_baseline.md)
+- [Experiment 002 — Integrated Gradients explainability](https://github.com/Cardiac-Nexus-Lab/nexus-research-docs/blob/main/experiments/002_ecg_explainability_integrated_gradients.md)
 
-Test metrics describe performance on the held-out PTB-XL fold 10 only. They do not establish clinical safety, generalization to other populations, or readiness for diagnostic use. Model outputs must not be used as a standalone basis for medical decisions.
+These metrics describe the held-out PTB-XL fold 10 only. They do not establish clinical safety, generalization to other populations, or readiness for diagnostic use.
