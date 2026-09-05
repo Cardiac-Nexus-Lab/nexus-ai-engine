@@ -1,11 +1,11 @@
 """PTB-XL acquisition and caching.
 
 The published PTB-XL archive is 1.71 GB because it ships both the 100 Hz and the
-500 Hz copy of every recording. Only the 100 Hz copy is used here, so the records
-are fetched individually rather than by downloading the full archive: roughly
-0.52 GB instead of 1.71 GB before extraction.
+500 Hz copy of every recording. Only the 100 Hz members are extracted, so the
+archive expands to roughly 0.52 GB on disk.
 
-Downloads resume. Re-running skips anything already on disk.
+Every stage resumes. An interrupted archive transfer continues by byte range
+rather than restarting, and re-running skips records already present.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ import shutil
 import zipfile
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import urlopen, urlretrieve
+from urllib.request import Request, urlopen, urlretrieve
 
 import numpy as np
 import pandas as pd
@@ -77,21 +77,70 @@ def fetch_metadata(root: Path = DATA_ROOT) -> pd.DataFrame:
     return metadata
 
 
-def _download_archive(destination: Path, chunk_bytes: int = 1 << 20) -> None:
-    """Stream the published archive to disk with progress."""
-    if destination.exists() and destination.stat().st_size > 0:
-        print(f"Archive already downloaded: {destination.name}")
-        return
+def _remote_size(url: str) -> int:
+    request = Request(url, method="HEAD")
+    with urlopen(request) as response:  # noqa: S310 - fixed, known https URL
+        return int(response.headers.get("content-length", 0))
+
+
+def _download_archive(destination: Path, chunk_bytes: int = 1 << 20, attempts: int = 5) -> None:
+    """Stream the published archive to disk, resuming an interrupted transfer.
+
+    A dropped connection mid-transfer is likely over a link this slow, and the
+    server supports range requests, so partial content is kept and continued
+    rather than restarted. The completed file is only moved into place once its
+    size matches what the server advertised: a truncated archive otherwise looks
+    like a successful download and fails later as a corrupt zip.
+    """
+    expected = _remote_size(PTBXL_ARCHIVE_URL)
+
+    if destination.exists():
+        if destination.stat().st_size == expected:
+            print(f"Archive already downloaded: {destination.name}")
+            return
+        # A previous run left a truncated file; continue it rather than discard it.
+        print("Existing archive is incomplete; resuming.")
+        destination.replace(destination.with_suffix(".part"))
 
     temporary = destination.with_suffix(".part")
-    with urlopen(PTBXL_ARCHIVE_URL) as response:  # noqa: S310 - fixed, known https URL
-        total = int(response.headers.get("content-length", 0))
-        with open(temporary, "wb") as handle, tqdm(
-            total=total, unit="B", unit_scale=True, unit_divisor=1024, desc="archive"
-        ) as progress:
-            while chunk := response.read(chunk_bytes):
-                handle.write(chunk)
-                progress.update(len(chunk))
+
+    for attempt in range(1, attempts + 1):
+        have = temporary.stat().st_size if temporary.exists() else 0
+        if have >= expected:
+            break
+
+        request = Request(PTBXL_ARCHIVE_URL)
+        if have:
+            request.add_header("Range", f"bytes={have}-")
+
+        try:
+            with urlopen(request) as response:  # noqa: S310 - fixed, known https URL
+                # A server that ignores the range header restarts at zero; only
+                # append when it confirms partial content.
+                mode = "ab" if (have and response.status == 206) else "wb"
+                if mode == "wb":
+                    have = 0
+                with open(temporary, mode) as handle, tqdm(
+                    total=expected,
+                    initial=have,
+                    unit="B",
+                    unit_scale=True,
+                    unit_divisor=1024,
+                    desc=f"archive (try {attempt})",
+                ) as progress:
+                    while chunk := response.read(chunk_bytes):
+                        handle.write(chunk)
+                        progress.update(len(chunk))
+        except (HTTPError, URLError, OSError) as error:
+            print(f"  transfer interrupted ({error}); retrying from {temporary.stat().st_size:,} bytes")
+            continue
+
+    actual = temporary.stat().st_size if temporary.exists() else 0
+    if actual != expected:
+        raise RuntimeError(
+            f"archive incomplete after {attempts} attempts: {actual:,} of {expected:,} bytes. "
+            "Re-run to continue from where it stopped."
+        )
     temporary.replace(destination)
 
 
