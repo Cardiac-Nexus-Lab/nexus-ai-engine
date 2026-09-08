@@ -35,7 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def flatten(batch: torch.Tensor) -> torch.Tensor:
-    """[B, 12, ...] -> [B*12, ...]; each lead strip is an independent sample."""
+    """[records, strips, ...] -> [records*strips, ...]; each strip is independent."""
     return batch.reshape(-1, *batch.shape[2:])
 
 
@@ -70,10 +70,10 @@ def run_epoch(model, loader, criterion, optimizer, device, training: bool):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--epochs", type=int, default=20)
-    parser.add_argument("--records-per-epoch", type=int, default=2500,
-                        help="records sampled per epoch; each yields 12 strips")
-    parser.add_argument("--val-records", type=int, default=300)
-    parser.add_argument("--batch-records", type=int, default=4, help="records per batch (x12 strips)")
+    parser.add_argument("--records-per-epoch", type=int, default=500,
+                        help="records sampled per epoch; each yields 48 strips (12 leads x 4 windows)")
+    parser.add_argument("--val-records", type=int, default=120)
+    parser.add_argument("--batch-records", type=int, default=1, help="records per batch (x48 strips)")
     parser.add_argument("--learning-rate", type=float, default=2e-3)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--seed", type=int, default=42)
@@ -92,7 +92,7 @@ def main() -> None:
     val_records = splits["val"][: args.val_records]
     print(f"Device: {device}")
     print(f"  train pool: {len(train_pool):,} records, sampling {args.records_per_epoch:,} per epoch")
-    print(f"  validation: {len(val_records):,} records ({len(val_records) * 12:,} strips, fixed)")
+    print(f"  validation: {len(val_records):,} records ({len(val_records) * 48:,} strips, fixed)")
 
     # Validation is deterministic so the metric moves only when the model does.
     val_loader = DataLoader(

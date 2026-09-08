@@ -23,16 +23,18 @@ import numpy as np
 import torch
 from torch import nn
 
-STRIP_HEIGHT = 128
-STRIP_WIDTH = 512
+# A strip covers 2.5 s of one lead. Rendering at 4 px/mm and 25 mm/s gives
+# 100 px per second, so at 100 Hz sampling one pixel is exactly one sample and no
+# resampling is needed. Spanning the full 10 s at this width would instead put a
+# whole 80 ms QRS complex into two columns, erasing the morphology that matters.
+STRIP_SECONDS = 2.5
+STRIP_WIDTH = 256
+STRIP_HEIGHT = 96
 
 
 class _ConvBlock(nn.Module):
-    def __init__(self, in_channels: int, out_channels: int, pool_height: bool = True):
+    def __init__(self, in_channels: int, out_channels: int, stride: tuple[int, int] = (2, 2)):
         super().__init__()
-        # Pooling is applied to height only. Width is the time axis, and one output
-        # column per input column keeps the temporal resolution the waveform needs.
-        stride = (2, 1) if pool_height else (1, 1)
         self.block = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
@@ -40,7 +42,7 @@ class _ConvBlock(nn.Module):
             nn.Conv2d(out_channels, out_channels, 3, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=stride, stride=stride) if pool_height else nn.Identity(),
+            nn.MaxPool2d(kernel_size=stride, stride=stride) if stride != (1, 1) else nn.Identity(),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -50,21 +52,30 @@ class _ConvBlock(nn.Module):
 class TraceLocalizer(nn.Module):
     """Predicts, for every column, a distribution over row positions of the trace.
 
-    Input  : [batch, 3, STRIP_HEIGHT, STRIP_WIDTH]
-    Output : logits [batch, STRIP_HEIGHT, STRIP_WIDTH]
+    Input  : [batch, 3, height, width]
+    Output : logits [batch, height, width]
+
+    Width is pooled early and the logits are interpolated back at the end. Holding
+    full width through every block, so that each output column came from its own
+    input column, put all of the compute into convolving 128 channels across 512
+    columns: 618 ms per step for a batch of 12 at 96x256, which is hours per epoch.
+    Since a trace's vertical position varies smoothly along time, predicting it at
+    reduced width and upsampling loses very little, and costs roughly an order of
+    magnitude less.
     """
 
-    def __init__(self, height: int = STRIP_HEIGHT, base_channels: int = 32):
+    def __init__(self, height: int = STRIP_HEIGHT, base_channels: int = 16, width_reduction: int = 4):
         super().__init__()
         self.height = height
+        self.width_reduction = width_reduction
         self.encoder = nn.Sequential(
-            _ConvBlock(3, base_channels),                       # H/2
-            _ConvBlock(base_channels, base_channels * 2),       # H/4
-            _ConvBlock(base_channels * 2, base_channels * 4),   # H/8
-            _ConvBlock(base_channels * 4, base_channels * 4, pool_height=False),
+            _ConvBlock(3, base_channels, stride=(2, 2)),                        # H/2,  W/2
+            _ConvBlock(base_channels, base_channels * 2, stride=(2, 2)),        # H/4,  W/4
+            _ConvBlock(base_channels * 2, base_channels * 4, stride=(2, 1)),    # H/8,  W/4
+            _ConvBlock(base_channels * 4, base_channels * 4, stride=(1, 1)),
         )
         # Collapse the remaining height into channels, then expand back to a
-        # per-row score for every column.
+        # per-row score for every retained column.
         self.head = nn.Sequential(
             nn.Conv2d(base_channels * 4, base_channels * 4, (height // 8, 1), bias=False),
             nn.BatchNorm2d(base_channels * 4),
@@ -73,9 +84,11 @@ class TraceLocalizer(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        width = x.shape[-1]
         features = self.encoder(x)
-        logits = self.head(features)          # [batch, height, 1, width]
-        return logits.squeeze(2)              # [batch, height, width]
+        logits = self.head(features).squeeze(2)   # [batch, height, width/reduction]
+        # Back to one column per input column, so the caller's indexing is unchanged.
+        return nn.functional.interpolate(logits, size=width, mode="linear", align_corners=False)
 
 
 def expected_rows(logits: torch.Tensor) -> torch.Tensor:

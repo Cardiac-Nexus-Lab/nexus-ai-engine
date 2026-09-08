@@ -18,7 +18,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from .digitize import STRIP_HEIGHT, STRIP_WIDTH
+from .digitize import STRIP_HEIGHT, STRIP_SECONDS, STRIP_WIDTH
 from .distort import DistortionConfig, distort, transform_points
 from .render import MM_PER_MV, PaperSpec, render
 
@@ -26,7 +26,7 @@ from .render import MM_PER_MV, PaperSpec, render
 class StripDataset(Dataset):
     """Lead strips rendered from digital signals, with row-position ground truth.
 
-    Returns (image [3, H, W] in [0,1], rows [W] in pixels, valid [W] mask).
+    Returns, per record, all lead windows: images [N, 3, H, W], rows [N, W], valid [N, W].
     """
 
     def __init__(
@@ -78,45 +78,59 @@ class StripDataset(Dataset):
         image = cv2.cvtColor(page.array, cv2.COLOR_RGB2BGR)
         row_height = spec.mm(spec.row_height_mm)
 
+        # Each lead is cut into consecutive windows rather than squashed whole into
+        # one strip. At 4 px/mm and 25 mm/s a second is 100 px, so a window is taken
+        # at native scale and one pixel is one sample.
+        window_samples = int(STRIP_SECONDS * spec.sampling_rate)
+        windows_per_lead = signal.shape[1] // window_samples
+
         images, all_rows, all_valid = [], [], []
         for lead in range(12):
             trace = page.traces[lead]
             top = int(max(0, trace["baseline_y"] - row_height / 2))
             bottom = int(min(image.shape[0], trace["baseline_y"] + row_height / 2))
-            left, right = int(trace["x0"]), int(trace["x1"])
-            crop = image[top:bottom, left:right]
+            pixels_per_sample = (trace["x1"] - trace["x0"]) / signal.shape[1]
 
-            # True trace position for every sample, as (x, y) within the crop.
-            samples = signal[lead]
-            xs = np.linspace(0, right - left - 1, len(samples))
-            ys = (trace["baseline_y"] - samples * amplitude * spec.mm(MM_PER_MV)) - top
-            points = np.stack([xs, ys], axis=1).astype(np.float32)
+            for window in range(windows_per_lead):
+                first = window * window_samples
+                last = first + window_samples
+                left = int(trace["x0"] + first * pixels_per_sample)
+                right = int(trace["x0"] + last * pixels_per_sample)
+                crop = image[top:bottom, left:right]
+                if crop.size == 0:
+                    continue
 
-            source_height, source_width = crop.shape[:2]
-            crop, homography = distort(crop, rng, self.distortions)
+                # True trace position for this window, as (x, y) within the crop.
+                samples = signal[lead, first:last]
+                xs = np.linspace(0, right - left - 1, len(samples))
+                ys = (trace["baseline_y"] - samples * amplitude * spec.mm(MM_PER_MV)) - top
+                points = np.stack([xs, ys], axis=1).astype(np.float32)
 
-            # The distortion moves the trace, so the labels move with it. Skipping
-            # this leaves ground truth describing where the trace used to be.
-            points = transform_points(points, homography)
+                source_height, source_width = crop.shape[:2]
+                crop, homography = distort(crop, rng, self.distortions)
 
-            crop = cv2.resize(crop, (self.strip_width, self.strip_height), interpolation=cv2.INTER_AREA)
-            points[:, 0] *= self.strip_width / source_width
-            points[:, 1] *= self.strip_height / source_height
+                # The distortion moves the trace, so the labels move with it.
+                # Skipping this leaves ground truth describing where it used to be.
+                points = transform_points(points, homography)
 
-            # Warping leaves the x positions uneven, so resample onto the strip's
-            # regular column grid. np.interp needs x ascending, which a rotation
-            # can violate near the edges.
-            order = np.argsort(points[:, 0])
-            rows = np.interp(np.arange(self.strip_width), points[order, 0], points[order, 1])
+                crop = cv2.resize(crop, (self.strip_width, self.strip_height),
+                                  interpolation=cv2.INTER_AREA)
+                points[:, 0] *= self.strip_width / source_width
+                points[:, 1] *= self.strip_height / source_height
 
-            # A deflection large enough to leave the crop cannot be located; mark
-            # those columns so the loss ignores them rather than learning nonsense.
-            valid = (rows >= 0) & (rows <= self.strip_height - 1)
-            rows = np.clip(rows, 0, self.strip_height - 1)
+                # Warping leaves x uneven, so resample onto the strip's column grid.
+                # np.interp needs x ascending, which a rotation can violate at the edges.
+                order = np.argsort(points[:, 0])
+                rows = np.interp(np.arange(self.strip_width), points[order, 0], points[order, 1])
 
-            images.append(crop.astype(np.float32).transpose(2, 0, 1) / 255.0)
-            all_rows.append(rows.astype(np.float32))
-            all_valid.append(valid)
+                # A deflection large enough to leave the crop cannot be located; mark
+                # those columns so the loss ignores them rather than learning nonsense.
+                valid = (rows >= 0) & (rows <= self.strip_height - 1)
+                rows = np.clip(rows, 0, self.strip_height - 1)
+
+                images.append(crop.astype(np.float32).transpose(2, 0, 1) / 255.0)
+                all_rows.append(rows.astype(np.float32))
+                all_valid.append(valid)
 
         return (
             torch.from_numpy(np.stack(images)),      # [12, 3, H, W]
