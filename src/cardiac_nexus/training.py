@@ -19,6 +19,7 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 from tqdm.auto import tqdm
 
+from .augment import ECGAugment
 from .models import ECGClassifier, select_device
 
 
@@ -30,6 +31,9 @@ class TrainConfig:
     seed: int = 42
     device: str | None = None
     architecture: str = "cnn"
+    weight_decay: float = 0.0
+    dropout: float = 0.0
+    augment: bool = False
     classes: list[str] = field(default_factory=lambda: ["NORM", "MI", "STTC", "CD", "HYP"])
 
 
@@ -54,16 +58,21 @@ class ECGDataset(Dataset):
     Tensors are built once here rather than per access, so __getitem__ is a slice.
     """
 
-    def __init__(self, signals: np.ndarray, labels: np.ndarray, indices: np.ndarray):
+    def __init__(self, signals: np.ndarray, labels: np.ndarray, indices: np.ndarray,
+                 augment: ECGAugment | None = None):
         self.signals = torch.from_numpy(np.ascontiguousarray(signals[indices]))
         self.labels = torch.from_numpy(np.ascontiguousarray(labels[indices]))
+        self.augment = augment
         assert len(self.signals) == len(self.labels)
 
     def __len__(self) -> int:
         return len(self.labels)
 
     def __getitem__(self, index: int):
-        return self.signals[index], self.labels[index]
+        signal = self.signals[index]
+        if self.augment is not None:
+            signal = self.augment(signal)
+        return signal, self.labels[index]
 
 
 def macro_auroc(y_true: np.ndarray, y_prob: np.ndarray) -> float:
@@ -133,7 +142,16 @@ def train_ecg(
 
     loaders = {
         name: DataLoader(
-            ECGDataset(signals, labels, indices),
+            ECGDataset(
+                signals,
+                labels,
+                indices,
+                # Augmentation is a training-time regulariser; validation and test
+                # must stay fixed or their metrics stop being comparable.
+                augment=ECGAugment(generator=np.random.default_rng(config.seed))
+                if (config.augment and name == "train")
+                else None,
+            ),
             batch_size=config.batch_size,
             shuffle=(name == "train"),
             num_workers=0,  # data is already resident; workers would only add IPC cost
@@ -156,7 +174,8 @@ def train_ecg(
     print("  positive weights:", dict(zip(config.classes, pos_weight.cpu().numpy().round(2))))
 
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate,
+                                  weight_decay=config.weight_decay)
 
     # Validation AUROC fluctuates between epochs, so the last epoch is not reliably
     # the best model. Keep the best-validation weights and restore them before testing.
@@ -202,6 +221,8 @@ def train_ecg(
             "model_state_dict": model.state_dict(),
             "classes": config.classes,
             "architecture": config.architecture,
+            "augment": config.augment,
+            "weight_decay": config.weight_decay,
             "selected_epoch": best_epoch,
             "val_macro_auroc": best_auc,
             "test_macro_auroc": test_macro,

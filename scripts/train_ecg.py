@@ -31,6 +31,9 @@ def main() -> None:
     parser.add_argument("--device", default=None, help="cpu, mps, cuda; defaults to the fastest available")
     parser.add_argument("--arch", default="cnn",
                         choices=["cnn", "xresnet1d18", "xresnet1d34", "xresnet1d50", "xresnet1d101"])
+    parser.add_argument("--weight-decay", type=float, default=0.0)
+    parser.add_argument("--dropout", type=float, default=0.0)
+    parser.add_argument("--augment", action="store_true", help="enable training-time ECG augmentation")
     parser.add_argument("--limit", type=int, default=None, help="use only the first N records (smoke tests)")
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "results" / "local")
     args = parser.parse_args()
@@ -51,6 +54,9 @@ def main() -> None:
         seed=args.seed,
         device=args.device,
         architecture=args.arch,
+        weight_decay=args.weight_decay,
+        dropout=args.dropout,
+        augment=args.augment,
         classes=data.SUPERCLASSES,
     )
     train_ecg(np.asarray(signals), labels, splits, config, args.output)
