@@ -57,7 +57,9 @@ class Attribution:
 
 
 def _prepare(signal: np.ndarray, device: torch.device) -> torch.Tensor:
-    tensor = torch.as_tensor(signal, dtype=torch.float32, device=device)
+    # Signals may arrive as a read-only view of a memory-mapped cache; copy so the
+    # tensor owns writable storage and gradients can be attached without warnings.
+    tensor = torch.tensor(np.ascontiguousarray(signal), dtype=torch.float32, device=device)
     if tensor.ndim == 2:
         tensor = tensor.unsqueeze(0)
     return tensor.requires_grad_()
