@@ -9,3 +9,4 @@ tqdm>=4.66
 
 # Explainability
 captum>=0.7
+scipy>=1.11
