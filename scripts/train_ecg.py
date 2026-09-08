@@ -34,6 +34,7 @@ def main() -> None:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--dropout", type=float, default=0.0)
     parser.add_argument("--augment", action="store_true", help="enable training-time ECG augmentation")
+    parser.add_argument("--one-cycle", action="store_true", help="one-cycle LR schedule")
     parser.add_argument("--limit", type=int, default=None, help="use only the first N records (smoke tests)")
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "results" / "local")
     args = parser.parse_args()
@@ -57,6 +58,7 @@ def main() -> None:
         weight_decay=args.weight_decay,
         dropout=args.dropout,
         augment=args.augment,
+        one_cycle=args.one_cycle,
         classes=data.SUPERCLASSES,
     )
     train_ecg(np.asarray(signals), labels, splits, config, args.output)

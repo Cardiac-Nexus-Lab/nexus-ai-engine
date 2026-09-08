@@ -34,6 +34,7 @@ class TrainConfig:
     weight_decay: float = 0.0
     dropout: float = 0.0
     augment: bool = False
+    one_cycle: bool = False
     classes: list[str] = field(default_factory=lambda: ["NORM", "MI", "STTC", "CD", "HYP"])
 
 
@@ -105,7 +106,7 @@ def per_class_metrics(y_true: np.ndarray, y_prob: np.ndarray, classes: list[str]
     return rows
 
 
-def _run_epoch(model, loader, criterion, optimizer, device, training: bool):
+def _run_epoch(model, loader, criterion, optimizer, device, training: bool, scheduler=None):
     model.train(training)
     losses, labels, probabilities = [], [], []
     for signals, targets in tqdm(loader, leave=False, desc="train" if training else "eval"):
@@ -117,6 +118,8 @@ def _run_epoch(model, loader, criterion, optimizer, device, training: bool):
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
+                if scheduler is not None:
+                    scheduler.step()
         losses.append(loss.item() * len(targets))
         labels.append(targets.detach().cpu().numpy())
         probabilities.append(torch.sigmoid(logits).detach().cpu().numpy())
@@ -177,11 +180,23 @@ def train_ecg(
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate,
                                   weight_decay=config.weight_decay)
 
+    # The PTB-XL benchmark trained with fastai's one-cycle policy rather than a
+    # flat rate. It warms up, then anneals towards zero, which lets the run use a
+    # higher peak rate early and settle into a flatter minimum late.
+    scheduler = None
+    if config.one_cycle:
+        scheduler = torch.optim.lr_scheduler.OneCycleLR(
+            optimizer,
+            max_lr=config.learning_rate,
+            epochs=config.epochs,
+            steps_per_epoch=len(loaders["train"]),
+        )
+
     # Validation AUROC fluctuates between epochs, so the last epoch is not reliably
     # the best model. Keep the best-validation weights and restore them before testing.
     history, best_auc, best_epoch, best_state = [], -np.inf, None, None
     for epoch in range(1, config.epochs + 1):
-        train_loss, _, _ = _run_epoch(model, loaders["train"], criterion, optimizer, device, True)
+        train_loss, _, _ = _run_epoch(model, loaders["train"], criterion, optimizer, device, True, scheduler)
         val_loss, val_y, val_p = _run_epoch(model, loaders["val"], criterion, optimizer, device, False)
         val_auc = macro_auroc(val_y, val_p)
         history.append(
@@ -222,6 +237,7 @@ def train_ecg(
             "classes": config.classes,
             "architecture": config.architecture,
             "augment": config.augment,
+            "one_cycle": config.one_cycle,
             "weight_decay": config.weight_decay,
             "selected_epoch": best_epoch,
             "val_macro_auroc": best_auc,
