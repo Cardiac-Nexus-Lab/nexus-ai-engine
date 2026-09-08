@@ -10,3 +10,7 @@ tqdm>=4.66
 # Explainability
 captum>=0.7
 scipy>=1.11
+
+# ECG image digitization
+pillow>=10.0
+opencv-python-headless>=4.9
