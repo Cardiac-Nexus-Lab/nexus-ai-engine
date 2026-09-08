@@ -29,7 +29,23 @@ class TrainConfig:
     learning_rate: float = 1e-3
     seed: int = 42
     device: str | None = None
+    architecture: str = "cnn"
     classes: list[str] = field(default_factory=lambda: ["NORM", "MI", "STTC", "CD", "HYP"])
+
+
+def build_model(architecture: str, num_classes: int):
+    """Return the classifier for the named architecture.
+
+    "cnn" is the original three-layer baseline; the xresnet1d variants follow
+    Strodthoff et al., whose xresnet1d101 leads the PTB-XL superclass benchmark.
+    The deeper variants are far slower to train, so the choice is a real tradeoff
+    rather than a formality.
+    """
+    if architecture == "cnn":
+        return ECGClassifier(num_classes=num_classes)
+    from .xresnet1d import XResNet1dClassifier
+
+    return XResNet1dClassifier(num_classes=num_classes, architecture=architecture)
 
 
 class ECGDataset(Dataset):
@@ -128,7 +144,9 @@ def train_ecg(
     for name, loader in loaders.items():
         print(f"  {name}: {len(loader.dataset):,} recordings")
 
-    model = ECGClassifier(num_classes=len(config.classes)).to(device)
+    model = build_model(config.architecture, len(config.classes)).to(device)
+    parameters = sum(p.numel() for p in model.parameters())
+    print(f"  architecture: {config.architecture} ({parameters:,} parameters)")
 
     # Per-class positive weighting, since the superclasses are far from balanced.
     train_labels = labels[splits["train"]]
@@ -183,6 +201,7 @@ def train_ecg(
         {
             "model_state_dict": model.state_dict(),
             "classes": config.classes,
+            "architecture": config.architecture,
             "selected_epoch": best_epoch,
             "val_macro_auroc": best_auc,
             "test_macro_auroc": test_macro,

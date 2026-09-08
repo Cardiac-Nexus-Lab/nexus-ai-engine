@@ -29,6 +29,8 @@ def main() -> None:
     parser.add_argument("--learning-rate", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", default=None, help="cpu, mps, cuda; defaults to the fastest available")
+    parser.add_argument("--arch", default="cnn",
+                        choices=["cnn", "xresnet1d18", "xresnet1d34", "xresnet1d50", "xresnet1d101"])
     parser.add_argument("--limit", type=int, default=None, help="use only the first N records (smoke tests)")
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "results" / "local")
     args = parser.parse_args()
@@ -48,6 +50,7 @@ def main() -> None:
         learning_rate=args.learning_rate,
         seed=args.seed,
         device=args.device,
+        architecture=args.arch,
         classes=data.SUPERCLASSES,
     )
     train_ecg(np.asarray(signals), labels, splits, config, args.output)
