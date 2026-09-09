@@ -1,0 +1,166 @@
+{
+  "records": 12,
+  "mean_correlation": 0.243138912541314,
+  "median_correlation": 0.14744805297996694,
+  "mean_mae": 0.8552308442691962,
+  "mean_confidence": 0.22882435225625639,
+  "top_class_agreement": 0.16666666666666666,
+  "mean_prediction_delta": 0.7414046873648962,
+  "per_record": [
+    {
+      "ecg_id": 950,
+      "mean_correlation": -0.00963326308044358,
+      "min_correlation": -0.10694539205886934,
+      "mae": 1.0496046543121338,
+      "confidence": 0.22586707353038812,
+      "prediction_delta": 0.8487520217895508,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "12.3% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 5336,
+      "mean_correlation": 0.00248813919613554,
+      "min_correlation": -0.1307886768675944,
+      "mae": 1.0865283012390137,
+      "confidence": 0.19640595889888193,
+      "prediction_delta": 0.8662148118019104,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "27.9% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 17309,
+      "mean_correlation": 0.9665353317287774,
+      "min_correlation": 0.934809098680599,
+      "mae": 0.14395250380039215,
+      "confidence": 0.22314410991369618,
+      "prediction_delta": 0.3907715082168579,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "13.0% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 18708,
+      "mean_correlation": 0.4904628014111418,
+      "min_correlation": -0.024512092517927284,
+      "mae": 0.5233604907989502,
+      "confidence": 0.24357458323521125,
+      "prediction_delta": 0.8975734114646912,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "4.7% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 13855,
+      "mean_correlation": -0.0038659339825630017,
+      "min_correlation": -0.15248514183770143,
+      "mae": 1.088545560836792,
+      "confidence": 0.23874837496892148,
+      "prediction_delta": 0.7410812973976135,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "10.9% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 18140,
+      "mean_correlation": 0.14267224696928357,
+      "min_correlation": -0.14728013928269248,
+      "mae": 1.0616779327392578,
+      "confidence": 0.23862503820794026,
+      "prediction_delta": 0.779301643371582,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "8.4% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 15959,
+      "mean_correlation": 0.44480439287110146,
+      "min_correlation": -0.0018398871424176644,
+      "mae": 0.694257915019989,
+      "confidence": 0.2364859823806289,
+      "prediction_delta": 0.9074766635894775,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "6.1% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 12376,
+      "mean_correlation": 0.12842564348092264,
+      "min_correlation": -0.08882021852112057,
+      "mae": 1.0354595184326172,
+      "confidence": 0.2323261249211684,
+      "prediction_delta": 0.8060562014579773,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "8.1% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 3855,
+      "mean_correlation": 0.15222385899065027,
+      "min_correlation": -0.1036862576973244,
+      "mae": 0.8627822399139404,
+      "confidence": 0.23145796312859093,
+      "prediction_delta": 0.5616782903671265,
+      "same_top_class": true,
+      "warnings": [
+        "6.9% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 11533,
+      "mean_correlation": 0.057076679890263854,
+      "min_correlation": -0.1723173818556355,
+      "mae": 1.062180519104004,
+      "confidence": 0.22819559116879604,
+      "prediction_delta": 0.9278401136398315,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "12.0% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 19726,
+      "mean_correlation": 0.1833175218682452,
+      "min_correlation": -0.05244704576480047,
+      "mae": 0.9341490864753723,
+      "confidence": 0.23537978784694524,
+      "prediction_delta": 0.4989897608757019,
+      "same_top_class": true,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "7.3% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    },
+    {
+      "ecg_id": 5029,
+      "mean_correlation": 0.3631595311522529,
+      "min_correlation": -0.21147843732800758,
+      "mae": 0.7202714085578918,
+      "confidence": 0.21568163887390757,
+      "prediction_delta": 0.6711205244064331,
+      "same_top_class": false,
+      "warnings": [
+        "No page border detected; using the image as-is. Perspective was not corrected.",
+        "13.7% of samples were read with low confidence; the trace may be obscured there."
+      ]
+    }
+  ]
+}
