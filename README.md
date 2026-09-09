@@ -104,5 +104,5 @@ PTB-XL source: [PhysioNet PTB-XL v1.0.3](https://physionet.org/content/ptb-xl/1.
 
 - External validation on an independent public dataset.
 - Deliberate per-class operating thresholds rather than a default of 0.5.
-- Tabular EHR as a second modality, then multimodal fusion. Fusion requires paired records, meaning the same patient across modalities, which no public dataset currently provides.
+- Tabular EHR as a second modality, then multimodal fusion. Fusion requires paired records, meaning the same patient across modalities. Such cohorts exist: UK Biobank pairs 12-lead ECG with cardiac MRI at the same imaging visit, and MIMIC-IV-ECG pairs ECG with hospital records. Both are gated by application, cost, and storage on a scale this project cannot currently meet, so the constraint here is access rather than existence.
 - An inference interface for the [Web Portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal).
