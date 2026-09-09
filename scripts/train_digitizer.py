@@ -39,10 +39,31 @@ def flatten(batch: torch.Tensor) -> torch.Tensor:
     return batch.reshape(-1, *batch.shape[2:])
 
 
+def save_checkpoint(output: Path, state, best_epoch, best_error, history, config) -> None:
+    """Write the best model so far.
+
+    Called every time the best improves rather than once at the end. A run that
+    dies at epoch 16 of 20 should cost the remaining epochs, not all of them;
+    holding the only copy in memory made an interruption total.
+    """
+    output.mkdir(parents=True, exist_ok=True)
+    torch.save(
+        {"model_state_dict": state, "strip_height": STRIP_HEIGHT,
+         "best_epoch": best_epoch, "val_pixel_error": best_error, "history": history},
+        output / "trace_localizer.pt",
+    )
+    (output / "digitizer_metrics.json").write_text(
+        json.dumps({"best_epoch": best_epoch, "val_pixel_error": best_error,
+                    "history": history, "config": config}, indent=2, default=str)
+    )
+
+
 def run_epoch(model, loader, criterion, optimizer, device, training: bool):
     model.train(training)
     losses, errors, counts = [], [], 0
-    for images, rows, valid in tqdm(loader, leave=False, desc="train" if training else "eval"):
+    progress = tqdm(loader, leave=False, desc="train" if training else "eval",
+                    disable=not sys.stderr.isatty())
+    for images, rows, valid in progress:
         images = flatten(images).to(device)
         rows = flatten(rows).to(device)
         valid = flatten(valid).to(device)
@@ -106,6 +127,7 @@ def main() -> None:
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
 
+    config = vars(args) | {"output": str(args.output)}
     history, best_error, best_epoch, best_state = [], np.inf, None, None
     for epoch in range(1, args.epochs + 1):
         # Fresh records and fresh distortions each epoch: the training set is
@@ -127,23 +149,15 @@ def main() -> None:
         if val_error < best_error:
             best_error, best_epoch = val_error, epoch
             best_state = copy.deepcopy(model.state_dict())
-            marker = "  <- best"
+            save_checkpoint(args.output, best_state, best_epoch, best_error, history, config)
+            marker = "  <- best (saved)"
         print(f"Epoch {epoch:02d}: train {train_loss:.4f} ({train_error:5.2f} px) | "
               f"val {val_loss:.4f} ({val_error:5.2f} px) | "
               f"{time.perf_counter() - started:5.0f}s{marker}")
 
-    model.load_state_dict(best_state)
-    args.output.mkdir(parents=True, exist_ok=True)
-    torch.save(
-        {"model_state_dict": model.state_dict(), "strip_height": STRIP_HEIGHT,
-         "best_epoch": best_epoch, "val_pixel_error": best_error, "history": history},
-        args.output / "trace_localizer.pt",
-    )
-    (args.output / "digitizer_metrics.json").write_text(
-        json.dumps({"best_epoch": best_epoch, "val_pixel_error": best_error,
-                    "history": history, "config": vars(args) | {"output": str(args.output)}},
-                   indent=2, default=str)
-    )
+    # The best checkpoint is already on disk; rewrite the metrics so the history
+    # covers every epoch run, including those after the best one.
+    save_checkpoint(args.output, best_state, best_epoch, best_error, history, config)
     print(f"\nBest epoch {best_epoch}: {best_error:.2f} px mean absolute error")
     print(f"Saved to {args.output}")
 
