@@ -1,0 +1,16 @@
+patient_id,diagnosis,ED,ES
+patient013,DCM,1,14
+patient096,RV,1,8
+patient032,HCM,1,12
+patient064,NOR,1,12
+patient094,RV,1,7
+patient060,MINF,1,14
+patient049,MINF,1,11
+patient039,HCM,1,10
+patient007,DCM,1,7
+patient011,DCM,1,8
+patient044,MINF,1,11
+patient077,NOR,1,9
+patient084,RV,1,10
+patient029,HCM,1,12
+patient062,NOR,1,9
