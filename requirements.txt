@@ -14,3 +14,4 @@ scipy>=1.11
 # ECG image digitization
 pillow>=10.0
 opencv-python-headless>=4.9
+nibabel>=5.2
