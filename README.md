@@ -6,7 +6,7 @@ This repository holds code and artifacts: training and evaluation code, model ch
 
 ## What is built
 
-The ECG track is complete for its current scope. Cardiac MRI is in progress. Tabular EHR and multimodal fusion are planned but not started.
+The ECG and cardiac MRI tracks are complete for their current scope. Tabular EHR and multimodal fusion are planned but not started.
 
 | Component | State |
 | --- | --- |
@@ -15,7 +15,10 @@ The ECG track is complete for its current scope. Cardiac MRI is in progress. Tab
 | Attribution with sanity checking | Passes model-randomization test on the earlier CNN baseline; not yet run on the best model |
 | ECG printout rendering and photographic distortion | Working |
 | Trace digitization from a printout image | 0.940 waveform correlation on flat pages (ceiling 0.964); angled photographs unresolved |
-| Cardiac MRI segmentation (ACDC), derived ejection fraction, measurement-based diagnosis | In training; not yet evaluated on the test set |
+| Cardiac MRI segmentation (ACDC) | Test LV Dice 0.956 (ED); RV 0.933; myocardium 0.870 |
+| Ejection fraction from the predicted masks | LV r 0.991 against expert masks, limits of agreement -6.6 to +5.8 points |
+| MRI diagnosis from measurements | 45/50 test patients from the model's own masks |
+| MRI explainability with checks | Uncertainty detects errors at AUROC 0.861; Grad-CAM depends on learned weights on average |
 
 Models are split into an encoder returning a 128-dimensional embedding and a task head, so the trained ECG encoder can later become one branch of a multimodal model without being rewritten.
 
@@ -34,6 +37,27 @@ Best configuration: `xresnet1d18` with augmentation, weight decay, and a one-cyc
 Published reference for this task is 0.928 macro AUROC (Strodthoff et al., IEEE JBHI 2021, using the much larger xresnet1d101).
 
 HYP is weak where it matters: an AUROC of 0.837 alongside an average precision of 0.474 means the model ranks reasonably but finds a minority of true cases at the default threshold.
+
+## MRI results
+
+ACDC, 50 held-out test patients (10 per diagnosis), 2.5D U-Net with 2.0M parameters. 95% bootstrap intervals over patients.
+
+| Structure | Dice end-diastole | Dice end-systole |
+| --- | --- | --- |
+| LV | 0.956 (0.950–0.962) | 0.914 (0.898–0.929) |
+| RV | 0.933 (0.921–0.944) | 0.880 (0.860–0.899) |
+| MYO | 0.870 (0.853–0.885) | 0.896 (0.884–0.905) |
+
+Diagnosis uses ten measurements from the segmentation rather than raw pixels, building on an earlier end-to-end experiment by Sahana NS: 45/50 from the model's masks (95% Wilson interval 79%–96%), against 46/50 from expert masks. Four of five errors confuse infarction with dilated cardiomyopathy, which cine MRI alone cannot reliably separate.
+
+Full record: [Experiment 005](https://github.com/Cardiac-Nexus-Lab/nexus-research-docs/blob/main/experiments/005_cardiac_mri_segmentation_and_diagnosis.md).
+
+```bash
+python scripts/train_mri.py --epochs 120 --base-width 16
+python scripts/evaluate_mri.py
+python scripts/diagnose_mri.py --evaluate-test
+python scripts/explain_mri.py --split test
+```
 
 ## Repository structure
 
@@ -100,6 +124,7 @@ PTB-XL source: [PhysioNet PTB-XL v1.0.3](https://physionet.org/content/ptb-xl/1.
 - The attribution sanity check was run on the earlier CNN baseline, not on the best xresnet1d18 model, so attribution from the best model is not yet validated.
 - Attribution maps describe what this model responded to. Published work finds such methods disagree with one another and can survive weight randomization, so they are reported as exploratory and accompanied by the sanity check rather than presented as evidence.
 - Digitization is trained on rendered printouts, not photographs of real ones. It works on flat pages and scans but not on pages photographed at an angle, and performance on genuine clinical paper is untested.
+- MRI results come from one centre (ACDC) with no external validation, and use a resampled copy of the data rather than the original release.
 - This work is intended for research evaluation. Model outputs must not be used as a standalone basis for medical decisions.
 
 ## Planned development
