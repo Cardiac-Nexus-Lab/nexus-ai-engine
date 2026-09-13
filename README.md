@@ -6,15 +6,16 @@ This repository holds code and artifacts: training and evaluation code, model ch
 
 ## What is built
 
-Everything here processes 12-lead ECG. MRI, tabular EHR, and multimodal fusion are planned but not started.
+The ECG track is complete for its current scope. Cardiac MRI is in progress. Tabular EHR and multimodal fusion are planned but not started.
 
 | Component | State |
 | --- | --- |
 | Multi-label classifier over five diagnostic superclasses | Test macro AUROC 0.911 |
 | Probability calibration | Mean expected calibration error 0.091 to 0.015 |
-| Attribution with sanity checking | Passes model-randomization test |
+| Attribution with sanity checking | Passes model-randomization test on the earlier CNN baseline; not yet run on the best model |
 | ECG printout rendering and photographic distortion | Working |
-| Trace digitization from a photographed printout | In training |
+| Trace digitization from a printout image | 0.940 waveform correlation on flat pages (ceiling 0.964); angled photographs unresolved |
+| Cardiac MRI segmentation (ACDC), derived ejection fraction, measurement-based diagnosis | In training; not yet evaluated on the test set |
 
 Models are split into an encoder returning a 128-dimensional embedding and a task head, so the trained ECG encoder can later become one branch of a multimodal model without being rewritten.
 
@@ -96,8 +97,9 @@ PTB-XL source: [PhysioNet PTB-XL v1.0.3](https://physionet.org/content/ptb-xl/1.
 
 - Evaluated on PTB-XL fold 10 only. No external dataset has been tested, so generalisation beyond this cohort, its equipment, and its labelling conventions is unestablished.
 - Results come from a single random seed; seed-to-seed variation is unquantified.
+- The attribution sanity check was run on the earlier CNN baseline, not on the best xresnet1d18 model, so attribution from the best model is not yet validated.
 - Attribution maps describe what this model responded to. Published work finds such methods disagree with one another and can survive weight randomization, so they are reported as exploratory and accompanied by the sanity check rather than presented as evidence.
-- Digitization is trained on rendered printouts, not photographs of real ones. Performance on genuine clinical paper is untested.
+- Digitization is trained on rendered printouts, not photographs of real ones. It works on flat pages and scans but not on pages photographed at an angle, and performance on genuine clinical paper is untested.
 - This work is intended for research evaluation. Model outputs must not be used as a standalone basis for medical decisions.
 
 ## Planned development
