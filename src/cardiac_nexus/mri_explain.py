@@ -127,11 +127,21 @@ def uncertainty_checks(rows, predictions, entropy, masks, patient, phase, max_pi
     }
 
 
-def seg_grad_cam(model: nn.Module, inputs: torch.Tensor, target_class: int, layer: nn.Module) -> np.ndarray:
+def seg_grad_cam(model: nn.Module, inputs: torch.Tensor, target_class: int, layer: nn.Module,
+                 rectify: bool = True) -> np.ndarray:
     """Seg-Grad-CAM for one slice: which regions supported the pixels predicted as target_class.
 
     The score is the target logit summed over the pixels the model assigns to that
     class, so the map answers a declared question rather than an arbitrary one.
+
+    With rectify=True this is standard Grad-CAM, keeping only positive evidence;
+    use it for display and localisation. With rectify=False it returns the absolute
+    value of the unrectified map, which is what the randomization check compares.
+    A randomly initialised network typically produces no positive evidence at all,
+    so its rectified map is identically zero and a rank correlation against it is
+    undefined; on the M1 GPU this happened for every map. Silently dropping those
+    comparisons would bias the check, so the comparison uses a map that is defined
+    for any network, as Adebayo et al. do with absolute saliency.
     """
     captured: dict[str, torch.Tensor] = {}
 
@@ -153,7 +163,8 @@ def seg_grad_cam(model: nn.Module, inputs: torch.Tensor, target_class: int, laye
         handle.remove()
 
     weights = captured["gradient"].mean(dim=(2, 3), keepdim=True)
-    cam = F.relu((weights * captured["activation"]).sum(dim=1, keepdim=True))
+    cam = (weights * captured["activation"]).sum(dim=1, keepdim=True)
+    cam = F.relu(cam) if rectify else cam.abs()
     cam = F.interpolate(cam, size=inputs.shape[-2:], mode="bilinear", align_corners=False)[0, 0]
     return (cam / cam.max().clamp_min(1e-12)).detach().cpu().numpy()
 

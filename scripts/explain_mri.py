@@ -67,7 +67,7 @@ def main() -> None:
     random_model = randomized_copy(model).to(device)
     layer, random_layer = model.encoder.stages[-1], random_model.encoder.stages[-1]
     dataset = ACDCSlices(images, masks, patient, phase, patients, augment=False)
-    similarities, inside, baseline, examples = [], [], [], []
+    similarities, inside, baseline, examples, collapsed = [], [], [], [], 0
     for index in patients:
         slices = np.flatnonzero((patient[dataset.rows] == index) & (phase[dataset.rows] == 0))
         item = slices[len(slices) // 2]
@@ -77,8 +77,10 @@ def main() -> None:
         cams = {}
         for label, name in mri_data.STRUCTURES.items():
             cam = seg_grad_cam(model, inputs, label, layer)
-            random_cam = seg_grad_cam(random_model, inputs, label, random_layer)
-            similarities.append(map_similarity(cam, random_cam))
+            if not seg_grad_cam(random_model, inputs, label, random_layer).any():
+                collapsed += 1
+            similarities.append(map_similarity(seg_grad_cam(model, inputs, label, layer, rectify=False),
+                                               seg_grad_cam(random_model, inputs, label, random_layer, rectify=False)))
             placement = localisation(cam, heart)
             inside.append(placement["mass_inside_heart"])
             baseline.append(placement["uniform_map_baseline"])
@@ -94,7 +96,10 @@ def main() -> None:
         "seg_grad_cam": {
             "layer": "encoder bottleneck",
             "maps": len(similarities),
+            "randomization_comparison": "absolute unrectified maps",
             "spearman_trained_vs_randomized_mean": float(np.mean(finite)) if finite else float("nan"),
+            "comparisons_undefined": int(len(similarities) - len(finite)),
+            "randomized_rectified_maps_all_zero": int(collapsed),
             "spearman_trained_vs_randomized_max": float(np.max(finite)) if finite else float("nan"),
             "mass_inside_heart_mean": float(np.nanmean(inside)),
             "uniform_map_baseline_mean": float(np.mean(baseline)),
@@ -114,6 +119,8 @@ def main() -> None:
           f"(p={u['volume_uncertainty_vs_dice_error_p']:.3g}, {u['volumes']} volumes)")
     print(f"  Grad-CAM trained vs randomized, Spearman   {g['spearman_trained_vs_randomized_mean']:+.3f} "
           f"(max {g['spearman_trained_vs_randomized_max']:+.3f})")
+    print(f"  randomized maps with no positive evidence  {g['randomized_rectified_maps_all_zero']}/{g['maps']}; "
+          f"undefined comparisons {g['comparisons_undefined']}")
     print(f"  Grad-CAM mass inside heart                 {g['mass_inside_heart_mean']:.3f} "
           f"(uniform map would give {g['uniform_map_baseline_mean']:.3f})")
 

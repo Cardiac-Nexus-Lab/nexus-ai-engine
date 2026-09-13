@@ -1,0 +1,29 @@
+{
+  "checkpoint": "/Users/yashas/Documents/nexus-ai-engine/results/mri_segmentation/mri_segmenter.pt",
+  "checkpoint_epoch": 61,
+  "split": "test",
+  "patients": 50,
+  "uncertainty": {
+    "pixel_error_detection_auroc": 0.8606705469854226,
+    "pixel_error_rate_near_heart": 0.0860015,
+    "volume_uncertainty_vs_dice_error_spearman": 0.7174677467746775,
+    "volume_uncertainty_vs_dice_error_p": 4.5424239227634677e-17,
+    "volumes": 100
+  },
+  "seg_grad_cam": {
+    "layer": "encoder bottleneck",
+    "maps": 150,
+    "randomization_comparison": "absolute unrectified maps",
+    "spearman_trained_vs_randomized_mean": -0.1837318279970062,
+    "comparisons_undefined": 0,
+    "randomized_rectified_maps_all_zero": 150,
+    "spearman_trained_vs_randomized_max": 0.3233682913749837,
+    "mass_inside_heart_mean": 0.42154001876859615,
+    "uniform_map_baseline_mean": 0.20073350694444442
+  },
+  "reading": {
+    "pixel_error_detection_auroc": "0.5 means uncertainty is unrelated to error; higher is better.",
+    "spearman_trained_vs_randomized": "Near zero passes: the map depends on learned weights.",
+    "mass_inside_heart": "Should clearly exceed the uniform baseline."
+  }
+}
