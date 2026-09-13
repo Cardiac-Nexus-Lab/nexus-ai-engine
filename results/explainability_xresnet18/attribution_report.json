@@ -1,0 +1,192 @@
+{
+  "checkpoint": "results/local_xresnet18_full/ecg_multilabel.pt",
+  "architecture": "xresnet1d18",
+  "examples": [
+    {
+      "ecg_id": 1220,
+      "class": "NORM",
+      "probability": 0.03157319501042366,
+      "convergence_delta": 0.001725468784570694,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9635528376669069,
+        "abs_cosine": 0.9900528788566589
+      },
+      "sanity_check": {
+        "trained_probability": 0.03157319501042366,
+        "convergence_delta": 0.001725468784570694,
+        "spearman_vs_random_mean": 0.005866190371781703,
+        "spearman_vs_random_max": 0.009302918116735384,
+        "abs_cosine_vs_random_mean": 0.00574218559389313,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 15221,
+      "class": "NORM",
+      "probability": 0.9842228293418884,
+      "convergence_delta": -0.001854240894317627,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9838907560547968,
+        "abs_cosine": 0.9944368004798889
+      },
+      "sanity_check": {
+        "trained_probability": 0.9842228293418884,
+        "convergence_delta": -0.001854240894317627,
+        "spearman_vs_random_mean": -0.004257336832824004,
+        "spearman_vs_random_max": 0.03394996009687472,
+        "abs_cosine_vs_random_mean": 0.0038340416892121234,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 9346,
+      "class": "MI",
+      "probability": 0.7677373290061951,
+      "convergence_delta": -0.0018856823444366455,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9614739858088471,
+        "abs_cosine": 0.9934256672859192
+      },
+      "sanity_check": {
+        "trained_probability": 0.7677373290061951,
+        "convergence_delta": -0.0018856823444366455,
+        "spearman_vs_random_mean": -0.009725910611515301,
+        "spearman_vs_random_max": 0.009189378938831086,
+        "abs_cosine_vs_random_mean": 0.007492638037850459,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 9265,
+      "class": "MI",
+      "probability": 0.347714364528656,
+      "convergence_delta": 0.016178272664546967,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9474067878621086,
+        "abs_cosine": 0.9921824336051941
+      },
+      "sanity_check": {
+        "trained_probability": 0.347714364528656,
+        "convergence_delta": 0.016178272664546967,
+        "spearman_vs_random_mean": 0.016038798185498814,
+        "spearman_vs_random_max": 0.028251847088652592,
+        "abs_cosine_vs_random_mean": 0.019199961175521214,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 14201,
+      "class": "STTC",
+      "probability": 0.9706262350082397,
+      "convergence_delta": 0.0035985708236694336,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.977006062451431,
+        "abs_cosine": 0.9954831600189209
+      },
+      "sanity_check": {
+        "trained_probability": 0.9706262350082397,
+        "convergence_delta": 0.0035985708236694336,
+        "spearman_vs_random_mean": 0.017869135804640165,
+        "spearman_vs_random_max": 0.06503333349328703,
+        "abs_cosine_vs_random_mean": 0.00921135488897562,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 1624,
+      "class": "STTC",
+      "probability": 0.9510787725448608,
+      "convergence_delta": 0.005030527710914612,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9730627006443924,
+        "abs_cosine": 0.9952925443649292
+      },
+      "sanity_check": {
+        "trained_probability": 0.9510787725448608,
+        "convergence_delta": 0.005030527710914612,
+        "spearman_vs_random_mean": -0.006010124349633629,
+        "spearman_vs_random_max": -0.004314345932753493,
+        "abs_cosine_vs_random_mean": 0.009889320470392704,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 2281,
+      "class": "CD",
+      "probability": 0.9956831932067871,
+      "convergence_delta": -0.0007835365831851959,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9580460856390632,
+        "abs_cosine": 0.9973433613777161
+      },
+      "sanity_check": {
+        "trained_probability": 0.9956831932067871,
+        "convergence_delta": -0.0007835365831851959,
+        "spearman_vs_random_mean": -0.002945032953332522,
+        "spearman_vs_random_max": 0.009366735974769,
+        "abs_cosine_vs_random_mean": 0.004266434659560521,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 11500,
+      "class": "CD",
+      "probability": 0.9970934391021729,
+      "convergence_delta": -0.00019864272326231003,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9663253589900481,
+        "abs_cosine": 0.9972218871116638
+      },
+      "sanity_check": {
+        "trained_probability": 0.9970934391021729,
+        "convergence_delta": -0.00019864272326231003,
+        "spearman_vs_random_mean": 0.002584988078135336,
+        "spearman_vs_random_max": 0.028478761333235285,
+        "abs_cosine_vs_random_mean": 0.0006648963317275047,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 14026,
+      "class": "HYP",
+      "probability": 0.9511603116989136,
+      "convergence_delta": 0.0010079741477966309,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9504533712860485,
+        "abs_cosine": 0.9911218881607056
+      },
+      "sanity_check": {
+        "trained_probability": 0.9511603116989136,
+        "convergence_delta": 0.0010079741477966309,
+        "spearman_vs_random_mean": 0.008778423507738801,
+        "spearman_vs_random_max": 0.031566323045654265,
+        "abs_cosine_vs_random_mean": 0.009911578459044298,
+        "repeats": 3
+      }
+    },
+    {
+      "ecg_id": 14729,
+      "class": "HYP",
+      "probability": 0.7553983330726624,
+      "convergence_delta": -1.341104507446289e-06,
+      "ig_vs_smoothgrad": {
+        "spearman": 0.9797497154913174,
+        "abs_cosine": 0.9919533133506775
+      },
+      "sanity_check": {
+        "trained_probability": 0.7553983330726624,
+        "convergence_delta": -1.341104507446289e-06,
+        "spearman_vs_random_mean": 0.00956578998311308,
+        "spearman_vs_random_max": 0.023096116834040906,
+        "abs_cosine_vs_random_mean": 0.011564742463330427,
+        "repeats": 3
+      }
+    }
+  ],
+  "aggregate": {
+    "mean_ig_smoothgrad_spearman": 0.9660967661894959,
+    "mean_spearman_vs_random": 0.0037764921183602446,
+    "max_spearman_vs_random": 0.06503333349328703,
+    "mean_abs_convergence_delta": 0.003226425778120756
+  }
+}

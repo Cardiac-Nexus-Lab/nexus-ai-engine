@@ -12,7 +12,7 @@ The ECG and cardiac MRI tracks are complete for their current scope. Tabular EHR
 | --- | --- |
 | Multi-label classifier over five diagnostic superclasses | Test macro AUROC 0.911 |
 | Probability calibration | Mean expected calibration error 0.091 to 0.015 |
-| Attribution with sanity checking | Passes model-randomization test on the earlier CNN baseline; not yet run on the best model |
+| Attribution with sanity checking | Passes model-randomization test on the best model: similarity to randomized weights +0.004 over 10 examples |
 | ECG printout rendering and photographic distortion | Working |
 | Trace digitization from a printout image | 0.940 waveform correlation on flat pages (ceiling 0.964); angled photographs unresolved |
 | Cardiac MRI segmentation (ACDC) | Test LV Dice 0.956 (ED); RV 0.933; myocardium 0.870 |
@@ -121,7 +121,6 @@ PTB-XL source: [PhysioNet PTB-XL v1.0.3](https://physionet.org/content/ptb-xl/1.
 
 - Evaluated on PTB-XL fold 10 only. No external dataset has been tested, so generalisation beyond this cohort, its equipment, and its labelling conventions is unestablished.
 - Results come from a single random seed; seed-to-seed variation is unquantified.
-- The attribution sanity check was run on the earlier CNN baseline, not on the best xresnet1d18 model, so attribution from the best model is not yet validated.
 - Attribution maps describe what this model responded to. Published work finds such methods disagree with one another and can survive weight randomization, so they are reported as exploratory and accompanied by the sanity check rather than presented as evidence.
 - Digitization is trained on rendered printouts, not photographs of real ones. It works on flat pages and scans but not on pages photographed at an angle, and performance on genuine clinical paper is untested.
 - MRI results come from one centre (ACDC) with no external validation, and use a resampled copy of the data rather than the original release.

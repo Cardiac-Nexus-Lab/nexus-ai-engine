@@ -138,7 +138,7 @@ def main() -> None:
             )
 
     summary = {
-        "checkpoint": str(args.checkpoint.relative_to(REPO_ROOT)),
+        "checkpoint": str(args.checkpoint.resolve().relative_to(REPO_ROOT)) if args.checkpoint.resolve().is_relative_to(REPO_ROOT) else str(args.checkpoint),
         "architecture": checkpoint.get("architecture", "cnn"),
         "examples": report,
         "aggregate": {
