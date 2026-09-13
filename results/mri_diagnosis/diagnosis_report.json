@@ -1,0 +1,1220 @@
+{
+  "selected_model": "logistic_C10",
+  "cross_validation": {
+    "logistic_C0.1": {
+      "mean_accuracy": 0.9079999999999999,
+      "sd_accuracy": 0.055099909255823636
+    },
+    "logistic_C1": {
+      "mean_accuracy": 0.9129999999999999,
+      "sd_accuracy": 0.062297672508690075
+    },
+    "logistic_C10": {
+      "mean_accuracy": 0.914,
+      "sd_accuracy": 0.06248199740725323
+    },
+    "random_forest": {
+      "mean_accuracy": 0.9129999999999999,
+      "sd_accuracy": 0.058146367040426514
+    }
+  },
+  "normal_reference_ranges": {
+    "lv_edv_index": {
+      "mean": 67.65991682113687,
+      "sd": 13.253612209940846
+    },
+    "lv_esv_index": {
+      "mean": 26.826924357907124,
+      "sd": 6.468533763202826
+    },
+    "lv_ef": {
+      "mean": 60.34157592375836,
+      "sd": 5.124091789776777
+    },
+    "rv_edv_index": {
+      "mean": 79.36363547028442,
+      "sd": 17.861723693187994
+    },
+    "rv_esv_index": {
+      "mean": 35.71590696113888,
+      "sd": 9.834892441024197
+    },
+    "rv_ef": {
+      "mean": 54.673024810522826,
+      "sd": 9.361786595236742
+    },
+    "myo_mass_index": {
+      "mean": 53.10664627406173,
+      "sd": 12.256582801864415
+    },
+    "mass_to_volume": {
+      "mean": 0.7867957304496688,
+      "sd": 0.10552343379266375
+    },
+    "rv_to_lv_edv": {
+      "mean": 1.1698588729687833,
+      "sd": 0.1115175070497954
+    },
+    "lv_ef_minus_rv_ef": {
+      "mean": 5.668551113235528,
+      "sd": 8.765978903920931
+    }
+  },
+  "features": {
+    "lv_edv_index": {
+      "label": "LV end-diastolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "lv_esv_index": {
+      "label": "LV end-systolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "lv_ef": {
+      "label": "LV ejection fraction",
+      "unit": "%"
+    },
+    "rv_edv_index": {
+      "label": "RV end-diastolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "rv_esv_index": {
+      "label": "RV end-systolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "rv_ef": {
+      "label": "RV ejection fraction",
+      "unit": "%"
+    },
+    "myo_mass_index": {
+      "label": "LV myocardial mass index",
+      "unit": "g/m\u00b2"
+    },
+    "mass_to_volume": {
+      "label": "LV mass-to-volume ratio",
+      "unit": "g/mL"
+    },
+    "rv_to_lv_edv": {
+      "label": "RV/LV end-diastolic volume ratio",
+      "unit": ""
+    },
+    "lv_ef_minus_rv_ef": {
+      "label": "LV EF minus RV EF",
+      "unit": "points"
+    }
+  },
+  "test_expert_masks": {
+    "accuracy": 0.92,
+    "correct": 46,
+    "n": 50,
+    "accuracy_95ci": [
+      0.8116149745493629,
+      0.9684509967442093
+    ],
+    "confusion_matrix": {
+      "labels": [
+        "NOR",
+        "MINF",
+        "DCM",
+        "HCM",
+        "RV"
+      ],
+      "rows_true_columns_predicted": [
+        [
+          10,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          8,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          8,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          10,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          10
+        ]
+      ]
+    },
+    "per_patient": [
+      {
+        "pid": "patient101",
+        "true": "DCM",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 81.3 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +8.4 SD)",
+          "LV ejection fraction 29.8 % (normal group 60.3 \u00b1 5.1; -6.0 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient102",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV end-systolic volume index 12.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.2 SD)",
+          "LV ejection fraction 70.9 % (normal group 60.3 \u00b1 5.1; +2.1 SD)",
+          "LV end-diastolic volume index 44.0 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; -1.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient103",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 26.2 % (normal group 60.3 \u00b1 5.1; -6.7 SD)",
+          "RV/LV end-diastolic volume ratio 0.5 (normal group 1.2 \u00b1 0.1; -6.0 SD)",
+          "LV end-systolic volume index 57.7 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient104",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 84.6 % (normal group 60.3 \u00b1 5.1; +4.7 SD)",
+          "LV mass-to-volume ratio 1.2 g/mL (normal group 0.8 \u00b1 0.1; +3.8 SD)",
+          "LV myocardial mass index 87.4 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +2.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient105",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 79.7 % (normal group 60.3 \u00b1 5.1; +3.8 SD)",
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +3.3 SD)",
+          "LV end-systolic volume index 12.7 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient106",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 122.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +14.8 SD)",
+          "LV ejection fraction 7.6 % (normal group 60.3 \u00b1 5.1; -10.3 SD)",
+          "RV end-systolic volume index 127.2 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +9.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient107",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV mass-to-volume ratio 0.6 g/mL (normal group 0.8 \u00b1 0.1; -2.2 SD)",
+          "RV end-systolic volume index 56.8 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +2.1 SD)",
+          "LV end-diastolic volume index 91.5 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient108",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 83.9 % (normal group 60.3 \u00b1 5.1; +4.6 SD)",
+          "LV myocardial mass index 88.8 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +2.9 SD)",
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +2.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient109",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 84.1 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +4.9 SD)",
+          "RV end-diastolic volume index 126.6 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.6 SD)",
+          "LV end-systolic volume index 43.7 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +2.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient110",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 1.4 (normal group 1.2 \u00b1 0.1; +1.8 SD)",
+          "LV EF minus RV EF 21.2 points (normal group 5.7 \u00b1 8.8; +1.8 SD)",
+          "LV mass-to-volume ratio 1.0 g/mL (normal group 0.8 \u00b1 0.1; +1.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient111",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.4 g/mL (normal group 0.8 \u00b1 0.1; +5.4 SD)",
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.8 SD)",
+          "RV end-diastolic volume index 40.5 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; -2.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient112",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 58.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.9 SD)",
+          "LV ejection fraction 45.1 % (normal group 60.3 \u00b1 5.1; -3.0 SD)",
+          "LV end-diastolic volume index 107.0 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +3.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient113",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 117.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +14.1 SD)",
+          "LV ejection fraction 16.4 % (normal group 60.3 \u00b1 5.1; -8.6 SD)",
+          "LV end-diastolic volume index 140.8 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +5.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient114",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV myocardial mass index 184.5 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +10.7 SD)",
+          "LV mass-to-volume ratio 1.7 g/mL (normal group 0.8 \u00b1 0.1; +9.0 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient115",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 57.5 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.7 SD)",
+          "LV ejection fraction 36.5 % (normal group 60.3 \u00b1 5.1; -4.7 SD)",
+          "RV/LV end-diastolic volume ratio 0.8 (normal group 1.2 \u00b1 0.1; -3.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient116",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.4 SD)",
+          "RV ejection fraction 71.3 % (normal group 54.7 \u00b1 9.4; +1.8 SD)",
+          "LV mass-to-volume ratio 1.0 g/mL (normal group 0.8 \u00b1 0.1; +1.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient117",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 131.0 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +16.1 SD)",
+          "LV end-diastolic volume index 180.9 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +8.5 SD)",
+          "LV ejection fraction 27.6 % (normal group 60.3 \u00b1 5.1; -6.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient118",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 26.4 % (normal group 60.3 \u00b1 5.1; -6.6 SD)",
+          "LV end-systolic volume index 55.3 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.4 SD)",
+          "LV EF minus RV EF -24.9 points (normal group 5.7 \u00b1 8.8; -3.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient119",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 1.7 (normal group 1.2 \u00b1 0.1; +4.5 SD)",
+          "RV end-systolic volume index 69.7 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +3.5 SD)",
+          "RV end-diastolic volume index 136.6 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +3.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient120",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 0.4 (normal group 1.2 \u00b1 0.1; -6.7 SD)",
+          "LV ejection fraction 35.2 % (normal group 60.3 \u00b1 5.1; -4.9 SD)",
+          "LV end-systolic volume index 57.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient121",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 71.3 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +3.6 SD)",
+          "RV end-diastolic volume index 122.7 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.4 SD)",
+          "RV/LV end-diastolic volume ratio 1.4 (normal group 1.2 \u00b1 0.1; +2.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient122",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 91.0 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +9.9 SD)",
+          "LV ejection fraction 29.7 % (normal group 60.3 \u00b1 5.1; -6.0 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient123",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV ejection fraction 72.2 % (normal group 60.3 \u00b1 5.1; +2.3 SD)",
+          "LV EF minus RV EF 25.6 points (normal group 5.7 \u00b1 8.8; +2.3 SD)",
+          "LV end-systolic volume index 16.4 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -1.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient124",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.0 (normal group 1.2 \u00b1 0.1; +7.4 SD)",
+          "RV end-systolic volume index 96.8 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +6.2 SD)",
+          "LV EF minus RV EF 37.2 points (normal group 5.7 \u00b1 8.8; +3.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient125",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV mass-to-volume ratio 0.6 g/mL (normal group 0.8 \u00b1 0.1; -1.5 SD)",
+          "LV EF minus RV EF 16.7 points (normal group 5.7 \u00b1 8.8; +1.3 SD)",
+          "LV ejection fraction 65.2 % (normal group 60.3 \u00b1 5.1; +1.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient126",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.3 (normal group 1.2 \u00b1 0.1; +10.1 SD)",
+          "RV end-systolic volume index 84.4 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +5.0 SD)",
+          "RV end-diastolic volume index 154.8 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +4.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient127",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 87.0 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +5.2 SD)",
+          "RV/LV end-diastolic volume ratio 1.6 (normal group 1.2 \u00b1 0.1; +3.8 SD)",
+          "RV end-diastolic volume index 133.2 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +3.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient128",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.1 SD)",
+          "LV end-diastolic volume index 91.8 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.8 SD)",
+          "LV mass-to-volume ratio 0.6 g/mL (normal group 0.8 \u00b1 0.1; -1.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient129",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 80.9 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +4.6 SD)",
+          "RV end-diastolic volume index 127.8 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.7 SD)",
+          "LV mass-to-volume ratio 0.5 g/mL (normal group 0.8 \u00b1 0.1; -2.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient130",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV end-diastolic volume index 88.3 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.6 SD)",
+          "LV end-systolic volume index 35.2 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +1.3 SD)",
+          "RV end-systolic volume index 47.9 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +1.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient131",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 123.0 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +14.9 SD)",
+          "LV ejection fraction 12.9 % (normal group 60.3 \u00b1 5.1; -9.3 SD)",
+          "RV end-systolic volume index 93.0 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +5.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient132",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 124.1 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +15.0 SD)",
+          "LV ejection fraction 13.1 % (normal group 60.3 \u00b1 5.1; -9.2 SD)",
+          "LV end-diastolic volume index 142.9 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +5.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient133",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 127.6 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +15.6 SD)",
+          "LV ejection fraction 14.8 % (normal group 60.3 \u00b1 5.1; -8.9 SD)",
+          "LV end-diastolic volume index 149.8 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +6.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient134",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +3.1 SD)",
+          "LV end-diastolic volume index 48.1 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; -1.5 SD)",
+          "LV end-systolic volume index 18.2 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -1.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient135",
+        "true": "MINF",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 104.0 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +11.9 SD)",
+          "LV ejection fraction 20.2 % (normal group 60.3 \u00b1 5.1; -7.8 SD)",
+          "LV end-diastolic volume index 130.3 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +4.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient136",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 95.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +10.7 SD)",
+          "LV ejection fraction 30.0 % (normal group 60.3 \u00b1 5.1; -5.9 SD)",
+          "RV/LV end-diastolic volume ratio 0.5 (normal group 1.2 \u00b1 0.1; -5.9 SD)"
+        ]
+      },
+      {
+        "pid": "patient137",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 67.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +6.3 SD)",
+          "LV ejection fraction 40.1 % (normal group 60.3 \u00b1 5.1; -3.9 SD)",
+          "RV/LV end-diastolic volume ratio 0.7 (normal group 1.2 \u00b1 0.1; -3.9 SD)"
+        ]
+      },
+      {
+        "pid": "patient138",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.4 g/mL (normal group 0.8 \u00b1 0.1; +5.8 SD)",
+          "LV myocardial mass index 90.1 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +3.0 SD)",
+          "LV EF minus RV EF 24.4 points (normal group 5.7 \u00b1 8.8; +2.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient139",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.2 SD)",
+          "LV mass-to-volume ratio 0.6 g/mL (normal group 0.8 \u00b1 0.1; -1.7 SD)",
+          "LV EF minus RV EF 17.6 points (normal group 5.7 \u00b1 8.8; +1.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient140",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.8 (normal group 1.2 \u00b1 0.1; +14.5 SD)",
+          "RV end-systolic volume index 132.0 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +9.8 SD)",
+          "RV end-diastolic volume index 237.0 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +8.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient141",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.8 (normal group 1.2 \u00b1 0.1; +14.6 SD)",
+          "RV end-diastolic volume index 180.8 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +5.7 SD)",
+          "RV end-systolic volume index 85.7 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +5.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient142",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 81.6 % (normal group 60.3 \u00b1 5.1; +4.1 SD)",
+          "LV mass-to-volume ratio 1.2 g/mL (normal group 0.8 \u00b1 0.1; +3.6 SD)",
+          "LV end-systolic volume index 9.5 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient143",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 97.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +11.0 SD)",
+          "LV ejection fraction 25.4 % (normal group 60.3 \u00b1 5.1; -6.8 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient144",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.6 SD)",
+          "LV ejection fraction 70.5 % (normal group 60.3 \u00b1 5.1; +2.0 SD)",
+          "LV EF minus RV EF 22.1 points (normal group 5.7 \u00b1 8.8; +1.9 SD)"
+        ]
+      },
+      {
+        "pid": "patient145",
+        "true": "MINF",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 88.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +9.6 SD)",
+          "LV ejection fraction 19.4 % (normal group 60.3 \u00b1 5.1; -8.0 SD)",
+          "RV/LV end-diastolic volume ratio 0.5 (normal group 1.2 \u00b1 0.1; -6.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient146",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 81.1 % (normal group 60.3 \u00b1 5.1; +4.1 SD)",
+          "LV end-systolic volume index 9.7 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.7 SD)",
+          "LV mass-to-volume ratio 1.0 g/mL (normal group 0.8 \u00b1 0.1; +2.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient147",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.5 (normal group 1.2 \u00b1 0.1; +12.1 SD)",
+          "RV end-systolic volume index 71.0 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +3.6 SD)",
+          "RV end-diastolic volume index 133.4 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +3.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient148",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 30.3 % (normal group 60.3 \u00b1 5.1; -5.9 SD)",
+          "LV end-systolic volume index 55.3 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.4 SD)",
+          "RV/LV end-diastolic volume ratio 0.8 (normal group 1.2 \u00b1 0.1; -3.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient149",
+        "true": "DCM",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 67.7 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +6.3 SD)",
+          "LV ejection fraction 41.4 % (normal group 60.3 \u00b1 5.1; -3.7 SD)",
+          "LV end-diastolic volume index 115.6 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +3.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient150",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV ejection fraction 74.7 % (normal group 60.3 \u00b1 5.1; +2.8 SD)",
+          "LV EF minus RV EF 20.7 points (normal group 5.7 \u00b1 8.8; +1.7 SD)",
+          "RV/LV end-diastolic volume ratio 1.0 (normal group 1.2 \u00b1 0.1; -1.7 SD)"
+        ]
+      }
+    ]
+  },
+  "test_model_masks": {
+    "accuracy": 0.9,
+    "correct": 45,
+    "n": 50,
+    "accuracy_95ci": [
+      0.7863950966521162,
+      0.956524876008429
+    ],
+    "confusion_matrix": {
+      "labels": [
+        "NOR",
+        "MINF",
+        "DCM",
+        "HCM",
+        "RV"
+      ],
+      "rows_true_columns_predicted": [
+        [
+          9,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          8,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          8,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          10,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          10
+        ]
+      ]
+    },
+    "per_patient": [
+      {
+        "pid": "patient101",
+        "true": "DCM",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 80.2 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +8.3 SD)",
+          "LV ejection fraction 30.3 % (normal group 60.3 \u00b1 5.1; -5.9 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient102",
+        "true": "NOR",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.2 g/mL (normal group 0.8 \u00b1 0.1; +3.5 SD)",
+          "LV end-systolic volume index 12.4 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.2 SD)",
+          "LV end-diastolic volume index 41.7 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; -2.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient103",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 29.3 % (normal group 60.3 \u00b1 5.1; -6.1 SD)",
+          "LV EF minus RV EF -41.8 points (normal group 5.7 \u00b1 8.8; -5.4 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient104",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.2 g/mL (normal group 0.8 \u00b1 0.1; +4.3 SD)",
+          "LV ejection fraction 80.9 % (normal group 60.3 \u00b1 5.1; +4.0 SD)",
+          "LV myocardial mass index 89.1 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +2.9 SD)"
+        ]
+      },
+      {
+        "pid": "patient105",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.2 g/mL (normal group 0.8 \u00b1 0.1; +4.1 SD)",
+          "LV ejection fraction 80.2 % (normal group 60.3 \u00b1 5.1; +3.9 SD)",
+          "RV/LV end-diastolic volume ratio 0.8 (normal group 1.2 \u00b1 0.1; -3.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient106",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 120.0 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +14.4 SD)",
+          "LV ejection fraction 8.9 % (normal group 60.3 \u00b1 5.1; -10.0 SD)",
+          "RV end-systolic volume index 120.9 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +8.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient107",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV mass-to-volume ratio 0.6 g/mL (normal group 0.8 \u00b1 0.1; -1.6 SD)",
+          "LV end-diastolic volume index 85.5 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.3 SD)",
+          "RV end-systolic volume index 47.4 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +1.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient108",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 79.1 % (normal group 60.3 \u00b1 5.1; +3.7 SD)",
+          "LV myocardial mass index 87.6 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +2.8 SD)",
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +2.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient109",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 87.3 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +5.2 SD)",
+          "RV end-diastolic volume index 130.0 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.8 SD)",
+          "RV/LV end-diastolic volume ratio 1.4 (normal group 1.2 \u00b1 0.1; +2.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient110",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV EF minus RV EF 21.9 points (normal group 5.7 \u00b1 8.8; +1.9 SD)",
+          "LV mass-to-volume ratio 0.9 g/mL (normal group 0.8 \u00b1 0.1; +1.2 SD)",
+          "LV end-systolic volume index 18.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -1.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient111",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.6 g/mL (normal group 0.8 \u00b1 0.1; +7.7 SD)",
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.7 SD)",
+          "RV end-diastolic volume index 37.3 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; -2.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient112",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 54.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.3 SD)",
+          "RV/LV end-diastolic volume ratio 0.8 (normal group 1.2 \u00b1 0.1; -3.5 SD)",
+          "LV ejection fraction 46.2 % (normal group 60.3 \u00b1 5.1; -2.8 SD)"
+        ]
+      },
+      {
+        "pid": "patient113",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 113.1 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +13.3 SD)",
+          "LV ejection fraction 17.7 % (normal group 60.3 \u00b1 5.1; -8.3 SD)",
+          "LV end-diastolic volume index 137.4 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +5.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient114",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV myocardial mass index 189.2 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +11.1 SD)",
+          "LV mass-to-volume ratio 1.8 g/mL (normal group 0.8 \u00b1 0.1; +10.1 SD)",
+          "RV/LV end-diastolic volume ratio 0.5 (normal group 1.2 \u00b1 0.1; -5.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient115",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 37.3 % (normal group 60.3 \u00b1 5.1; -4.5 SD)",
+          "LV end-systolic volume index 55.5 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.4 SD)",
+          "RV/LV end-diastolic volume ratio 0.8 (normal group 1.2 \u00b1 0.1; -3.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient116",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +3.0 SD)",
+          "RV/LV end-diastolic volume ratio 0.9 (normal group 1.2 \u00b1 0.1; -2.4 SD)",
+          "LV myocardial mass index 78.4 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +2.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient117",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 129.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +15.9 SD)",
+          "LV end-diastolic volume index 179.4 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +8.4 SD)",
+          "LV ejection fraction 27.7 % (normal group 60.3 \u00b1 5.1; -6.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient118",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 28.4 % (normal group 60.3 \u00b1 5.1; -6.2 SD)",
+          "LV end-systolic volume index 53.2 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.1 SD)",
+          "LV EF minus RV EF -20.0 points (normal group 5.7 \u00b1 8.8; -2.9 SD)"
+        ]
+      },
+      {
+        "pid": "patient119",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 1.7 (normal group 1.2 \u00b1 0.1; +4.5 SD)",
+          "RV end-systolic volume index 70.2 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +3.5 SD)",
+          "RV end-diastolic volume index 137.9 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +3.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient120",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 0.3 (normal group 1.2 \u00b1 0.1; -7.6 SD)",
+          "LV ejection fraction 34.4 % (normal group 60.3 \u00b1 5.1; -5.1 SD)",
+          "LV end-systolic volume index 55.3 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient121",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 65.4 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +3.0 SD)",
+          "RV/LV end-diastolic volume ratio 1.5 (normal group 1.2 \u00b1 0.1; +2.9 SD)",
+          "RV end-diastolic volume index 122.7 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient122",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 86.6 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +9.2 SD)",
+          "RV/LV end-diastolic volume ratio 0.5 (normal group 1.2 \u00b1 0.1; -5.7 SD)",
+          "LV ejection fraction 32.9 % (normal group 60.3 \u00b1 5.1; -5.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient123",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV ejection fraction 69.7 % (normal group 60.3 \u00b1 5.1; +1.8 SD)",
+          "RV/LV end-diastolic volume ratio 1.0 (normal group 1.2 \u00b1 0.1; -1.3 SD)",
+          "LV EF minus RV EF 15.5 points (normal group 5.7 \u00b1 8.8; +1.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient124",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 1.9 (normal group 1.2 \u00b1 0.1; +6.1 SD)",
+          "RV end-systolic volume index 84.2 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +4.9 SD)",
+          "RV end-diastolic volume index 123.7 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient125",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV EF minus RV EF 18.7 points (normal group 5.7 \u00b1 8.8; +1.5 SD)",
+          "RV end-systolic volume index 49.9 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +1.4 SD)",
+          "RV ejection fraction 42.9 % (normal group 54.7 \u00b1 9.4; -1.3 SD)"
+        ]
+      },
+      {
+        "pid": "patient126",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.3 (normal group 1.2 \u00b1 0.1; +9.7 SD)",
+          "RV end-diastolic volume index 126.3 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.6 SD)",
+          "RV end-systolic volume index 58.9 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +2.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient127",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 83.8 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +4.9 SD)",
+          "RV/LV end-diastolic volume ratio 1.5 (normal group 1.2 \u00b1 0.1; +3.0 SD)",
+          "RV end-diastolic volume index 126.1 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +2.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient128",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV end-systolic volume index 40.6 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +2.1 SD)",
+          "RV/LV end-diastolic volume ratio 1.0 (normal group 1.2 \u00b1 0.1; -1.7 SD)",
+          "LV end-diastolic volume index 87.0 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient129",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV end-systolic volume index 60.8 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +2.6 SD)",
+          "LV end-systolic volume index 40.5 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +2.1 SD)",
+          "LV end-diastolic volume index 90.4 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient130",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV end-diastolic volume index 85.0 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +1.3 SD)",
+          "RV end-diastolic volume index 102.7 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +1.3 SD)",
+          "LV myocardial mass index 67.6 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +1.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient131",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 118.5 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +14.2 SD)",
+          "RV end-systolic volume index 133.8 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +10.0 SD)",
+          "LV ejection fraction 13.6 % (normal group 60.3 \u00b1 5.1; -9.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient132",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 119.6 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +14.3 SD)",
+          "LV ejection fraction 12.3 % (normal group 60.3 \u00b1 5.1; -9.4 SD)",
+          "LV end-diastolic volume index 136.4 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +5.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient133",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 128.6 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +15.7 SD)",
+          "LV ejection fraction 15.5 % (normal group 60.3 \u00b1 5.1; -8.8 SD)",
+          "LV end-diastolic volume index 152.1 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +6.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient134",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +3.3 SD)",
+          "LV end-diastolic volume index 51.2 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; -1.2 SD)",
+          "RV end-diastolic volume index 58.7 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; -1.2 SD)"
+        ]
+      },
+      {
+        "pid": "patient135",
+        "true": "MINF",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 104.2 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +12.0 SD)",
+          "LV ejection fraction 21.3 % (normal group 60.3 \u00b1 5.1; -7.6 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient136",
+        "true": "DCM",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 90.2 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +9.8 SD)",
+          "LV ejection fraction 30.7 % (normal group 60.3 \u00b1 5.1; -5.8 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient137",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 69.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +6.6 SD)",
+          "LV ejection fraction 38.1 % (normal group 60.3 \u00b1 5.1; -4.3 SD)",
+          "RV/LV end-diastolic volume ratio 0.7 (normal group 1.2 \u00b1 0.1; -4.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient138",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.6 g/mL (normal group 0.8 \u00b1 0.1; +7.8 SD)",
+          "LV myocardial mass index 95.4 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +3.5 SD)",
+          "LV ejection fraction 70.8 % (normal group 60.3 \u00b1 5.1; +2.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient139",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 1.0 (normal group 1.2 \u00b1 0.1; -1.5 SD)",
+          "LV mass-to-volume ratio 0.6 g/mL (normal group 0.8 \u00b1 0.1; -1.5 SD)",
+          "LV EF minus RV EF 15.3 points (normal group 5.7 \u00b1 8.8; +1.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient140",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.8 (normal group 1.2 \u00b1 0.1; +14.3 SD)",
+          "RV end-systolic volume index 119.5 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +8.5 SD)",
+          "RV end-diastolic volume index 222.9 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +8.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient141",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.8 (normal group 1.2 \u00b1 0.1; +14.5 SD)",
+          "RV end-diastolic volume index 177.1 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +5.5 SD)",
+          "RV end-systolic volume index 83.5 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +4.9 SD)"
+        ]
+      },
+      {
+        "pid": "patient142",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV ejection fraction 80.7 % (normal group 60.3 \u00b1 5.1; +4.0 SD)",
+          "LV mass-to-volume ratio 1.2 g/mL (normal group 0.8 \u00b1 0.1; +3.8 SD)",
+          "LV end-systolic volume index 9.7 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.6 SD)"
+        ]
+      },
+      {
+        "pid": "patient143",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 95.4 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +10.6 SD)",
+          "LV ejection fraction 24.3 % (normal group 60.3 \u00b1 5.1; -7.0 SD)",
+          "RV/LV end-diastolic volume ratio 0.6 (normal group 1.2 \u00b1 0.1; -5.1 SD)"
+        ]
+      },
+      {
+        "pid": "patient144",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV ejection fraction 74.1 % (normal group 60.3 \u00b1 5.1; +2.7 SD)",
+          "LV end-systolic volume index 13.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.0 SD)",
+          "RV end-systolic volume index 18.6 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; -1.7 SD)"
+        ]
+      },
+      {
+        "pid": "patient145",
+        "true": "MINF",
+        "predicted": "DCM",
+        "explanation": [
+          "LV end-systolic volume index 81.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +8.5 SD)",
+          "LV ejection fraction 21.0 % (normal group 60.3 \u00b1 5.1; -7.7 SD)",
+          "LV myocardial mass index 126.8 g/m\u00b2 (normal group 53.1 \u00b1 12.3; +6.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient146",
+        "true": "HCM",
+        "predicted": "HCM",
+        "explanation": [
+          "LV mass-to-volume ratio 1.1 g/mL (normal group 0.8 \u00b1 0.1; +2.6 SD)",
+          "LV ejection fraction 72.2 % (normal group 60.3 \u00b1 5.1; +2.3 SD)",
+          "LV end-systolic volume index 14.1 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -2.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient147",
+        "true": "RV",
+        "predicted": "RV",
+        "explanation": [
+          "RV/LV end-diastolic volume ratio 2.6 (normal group 1.2 \u00b1 0.1; +13.2 SD)",
+          "RV end-systolic volume index 66.9 mL/m\u00b2 (normal group 35.7 \u00b1 9.8; +3.2 SD)",
+          "RV end-diastolic volume index 133.6 mL/m\u00b2 (normal group 79.4 \u00b1 17.9; +3.0 SD)"
+        ]
+      },
+      {
+        "pid": "patient148",
+        "true": "MINF",
+        "predicted": "MINF",
+        "explanation": [
+          "LV ejection fraction 31.7 % (normal group 60.3 \u00b1 5.1; -5.6 SD)",
+          "LV end-systolic volume index 53.3 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +4.1 SD)",
+          "RV/LV end-diastolic volume ratio 0.8 (normal group 1.2 \u00b1 0.1; -3.5 SD)"
+        ]
+      },
+      {
+        "pid": "patient149",
+        "true": "DCM",
+        "predicted": "MINF",
+        "explanation": [
+          "LV end-systolic volume index 64.9 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; +5.9 SD)",
+          "LV end-diastolic volume index 113.7 mL/m\u00b2 (normal group 67.7 \u00b1 13.3; +3.5 SD)",
+          "LV ejection fraction 43.0 % (normal group 60.3 \u00b1 5.1; -3.4 SD)"
+        ]
+      },
+      {
+        "pid": "patient150",
+        "true": "NOR",
+        "predicted": "NOR",
+        "explanation": [
+          "LV ejection fraction 75.2 % (normal group 60.3 \u00b1 5.1; +2.9 SD)",
+          "LV EF minus RV EF 26.3 points (normal group 5.7 \u00b1 8.8; +2.4 SD)",
+          "LV end-systolic volume index 17.8 mL/m\u00b2 (normal group 26.8 \u00b1 6.5; -1.4 SD)"
+        ]
+      }
+    ]
+  },
+  "segmenter_checkpoint_epoch": 61
+}
