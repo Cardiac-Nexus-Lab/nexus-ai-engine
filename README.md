@@ -19,6 +19,7 @@ The ECG and cardiac MRI tracks are complete for their current scope. Tabular EHR
 | Ejection fraction from the predicted masks | LV r 0.991 against expert masks, limits of agreement -6.6 to +5.8 points |
 | MRI diagnosis from measurements | 45/50 test patients from the model's own masks |
 | MRI explainability with checks | Uncertainty detects errors at AUROC 0.861; Grad-CAM depends on learned weights on average |
+| Web application serving these models | Live in [nexus-web-portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal) |
 
 Models are split into an encoder returning a 128-dimensional embedding and a task head, so the trained ECG encoder can later become one branch of a multimodal model without being rewritten.
 
@@ -58,6 +59,20 @@ python scripts/evaluate_mri.py
 python scripts/diagnose_mri.py --evaluate-test
 python scripts/explain_mri.py --split test
 ```
+
+## Web application
+
+The trained models are served by the backend in
+[nexus-web-portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal), which
+loads them directly from this repository's `results/` and `src/`. Clone the two
+repositories side by side. The files it uses:
+
+| File | Model |
+| --- | --- |
+| `results/local_xresnet18_full/ecg_multilabel.pt` and `evaluation_report.json` | ECG classifier and its calibration |
+| `results/digitizer/trace_localizer.pt` | ECG printout digitizer |
+| `results/mri_segmentation/mri_segmenter.pt` | MRI segmenter |
+| `results/mri_diagnosis/diagnosis_model.joblib` | MRI diagnosis classifier |
 
 ## Repository structure
 
@@ -131,4 +146,3 @@ PTB-XL source: [PhysioNet PTB-XL v1.0.3](https://physionet.org/content/ptb-xl/1.
 - External validation on an independent public dataset.
 - Deliberate per-class operating thresholds rather than a default of 0.5.
 - Tabular EHR as a second modality, then multimodal fusion. Fusion requires paired records, meaning the same patient across modalities. Such cohorts exist: UK Biobank pairs 12-lead ECG with cardiac MRI at the same imaging visit, and MIMIC-IV-ECG pairs ECG with hospital records. Both are gated by application, cost, and storage on a scale this project cannot currently meet, so the constraint here is access rather than existence.
-- An inference interface for the [Web Portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal).
