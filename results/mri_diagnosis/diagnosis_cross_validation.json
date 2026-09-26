@@ -1,0 +1,105 @@
+{
+  "selected_model": "logistic_C10",
+  "cross_validation": {
+    "logistic_C0.1": {
+      "mean_accuracy": 0.9079999999999999,
+      "sd_accuracy": 0.055099909255823636
+    },
+    "logistic_C1": {
+      "mean_accuracy": 0.9129999999999999,
+      "sd_accuracy": 0.062297672508690075
+    },
+    "logistic_C10": {
+      "mean_accuracy": 0.914,
+      "sd_accuracy": 0.06248199740725323
+    },
+    "random_forest": {
+      "mean_accuracy": 0.9129999999999999,
+      "sd_accuracy": 0.058146367040426514
+    }
+  },
+  "normal_reference_ranges": {
+    "lv_edv_index": {
+      "mean": 67.65991682113687,
+      "sd": 13.253612209940846
+    },
+    "lv_esv_index": {
+      "mean": 26.826924357907124,
+      "sd": 6.468533763202826
+    },
+    "lv_ef": {
+      "mean": 60.34157592375836,
+      "sd": 5.124091789776777
+    },
+    "rv_edv_index": {
+      "mean": 79.36363547028442,
+      "sd": 17.861723693187994
+    },
+    "rv_esv_index": {
+      "mean": 35.71590696113888,
+      "sd": 9.834892441024197
+    },
+    "rv_ef": {
+      "mean": 54.673024810522826,
+      "sd": 9.361786595236742
+    },
+    "myo_mass_index": {
+      "mean": 53.10664627406173,
+      "sd": 12.256582801864415
+    },
+    "mass_to_volume": {
+      "mean": 0.7867957304496688,
+      "sd": 0.10552343379266375
+    },
+    "rv_to_lv_edv": {
+      "mean": 1.1698588729687833,
+      "sd": 0.1115175070497954
+    },
+    "lv_ef_minus_rv_ef": {
+      "mean": 5.668551113235528,
+      "sd": 8.765978903920931
+    }
+  },
+  "features": {
+    "lv_edv_index": {
+      "label": "LV end-diastolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "lv_esv_index": {
+      "label": "LV end-systolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "lv_ef": {
+      "label": "LV ejection fraction",
+      "unit": "%"
+    },
+    "rv_edv_index": {
+      "label": "RV end-diastolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "rv_esv_index": {
+      "label": "RV end-systolic volume index",
+      "unit": "mL/m\u00b2"
+    },
+    "rv_ef": {
+      "label": "RV ejection fraction",
+      "unit": "%"
+    },
+    "myo_mass_index": {
+      "label": "LV myocardial mass index",
+      "unit": "g/m\u00b2"
+    },
+    "mass_to_volume": {
+      "label": "LV mass-to-volume ratio",
+      "unit": "g/mL"
+    },
+    "rv_to_lv_edv": {
+      "label": "RV/LV end-diastolic volume ratio",
+      "unit": ""
+    },
+    "lv_ef_minus_rv_ef": {
+      "label": "LV EF minus RV EF",
+      "unit": "points"
+    }
+  }
+}

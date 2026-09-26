@@ -72,6 +72,8 @@ def main() -> None:
                         default=REPO_ROOT / "results" / "mri_segmentation" / "mri_segmenter.pt")
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "results" / "mri_diagnosis")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--save-model", action="store_true",
+                        help="write the fitted classifier and normal ranges for use by the web backend")
     args = parser.parse_args()
 
     metadata, cache, splits = mri_data.prepare()
@@ -87,6 +89,18 @@ def main() -> None:
     for candidate, value in results.items():
         marker = "  <- selected" if candidate == name else ""
         print(f"  {candidate:15} accuracy {value['mean_accuracy']:.3f} ± {value['sd_accuracy']:.3f}{marker}")
+
+    if args.save_model:
+        # The classifier is fitted only on training-patient measurements from
+        # expert masks, exactly as evaluated, so the saved model is the one whose
+        # test accuracy is reported. joblib is sklearn's own persistence format;
+        # load it only from this repository, never from an untrusted source.
+        import joblib
+        args.output.mkdir(parents=True, exist_ok=True)
+        joblib.dump({"model": model, "model_name": name, "features": list(FEATURES),
+                     "classes": list(model.classes_), "normal_reference_ranges": ranges},
+                    args.output / "diagnosis_model.joblib")
+        print(f"Saved classifier to {args.output / 'diagnosis_model.joblib'}")
 
     report = {"selected_model": name, "cross_validation": results, "normal_reference_ranges": ranges,
               "features": {k: {"label": v[0], "unit": v[1]} for k, v in FEATURES.items()}}
