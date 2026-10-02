@@ -35,6 +35,7 @@ class MRITrainConfig:
     seed: int = 42
     augment: bool = True
     device: str | None = None
+    myo_weight: float = 1.0
 
 
 def dice(prediction: np.ndarray, truth: np.ndarray, label: int) -> float:
@@ -139,7 +140,7 @@ def train_segmenter(config: MRITrainConfig, cache: dict, splits: dict, output: P
     loader = DataLoader(train_set, batch_size=config.batch_size, shuffle=True, num_workers=0, drop_last=True)
 
     model = MRISegmenter(widths=encoder_widths(config.base_width)).to(device)
-    criterion = DiceCELoss()
+    criterion = DiceCELoss(myo_weight=config.myo_weight).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
     scheduler = torch.optim.lr_scheduler.OneCycleLR(
         optimizer, max_lr=config.learning_rate, epochs=config.epochs,

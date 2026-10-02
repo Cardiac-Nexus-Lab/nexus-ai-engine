@@ -102,13 +102,20 @@ class DiceCELoss(nn.Module):
     myocardium counts as much as the large cavity. Dice is pooled over the batch
     rather than per slice, because apical and basal slices often contain no
     structure at all and a per-slice Dice is undefined there.
+
+    `myo_weight` scales the myocardium's Dice term against RV and LV. The thin
+    ring is the structure the model misses most, so a weight above 1 spends more
+    of the gradient on it; 1.0 is the plain average.
     """
 
-    def __init__(self, num_classes: int = NUM_CLASSES, dice_weight: float = 1.0, smooth: float = 1e-5):
+    def __init__(self, num_classes: int = NUM_CLASSES, dice_weight: float = 1.0, smooth: float = 1e-5,
+                 myo_weight: float = 1.0):
         super().__init__()
         self.num_classes = num_classes
         self.dice_weight = dice_weight
         self.smooth = smooth
+        # Weights for the RV, MYO and LV Dice terms, in label order 1, 2, 3.
+        self.register_buffer("structure_weights", torch.tensor([1.0, myo_weight, 1.0]))
 
     def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
         cross_entropy = F.cross_entropy(logits, target)
@@ -118,4 +125,6 @@ class DiceCELoss(nn.Module):
         overlap = (probabilities * one_hot).sum(dims)
         total = probabilities.sum(dims) + one_hot.sum(dims)
         dice = (2 * overlap + self.smooth) / (total + self.smooth)
-        return cross_entropy + self.dice_weight * (1 - dice[1:].mean())
+        weights = self.structure_weights.to(dice.dtype)
+        weighted = (dice[1:] * weights).sum() / weights.sum()
+        return cross_entropy + self.dice_weight * (1 - weighted)
