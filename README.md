@@ -16,6 +16,7 @@ The ECG and cardiac MRI tracks are complete for their current scope. Tabular EHR
 | ECG printout rendering and photographic distortion | Working |
 | Trace digitization from a printout image | 0.940 waveform correlation on flat pages (ceiling 0.964); angled photographs unresolved |
 | Cardiac MRI segmentation (ACDC) | Test LV Dice 0.956 (ED); RV 0.933; myocardium 0.870 |
+| Pooled MRI segmentation (ACDC, M&Ms, M&Ms-2) | M&Ms-2 test RV Dice 0.433 → 0.908 (ED); Kaggle external LV EF MAE 5.65 points |
 | Ejection fraction from the predicted masks | LV r 0.991 against expert masks, limits of agreement -6.6 to +5.8 points |
 | MRI diagnosis from measurements | 45/50 test patients from the model's own masks |
 | MRI explainability with checks | Uncertainty detects errors at AUROC 0.861; Grad-CAM depends on learned weights on average |
@@ -59,6 +60,29 @@ python scripts/evaluate_mri.py
 python scripts/diagnose_mri.py --evaluate-test
 python scripts/explain_mri.py --split test
 ```
+
+### Pooled model: ACDC, M&Ms and M&Ms-2
+
+The ACDC model was fine-tuned for 12 epochs on 390 training patients from three cohorts (80 ACDC, 150 M&Ms, 160 M&Ms-2), with 94 validation patients and 346 held-out test patients. Dice at end-diastole, ACDC-only model → pooled model:
+
+| Test cohort | LV | MYO | RV | RV HD95 (mm) | LV EF MAE (points) |
+| --- | --- | --- | --- | --- | --- |
+| ACDC (50) | 0.956 → 0.954 | 0.870 → 0.861 | 0.933 → 0.928 | 3.9 → 4.2 | 2.4 → 3.0 |
+| M&Ms (136) | 0.928 → 0.937 | 0.810 → 0.828 | 0.861 → 0.892 | 9.9 → 6.4 | 4.6 → 4.1 |
+| M&Ms-2 (160) | 0.828 → 0.944 | 0.700 → 0.833 | 0.433 → 0.908 | 42.2 → 8.3 | 9.5 → 3.6 |
+
+M&Ms and M&Ms-2 test patients are held out, but their cohorts are in training, so this is not external validation. Keeping the largest connected component of each structure lowers RV HD95 on M&Ms-2 (8.3 → 7.1 mm at end-diastole) and barely changes Dice. No nnU-Net baseline has been run on these splits.
+
+External check on the Kaggle Data Science Bowl cardiac cohort (439 test patients, clinician LV volumes, no masks), frustum volumes: pooled model LV EF MAE 5.65 points (r 0.80, bias +4.1) against 6.95 (r 0.75, bias +5.9) for the ACDC-only model. Every stored stack has a 10 mm slice spacing in its header, but 51 patients list a different original spacing, about 12 of them impossible values (18–340 mm); without the 51, EF MAE is 5.3 points.
+
+```bash
+python scripts/train_mri_pooled.py                       # label checks, training, per-cohort test
+python scripts/train_mri_pooled.py --evaluate-only
+python scripts/validate_mri_kaggle.py --bf16 --checkpoints results/mri_segmentation_pooled/mri_segmenter.pt results/mri_segmentation/mri_segmenter.pt
+python scripts/fusion_likelihood_ratios.py               # MRI likelihood ratios used by the web portal
+```
+
+Raw records: `results/mri_segmentation_pooled/` and `results/mri_segmentation_pooled/kaggle/`.
 
 ## Web application
 
@@ -132,13 +156,15 @@ Patient-identifiable information, hospital records, credentials, and private dat
 
 PTB-XL source: [PhysioNet PTB-XL v1.0.3](https://physionet.org/content/ptb-xl/1.0.3/)
 
+MRI sources: resampled copies of ACDC, M&Ms, M&Ms-2 and the Kaggle Data Science Bowl cardiac cohort, downloaded from the `viennh2012/cardiac_cine_*` mirrors on Hugging Face. The licence of ACDC, M&Ms and M&Ms-2 has been reported by the project as CC BY-NC-SA 4.0 (non-commercial, share-alike); this has not been checked against the original challenge pages, and the mirrors' own terms are unconfirmed. Confirm both before any use beyond research. None of this data is committed.
+
 ## Limitations
 
 - Evaluated on PTB-XL fold 10 only. No external dataset has been tested, so generalisation beyond this cohort, its equipment, and its labelling conventions is unestablished.
 - Results come from a single random seed; seed-to-seed variation is unquantified.
 - Attribution maps describe what this model responded to. Published work finds such methods disagree with one another and can survive weight randomization, so they are reported as exploratory and accompanied by the sanity check rather than presented as evidence.
 - Digitization is trained on rendered printouts, not photographs of real ones. It works on flat pages and scans but not on pages photographed at an angle, and performance on genuine clinical paper is untested.
-- MRI results come from one centre (ACDC) with no external validation, and use a resampled copy of the data rather than the original release.
+- MRI segmentation is trained and tested on three cohorts; the only external check (Kaggle) has volumes but no masks, so external Dice is unmeasured. All MRI data are resampled mirror copies rather than the original releases, the model is 2.5D and was trained on CPU without full convergence, and no nnU-Net baseline has been run.
 - This work is intended for research evaluation. Model outputs must not be used as a standalone basis for medical decisions.
 
 ## Planned development
