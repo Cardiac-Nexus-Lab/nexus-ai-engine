@@ -1,0 +1,50 @@
+{
+  "assumption": "ECG and MRI findings are independent given the true diagnosis; untested, because no public dataset pairs ECG and MRI for the same patients.",
+  "source": "out-of-fold predictions, logistic_C10, 100 ACDC training patients, expert masks",
+  "pairs": {
+    "MINF": {
+      "ecg_class": "MI",
+      "update_when_not_called": true,
+      "counts": {
+        "tp": 18,
+        "fn": 2,
+        "fp": 2,
+        "tn": 78
+      },
+      "sensitivity": 0.8809523809523809,
+      "specificity": 0.9691358024691358,
+      "lr_positive": 28.54285714285712,
+      "lr_positive_95ci": [
+        8.339361398021138,
+        97.6926955187324
+      ],
+      "lr_negative": 0.12283894449499548,
+      "lr_negative_95ci": [
+        0.03834929666455226,
+        0.393472829935687
+      ]
+    },
+    "HCM": {
+      "ecg_class": "HYP",
+      "update_when_not_called": false,
+      "counts": {
+        "tp": 18,
+        "fn": 2,
+        "fp": 0,
+        "tn": 80
+      },
+      "sensitivity": 0.8809523809523809,
+      "specificity": 0.9938271604938271,
+      "lr_positive": 142.71428571428507,
+      "lr_positive_95ci": [
+        8.96282049760298,
+        2272.428344669588
+      ],
+      "lr_negative": 0.11978704525288379,
+      "lr_negative_95ci": [
+        0.037416057292664194,
+        0.3834967457469039
+      ]
+    }
+  }
+}

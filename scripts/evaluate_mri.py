@@ -54,12 +54,16 @@ def _surface(mask: np.ndarray) -> np.ndarray:
 
 
 def hausdorff_mm(prediction: np.ndarray, truth: np.ndarray, label: int,
-                 spacing: tuple[float, float, float]) -> float:
+                 spacing: tuple[float, float, float], percentile: float = 100.0) -> float:
     """Symmetric Hausdorff distance between the two surfaces, in millimetres.
 
     Dice rewards bulk overlap; Hausdorff catches the stray blob far from the heart
     that Dice barely notices. Volumes are stored [slices, x, y] while spacing is
     (x, y, z), so the sampling order is reordered to match the array.
+
+    `percentile=95` gives HD95, the 95th percentile of surface distances in each
+    direction, which ignores the worst 5% of boundary points and so measures the
+    typical boundary error rather than the single worst voxel.
     """
     predicted, actual = prediction == label, truth == label
     if not predicted.any() and not actual.any():
@@ -70,7 +74,8 @@ def hausdorff_mm(prediction: np.ndarray, truth: np.ndarray, label: int,
     predicted_surface, actual_surface = _surface(predicted), _surface(actual)
     to_actual = ndimage.distance_transform_edt(~actual_surface, sampling=sampling)
     to_predicted = ndimage.distance_transform_edt(~predicted_surface, sampling=sampling)
-    return float(max(to_actual[predicted_surface].max(), to_predicted[actual_surface].max()))
+    return float(max(np.percentile(to_actual[predicted_surface], percentile),
+                     np.percentile(to_predicted[actual_surface], percentile)))
 
 
 def bootstrap_mean(values, resamples: int = 2000, seed: int = 42) -> dict:

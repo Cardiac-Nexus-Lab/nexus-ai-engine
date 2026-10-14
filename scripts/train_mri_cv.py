@@ -39,12 +39,12 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import numpy as np
 import torch
-from scipy import ndimage
 
 from cardiac_nexus import mri_data
 from cardiac_nexus.models import select_device
 from cardiac_nexus.mri_data import PATHOLOGIES, PHASES, STRUCTURES
 from cardiac_nexus.mri_dataset import ACDCSlices, normalize_volumes
+from cardiac_nexus.mri_postprocess import keep_largest_component
 from cardiac_nexus.mri_training import MRITrainConfig, score_patients, train_segmenter
 from evaluate_mri import agreement, bootstrap_mean, hausdorff_mm, load_segmenter
 
@@ -89,22 +89,6 @@ def predict_ensemble(models, images, masks, patient, phase, spacing, patients, d
     return volumes
 
 
-def keep_largest_component(volume: np.ndarray) -> np.ndarray:
-    """Keep only the largest 3D connected region of each structure.
-
-    A heart has one LV cavity, one myocardium and one RV. Small islands of a
-    label elsewhere in the volume are always errors; they barely move Dice but
-    dominate the Hausdorff distance.
-    """
-    cleaned = volume.copy()
-    for label in STRUCTURES:
-        components, count = ndimage.label(volume == label)
-        if count > 1:
-            largest = np.argmax(np.bincount(components.ravel())[1:]) + 1
-            cleaned[(components != largest) & (volume == label)] = 0
-    return cleaned
-
-
 def cleaned(volumes: dict) -> dict:
     return {key: (keep_largest_component(predicted), actual, voxel)
             for key, (predicted, actual, voxel) in volumes.items()}
@@ -116,13 +100,15 @@ def summarize(volumes: dict) -> dict:
     for (patient_id, phase_id), (predicted, actual, voxel) in volumes.items():
         for label, name in STRUCTURES.items():
             rows[patient_id][f"hausdorff_{name}_{PHASES[phase_id]}"] = hausdorff_mm(predicted, actual, label, voxel)
+            rows[patient_id][f"hd95_{name}_{PHASES[phase_id]}"] = hausdorff_mm(predicted, actual, label, voxel, 95)
     patients = list(rows.values())
-    report = {"dice": {}, "hausdorff_mm": {}, "derived_measures": {}}
+    report = {"dice": {}, "hausdorff_mm": {}, "hd95_mm": {}, "derived_measures": {}}
     for name in STRUCTURES.values():
         for phase in PHASES:
             report["dice"][f"{name}_{phase}"] = bootstrap_mean([p[f"dice_{name}_{phase}"] for p in patients])
             report["hausdorff_mm"][f"{name}_{phase}"] = bootstrap_mean(
                 [p[f"hausdorff_{name}_{phase}"] for p in patients])
+            report["hd95_mm"][f"{name}_{phase}"] = bootstrap_mean([p[f"hd95_{name}_{phase}"] for p in patients])
     for name in ("LV", "RV"):
         # EF is undefined when a predicted or expert volume at end-diastole is zero.
         pairs = [(p[f"ef_{name}_pred"], p[f"ef_{name}_true"]) for p in patients
@@ -135,11 +121,12 @@ def summarize(volumes: dict) -> dict:
 
 def print_comparison(reports: dict) -> None:
     print(f"\n{'variant':30}" + "".join(f"{f'{n} {ph.upper()}':>9}" for n in ("LV", "RV", "MYO") for ph in PHASES)
-          + f"{'HD MYO ED':>11}{'LV EF r':>9}{'LV EF MAE':>11}")
+          + f"{'HD MYO ED':>11}{'HD95 RV ED':>12}{'HD95 RV ES':>12}{'LV EF r':>9}{'LV EF MAE':>11}")
     for variant, report in reports.items():
         dice = "".join(f"{report['dice'][f'{n}_{ph}']['estimate']:>9.3f}" for n in ("LV", "RV", "MYO") for ph in PHASES)
         lv_ef = report["derived_measures"]["LV_ejection_fraction_percent"]
         print(f"{variant:30}{dice}{report['hausdorff_mm']['MYO_ed']['estimate']:>11.1f}"
+              f"{report['hd95_mm']['RV_ed']['estimate']:>12.1f}{report['hd95_mm']['RV_es']['estimate']:>12.1f}"
               f"{lv_ef['correlation']:>9.3f}{lv_ef['mean_absolute_error']:>11.2f}")
 
 
