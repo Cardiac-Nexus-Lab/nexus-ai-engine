@@ -124,8 +124,12 @@ def summarize(volumes: dict) -> dict:
             report["hausdorff_mm"][f"{name}_{phase}"] = bootstrap_mean(
                 [p[f"hausdorff_{name}_{phase}"] for p in patients])
     for name in ("LV", "RV"):
-        report["derived_measures"][f"{name}_ejection_fraction_percent"] = agreement(
-            [p[f"ef_{name}_pred"] for p in patients], [p[f"ef_{name}_true"] for p in patients])
+        # EF is undefined when a predicted or expert volume at end-diastole is zero.
+        pairs = [(p[f"ef_{name}_pred"], p[f"ef_{name}_true"]) for p in patients
+                 if f"ef_{name}_pred" in p and f"ef_{name}_true" in p]
+        report["derived_measures"][f"{name}_ejection_fraction_percent"] = {
+            **agreement([a for a, _ in pairs], [b for _, b in pairs]),
+            "excluded_undefined": len(patients) - len(pairs)}
     return report
 
 
