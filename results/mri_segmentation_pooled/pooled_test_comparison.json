@@ -136,6 +136,50 @@
             "excluded_undefined": 0
           }
         },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 3.919899841331737,
+            "low": 2.955724171708755,
+            "high": 5.003742602066296,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 5.027716023890204,
+            "low": 4.048707824644278,
+            "high": 6.050449350796581,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 2.722424072319002,
+            "low": 2.023721104292109,
+            "high": 3.571491403441704,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 3.2942452597742315,
+            "low": 2.545792924769238,
+            "high": 4.109529290441725,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.289445209432196,
+            "low": 1.676015202332203,
+            "high": 3.034453068199948,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 3.958119658626446,
+            "low": 2.8483749893806394,
+            "high": 5.136379957724216,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
         "derived_measures": {
           "LV_ejection_fraction_percent": {
             "correlation": 0.990798321515908,
@@ -246,6 +290,50 @@
             "estimate": 8.63333573128167,
             "low": 7.221206711960508,
             "high": 10.425787323812507,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 3.8916155700842756,
+            "low": 2.924231402270249,
+            "high": 4.979011818379667,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 4.9393747937681685,
+            "low": 3.953620319127649,
+            "high": 5.974127964896893,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 2.976581081293144,
+            "low": 2.195699910237074,
+            "high": 3.847527850578999,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 3.272103704314075,
+            "low": 2.520090011303247,
+            "high": 4.078075733915201,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.289445209432196,
+            "low": 1.676015202332203,
+            "high": 3.034453068199948,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 4.351304060573366,
+            "low": 3.037996567987606,
+            "high": 5.9198735814372325,
             "n": 50,
             "excluded_undefined": 0
           }
@@ -364,6 +452,50 @@
             "excluded_undefined": 0
           }
         },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 4.193993670379657,
+            "low": 3.107134816709156,
+            "high": 5.327884689966163,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 5.382495826472317,
+            "low": 4.342625020070097,
+            "high": 6.498824023294303,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 2.7784677608291144,
+            "low": 2.0802989218978096,
+            "high": 3.53826930901336,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 3.5294234140679204,
+            "low": 2.76351797756556,
+            "high": 4.3856848376253135,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.305606705596818,
+            "low": 1.727498807793782,
+            "high": 2.941644400448358,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 3.8299605593305714,
+            "low": 2.766347918426255,
+            "high": 5.032106424504039,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
         "derived_measures": {
           "LV_ejection_fraction_percent": {
             "correlation": 0.982810099944042,
@@ -474,6 +606,50 @@
             "estimate": 8.790488359845789,
             "low": 7.384079456335211,
             "high": 10.570857526903003,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 4.1842814839887055,
+            "low": 3.106002029358391,
+            "high": 5.323902306710695,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 5.802801079468262,
+            "low": 4.5051777234669075,
+            "high": 7.396164392555941,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 3.2090266364649254,
+            "low": 2.4019365250890443,
+            "high": 4.117739928947621,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 3.5815344395772,
+            "low": 2.8204107656126998,
+            "high": 4.434022476437768,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.305606705596818,
+            "low": 1.727498807793782,
+            "high": 2.941644400448358,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 4.135270397347434,
+            "low": 2.8204193664521373,
+            "high": 5.755538299997365,
             "n": 50,
             "excluded_undefined": 0
           }
@@ -590,6 +766,50 @@
             "estimate": 13.00919687118649,
             "low": 11.284905766325453,
             "high": 14.839396004479537,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 9.920795265670138,
+            "low": 8.191563629533801,
+            "high": 11.95891533930451,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 12.784110299432063,
+            "low": 10.271849240764924,
+            "high": 15.534633516855292,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 7.060408225202458,
+            "low": 6.214152112560165,
+            "high": 7.973663138237566,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.930261354739207,
+            "low": 5.785846007109135,
+            "high": 8.135734021104955,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 7.756837852555365,
+            "low": 6.589052756913373,
+            "high": 9.011730250915654,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 8.470452828909874,
+            "low": 6.86239648568457,
+            "high": 10.135300074173506,
             "n": 136,
             "excluded_undefined": 0
           }
@@ -745,6 +965,50 @@
             "excluded_undefined": 0
           }
         },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 9.186031055355523,
+            "low": 7.399870660235677,
+            "high": 11.73983450330444,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 9.690978377360933,
+            "low": 7.639044559623592,
+            "high": 12.44517477262189,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 7.362256693469511,
+            "low": 6.4967582465760705,
+            "high": 8.328812569966338,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.1747192242444955,
+            "low": 5.26806181549112,
+            "high": 7.2327242509825584,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 6.641311632615566,
+            "low": 5.893850923845343,
+            "high": 7.443835246767251,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 6.129889118650024,
+            "low": 5.319115456373123,
+            "high": 6.975326949274153,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
         "derived_measures": {
           "LV_ejection_fraction_percent": {
             "correlation": 0.9426742547944593,
@@ -855,6 +1119,50 @@
             "estimate": 8.88303861719587,
             "low": 8.18546222240663,
             "high": 9.619562141357562,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 6.393645696769046,
+            "low": 5.442900327939641,
+            "high": 7.432333162701523,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 6.25054195080963,
+            "low": 5.358604879248523,
+            "high": 7.196679516493201,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 4.701366544439596,
+            "low": 4.0666728718081515,
+            "high": 5.405346448706962,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 5.191670986794729,
+            "low": 4.48382850006175,
+            "high": 5.911373478991259,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 4.907808138851286,
+            "low": 4.114397215757918,
+            "high": 5.943373643715349,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.340893007740578,
+            "low": 4.68557143925987,
+            "high": 6.032586277750417,
             "n": 136,
             "excluded_undefined": 0
           }
@@ -1010,6 +1318,50 @@
             "excluded_undefined": 0
           }
         },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 6.176609256637719,
+            "low": 5.347186033006707,
+            "high": 7.056192821618513,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 6.3095101190539875,
+            "low": 5.489062989630073,
+            "high": 7.180887854382143,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 4.9936262929413076,
+            "low": 4.369096577377697,
+            "high": 5.655643019547168,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 4.95441703957593,
+            "low": 4.328211034586674,
+            "high": 5.561001028929284,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 4.55327823099646,
+            "low": 3.91263335920284,
+            "high": 5.202553316454982,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.125148127908174,
+            "low": 4.515776323552732,
+            "high": 5.747882189456348,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
         "derived_measures": {
           "LV_ejection_fraction_percent": {
             "correlation": 0.9422817415792347,
@@ -1122,6 +1474,50 @@
             "estimate": 27.415663963333426,
             "low": 25.0226150709551,
             "high": 29.81706023593077,
+            "n": 159,
+            "excluded_undefined": 1
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 42.231655928996474,
+            "low": 38.262940429684626,
+            "high": 46.265624725263095,
+            "n": 155,
+            "excluded_undefined": 5
+          },
+          "RV_es": {
+            "estimate": 43.0255414644448,
+            "low": 38.768701559788965,
+            "high": 47.4511353997578,
+            "n": 146,
+            "excluded_undefined": 14
+          },
+          "MYO_ed": {
+            "estimate": 14.250408769580712,
+            "low": 12.892070072080728,
+            "high": 15.725613352089916,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 13.859077402379432,
+            "low": 12.488285774430269,
+            "high": 15.399576980686007,
+            "n": 159,
+            "excluded_undefined": 1
+          },
+          "LV_ed": {
+            "estimate": 16.39777101672591,
+            "low": 14.783949716627296,
+            "high": 18.109392515331862,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 18.667016480676555,
+            "low": 16.62069865423201,
+            "high": 20.814725264273395,
             "n": 159,
             "excluded_undefined": 1
           }
@@ -1263,6 +1659,50 @@
             "excluded_undefined": 1
           }
         },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 45.40613114971,
+            "low": 40.80854435322676,
+            "high": 50.03775266631291,
+            "n": 155,
+            "excluded_undefined": 5
+          },
+          "RV_es": {
+            "estimate": 42.29910609672595,
+            "low": 38.13161289089634,
+            "high": 46.95398713045078,
+            "n": 146,
+            "excluded_undefined": 14
+          },
+          "MYO_ed": {
+            "estimate": 15.085983690739493,
+            "low": 13.668424228824039,
+            "high": 16.605998594707998,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 13.26281189508059,
+            "low": 11.95801441758359,
+            "high": 14.696096754605733,
+            "n": 159,
+            "excluded_undefined": 1
+          },
+          "LV_ed": {
+            "estimate": 13.779872500326041,
+            "low": 12.146388497142585,
+            "high": 15.641099004505085,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 10.958635076147624,
+            "low": 9.847342567577867,
+            "high": 12.286587823005775,
+            "n": 159,
+            "excluded_undefined": 1
+          }
+        },
         "derived_measures": {
           "LV_ejection_fraction_percent": {
             "correlation": 0.5642317230618251,
@@ -1373,6 +1813,50 @@
             "estimate": 11.313718894671583,
             "low": 10.26716151942817,
             "high": 12.516032612706338,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 8.28490014130319,
+            "low": 6.919926103241528,
+            "high": 9.891331989854912,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 8.376726835416303,
+            "low": 7.131435947037168,
+            "high": 9.697691123554085,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 5.454551664853504,
+            "low": 4.793446134432185,
+            "high": 6.143050107746278,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.531991010308007,
+            "low": 5.593582470633323,
+            "high": 7.600598994900673,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 5.418006568538611,
+            "low": 4.751177424284147,
+            "high": 6.139285067721789,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 6.1538425882622185,
+            "low": 5.304491547615373,
+            "high": 7.096285412460348,
             "n": 160,
             "excluded_undefined": 0
           }
@@ -1510,6 +1994,50 @@
             "estimate": 9.710218567968742,
             "low": 9.02226791895961,
             "high": 10.420622647997106,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 7.14977855011829,
+            "low": 6.206544195768518,
+            "high": 8.189468070236003,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 6.912583306130995,
+            "low": 6.140307779076183,
+            "high": 7.73272310321341,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 5.971867375356706,
+            "low": 5.288001903367156,
+            "high": 6.697504673506925,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.209434080110093,
+            "low": 5.448711801735154,
+            "high": 6.979055146541837,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 5.3077367306106495,
+            "low": 4.652940313635224,
+            "high": 5.993856199032191,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.679327022076218,
+            "low": 4.93554616907636,
+            "high": 6.4108700457977665,
             "n": 160,
             "excluded_undefined": 0
           }
