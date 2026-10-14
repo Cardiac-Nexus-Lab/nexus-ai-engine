@@ -1,0 +1,91 @@
+{
+  "checkpoint": "results/mri_segmentation_pooled/mri_segmenter.pt",
+  "splits": [
+    "test"
+  ],
+  "bf16": true,
+  "patients": 439,
+  "failed": [],
+  "cylindrical": {
+    "scored": 432,
+    "lv_edv_ml": {
+      "correlation": 0.8214153388042623,
+      "bias": -7.615324074074075,
+      "limits_of_agreement": [
+        -79.6830787984549,
+        64.45243065030674
+      ],
+      "mean_absolute_error": 19.558935185185184,
+      "n": 432,
+      "rmse": 37.50789588478276
+    },
+    "lv_esv_ml": {
+      "correlation": 0.8941053245309288,
+      "bias": -9.583402777777778,
+      "limits_of_agreement": [
+        -42.960489052313655,
+        23.7936834967581
+      ],
+      "mean_absolute_error": 13.180902777777776,
+      "n": 432,
+      "rmse": 19.523356613866945
+    },
+    "lv_ef_percent": {
+      "correlation": 0.7510261646397577,
+      "bias": 4.326633436864986,
+      "limits_of_agreement": [
+        -11.17365146976803,
+        19.826918343498
+      ],
+      "mean_absolute_error": 5.941326040646858,
+      "n": 432,
+      "rmse": 9.006460491543667
+    }
+  },
+  "frustum": {
+    "scored": 428,
+    "lv_edv_ml": {
+      "correlation": 0.8259064204312813,
+      "bias": -13.44650019783703,
+      "limits_of_agreement": [
+        -82.61770175110881,
+        55.72470135543475
+      ],
+      "mean_absolute_error": 22.927425152391805,
+      "n": 428,
+      "rmse": 37.7277529475022
+    },
+    "lv_esv_ml": {
+      "correlation": 0.9004030255511535,
+      "bias": -11.756127322350741,
+      "limits_of_agreement": [
+        -44.00873962879896,
+        20.496484984097478
+      ],
+      "mean_absolute_error": 14.622341839160708,
+      "n": 428,
+      "rmse": 20.20778387096363
+    },
+    "lv_ef_percent": {
+      "correlation": 0.8016599385555248,
+      "bias": 4.142286169257312,
+      "limits_of_agreement": [
+        -9.500663201265933,
+        17.785235539780558
+      ],
+      "mean_absolute_error": 5.652329095387533,
+      "n": 428,
+      "rmse": 8.092991706788776
+    }
+  },
+  "slice_spacing_audit": {
+    "patients": 439,
+    "header_minus_stated_mm": {
+      "max_abs": 330.3162536621094,
+      "mean": -1.22479928558128
+    },
+    "header_dz_values_mm": {
+      "10.0": 439
+    }
+  }
+}
