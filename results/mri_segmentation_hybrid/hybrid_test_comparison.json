@@ -1,0 +1,1906 @@
+{
+  "test": {
+    "acdc": {
+      "pooled model": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9279357004481793,
+            "low": 0.9159923481523394,
+            "high": 0.93855783306577,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8787235031116193,
+            "low": 0.858903823566832,
+            "high": 0.8962618904451284,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8612249352420264,
+            "low": 0.8430861926035508,
+            "high": 0.8769673361767271,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8910759992423525,
+            "low": 0.878345854305836,
+            "high": 0.9019296028696436,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.953570794003179,
+            "low": 0.9474616071694172,
+            "high": 0.9595211529578825,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.9071655191984179,
+            "low": 0.8879970035624253,
+            "high": 0.924124444584605,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 13.151036500796621,
+            "low": 10.130587062598321,
+            "high": 17.624208613866017,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 16.194811130222377,
+            "low": 12.750256320761137,
+            "high": 20.665121266676287,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 8.583773686048653,
+            "low": 7.330149258170855,
+            "high": 10.100461277637713,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 9.97394995156587,
+            "low": 8.87173254965164,
+            "high": 11.16846660385641,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 6.944961527863354,
+            "low": 5.994687816893654,
+            "high": 7.896665760871203,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 8.375857820485445,
+            "low": 7.334295697334169,
+            "high": 9.528961162751305,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 4.193993670379657,
+            "low": 3.107134816709156,
+            "high": 5.327884689966163,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 5.382495826472317,
+            "low": 4.342625020070097,
+            "high": 6.498824023294303,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 2.7784677608291144,
+            "low": 2.0802989218978096,
+            "high": 3.53826930901336,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 3.5294234140679204,
+            "low": 2.76351797756556,
+            "high": 4.3856848376253135,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.305606705596818,
+            "low": 1.727498807793782,
+            "high": 2.941644400448358,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 3.8299605593305714,
+            "low": 2.766347918426255,
+            "high": 5.032106424504039,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.982810099944042,
+            "bias": -1.3898002024092466,
+            "limits_of_agreement": [
+              -9.849390944991436,
+              7.069790540172943
+            ],
+            "mean_absolute_error": 2.974455461212935,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.8754265615049134,
+            "bias": 1.0511499996786566,
+            "limits_of_agreement": [
+              -11.538028090647833,
+              13.640328090005147
+            ],
+            "mean_absolute_error": 4.704878818499876,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        }
+      },
+      "pooled model + LCC": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9281704676912014,
+            "low": 0.916218698762413,
+            "high": 0.9387683679312089,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8780140286896712,
+            "low": 0.8564625376248856,
+            "high": 0.8967437005368266,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8605189681584778,
+            "low": 0.8426219311754787,
+            "high": 0.8761116736655008,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8910505318653975,
+            "low": 0.878298696837988,
+            "high": 0.9019019237893814,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9535691728564748,
+            "low": 0.9474595266606297,
+            "high": 0.9595195318111782,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.903043334105737,
+            "low": 0.8781221790976761,
+            "high": 0.9233985293861525,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 10.847541009786742,
+            "low": 9.641902286002223,
+            "high": 12.053371887346952,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 13.204323746723063,
+            "low": 11.615353250470982,
+            "high": 14.908774206976641,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 8.407849291658948,
+            "low": 7.275650109186009,
+            "high": 9.62499180255027,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 9.7343564017519,
+            "low": 8.652150908021035,
+            "high": 10.818288140275268,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 6.857916583426572,
+            "low": 5.904572766538836,
+            "high": 7.817074020549638,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 8.790488359845789,
+            "low": 7.384079456335211,
+            "high": 10.570857526903003,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 4.1842814839887055,
+            "low": 3.106002029358391,
+            "high": 5.323902306710695,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 5.802801079468262,
+            "low": 4.5051777234669075,
+            "high": 7.396164392555941,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 3.2090266364649254,
+            "low": 2.4019365250890443,
+            "high": 4.117739928947621,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 3.5815344395772,
+            "low": 2.8204107656126998,
+            "high": 4.434022476437768,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.305606705596818,
+            "low": 1.727498807793782,
+            "high": 2.941644400448358,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 4.135270397347434,
+            "low": 2.8204193664521373,
+            "high": 5.755538299997365,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9844427138699342,
+            "bias": -1.1842528783158075,
+            "limits_of_agreement": [
+              -9.148775547344801,
+              6.780269790713187
+            ],
+            "mean_absolute_error": 2.7689081371194963,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.8631209695715594,
+            "bias": 1.2934074880363693,
+            "limits_of_agreement": [
+              -12.017505548380532,
+              14.60432052445327
+            ],
+            "mean_absolute_error": 4.844264614999479,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        }
+      },
+      "hybrid model": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9275448940406181,
+            "low": 0.9157277406483865,
+            "high": 0.938757650913004,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8818168342846358,
+            "low": 0.8627775242789928,
+            "high": 0.8978983431548713,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8556408452099995,
+            "low": 0.8362523065780999,
+            "high": 0.8720797690856118,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.886001775889453,
+            "low": 0.8736451200810107,
+            "high": 0.8965285105141113,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9527332419909879,
+            "low": 0.9454289732030832,
+            "high": 0.959585477104311,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.8957064341124056,
+            "low": 0.8715042261426686,
+            "high": 0.9170032184151214,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 13.87363456658959,
+            "low": 10.56742986572281,
+            "high": 18.290495228343204,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 16.166659633665432,
+            "low": 12.41568730276924,
+            "high": 21.08565687860502,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 8.584049349765143,
+            "low": 7.380830465146925,
+            "high": 10.066792034330044,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 11.489737721231467,
+            "low": 9.304850999978637,
+            "high": 14.323328732326356,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 7.053588761008081,
+            "low": 6.021965047877882,
+            "high": 8.268673170028805,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 9.091062752774034,
+            "low": 7.7848902204225885,
+            "high": 10.440628649274226,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 3.942533530329687,
+            "low": 2.950963584974369,
+            "high": 4.957592865231052,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 6.6134005735929495,
+            "low": 4.8067189066663705,
+            "high": 9.132980311458924,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 3.04962610238691,
+            "low": 2.2823948986560856,
+            "high": 3.927414210225085,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 4.178276881339732,
+            "low": 3.2575433759589907,
+            "high": 5.142592173825905,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.659464862122817,
+            "low": 1.9208522882324717,
+            "high": 3.5166373465956604,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 4.993265035493917,
+            "low": 3.698098398683837,
+            "high": 6.454226585105373,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9796123667656111,
+            "bias": -2.6791782627783043,
+            "limits_of_agreement": [
+              -12.33664881838979,
+              6.978292292833181
+            ],
+            "mean_absolute_error": 3.7774003640347114,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.8835169774227017,
+            "bias": 0.377291400695689,
+            "limits_of_agreement": [
+              -11.792285739576647,
+              12.546868540968026
+            ],
+            "mean_absolute_error": 4.692256533677387,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        }
+      },
+      "hybrid model + LCC": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9277810791673573,
+            "low": 0.9158447850633811,
+            "high": 0.9392380329582795,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8835571272295012,
+            "low": 0.8644612467716136,
+            "high": 0.8996149594474707,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8550856162059357,
+            "low": 0.8361422872297629,
+            "high": 0.8713674250797648,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8857624301720927,
+            "low": 0.8734038504523756,
+            "high": 0.8962627959265272,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9527951457771588,
+            "low": 0.9454905435977394,
+            "high": 0.9596017337497788,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.8920812912869827,
+            "low": 0.8641673697119169,
+            "high": 0.916234076099547,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 10.57683268796777,
+            "low": 9.432566465543115,
+            "high": 11.763546899580701,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 12.192260853712723,
+            "low": 10.861894107672244,
+            "high": 13.631174051339876,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 8.460350882264564,
+            "low": 7.359637882118678,
+            "high": 9.662414795989184,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 10.092739195639204,
+            "low": 9.031648336183,
+            "high": 11.241063852973683,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 6.484939397833042,
+            "low": 5.611180114805789,
+            "high": 7.416786999926675,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 9.36781087646882,
+            "low": 7.788224634830027,
+            "high": 11.20765896092756,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 3.9649893079342964,
+            "low": 2.960691858189072,
+            "high": 5.006108233143571,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 5.415013523108766,
+            "low": 4.3736422111595425,
+            "high": 6.523484749350935,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 3.32805523720912,
+            "low": 2.530185806145705,
+            "high": 4.260640069167367,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 4.246243794093095,
+            "low": 3.3248794950897955,
+            "high": 5.190443128528068,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 2.659464862122817,
+            "low": 1.9208522882324717,
+            "high": 3.5166373465956604,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.2748871306836165,
+            "low": 3.779813747772453,
+            "high": 7.074431314105196,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9813754650056989,
+            "bias": -2.4456788076091542,
+            "limits_of_agreement": [
+              -11.555014107676964,
+              6.6636564924586565
+            ],
+            "mean_absolute_error": 3.5439306443842975,
+            "n": 50,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.8852066119933713,
+            "bias": 0.5239276172251418,
+            "limits_of_agreement": [
+              -11.571999316805998,
+              12.619854551256283
+            ],
+            "mean_absolute_error": 4.618198011777281,
+            "n": 50,
+            "excluded_undefined": 0
+          }
+        }
+      }
+    },
+    "mnms": {
+      "pooled model": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.8924549233056353,
+            "low": 0.8728911545230337,
+            "high": 0.9082689045705729,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8564055046706488,
+            "low": 0.8361350799686657,
+            "high": 0.8726030804212405,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8278104139282111,
+            "low": 0.8200851431372523,
+            "high": 0.835672989692213,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8619621785574925,
+            "low": 0.8542295877316639,
+            "high": 0.8697248460561826,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9372092852559175,
+            "low": 0.9322444679903268,
+            "high": 0.9416621595166397,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.8871381074163921,
+            "low": 0.8771251541018839,
+            "high": 0.8971642078970267,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 15.892861440910295,
+            "low": 13.132985194319929,
+            "high": 19.4290974483609,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 15.487368528903321,
+            "low": 12.81939636022324,
+            "high": 18.770796824226206,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 12.030991107534199,
+            "low": 10.97333677397478,
+            "high": 13.286742652271164,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 11.341099129169612,
+            "low": 10.242141605096776,
+            "high": 12.621572465526972,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 8.951616464335999,
+            "low": 8.095903167258799,
+            "high": 10.043402914071974,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 8.88303861719587,
+            "low": 8.18546222240663,
+            "high": 9.619562141357562,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 6.393645696769046,
+            "low": 5.442900327939641,
+            "high": 7.432333162701523,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 6.25054195080963,
+            "low": 5.358604879248523,
+            "high": 7.196679516493201,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 4.701366544439596,
+            "low": 4.0666728718081515,
+            "high": 5.405346448706962,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 5.191670986794729,
+            "low": 4.48382850006175,
+            "high": 5.911373478991259,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 4.907808138851286,
+            "low": 4.114397215757918,
+            "high": 5.943373643715349,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.340893007740578,
+            "low": 4.68557143925987,
+            "high": 6.032586277750417,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9426434782530331,
+            "bias": -0.23863988592962582,
+            "limits_of_agreement": [
+              -10.512520446974094,
+              10.035240675114842
+            ],
+            "mean_absolute_error": 4.117777700742472,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.8014447901789629,
+            "bias": -0.37183101901815196,
+            "limits_of_agreement": [
+              -17.17516814482343,
+              16.431506106787126
+            ],
+            "mean_absolute_error": 5.9300219575872894,
+            "n": 135,
+            "excluded_undefined": 1
+          }
+        }
+      },
+      "pooled model + LCC": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.8925381903590093,
+            "low": 0.872846472081208,
+            "high": 0.9085083813862508,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.85637760549906,
+            "low": 0.8359867871928925,
+            "high": 0.8726013513988155,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8274973115019931,
+            "low": 0.8198387721767364,
+            "high": 0.8350280639822638,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.862617757483372,
+            "low": 0.8550397652105783,
+            "high": 0.8702093636139459,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9373382117227582,
+            "low": 0.9323586463369381,
+            "high": 0.9418090984298563,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.8876320951817415,
+            "low": 0.8776916813445107,
+            "high": 0.8975439863156207,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 12.26206379387271,
+            "low": 11.327082603595311,
+            "high": 13.295848335538826,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 12.541729988414746,
+            "low": 11.570064716512883,
+            "high": 13.533938367281927,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 11.705884904213356,
+            "low": 10.929744333734021,
+            "high": 12.564963163301066,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 10.07836674735542,
+            "low": 9.446378354388866,
+            "high": 10.714641403764325,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 8.203770869296555,
+            "low": 7.60881321600784,
+            "high": 8.871382539520173,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 8.397955400241626,
+            "low": 7.8306611132347195,
+            "high": 8.944359421038488,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 6.176609256637719,
+            "low": 5.347186033006707,
+            "high": 7.056192821618513,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 6.3095101190539875,
+            "low": 5.489062989630073,
+            "high": 7.180887854382143,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 4.9936262929413076,
+            "low": 4.369096577377697,
+            "high": 5.655643019547168,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 4.95441703957593,
+            "low": 4.328211034586674,
+            "high": 5.561001028929284,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 4.55327823099646,
+            "low": 3.91263335920284,
+            "high": 5.202553316454982,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.125148127908174,
+            "low": 4.515776323552732,
+            "high": 5.747882189456348,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9422817415792347,
+            "bias": -0.2084360006330784,
+            "limits_of_agreement": [
+              -10.513028723824188,
+              10.096156722558032
+            ],
+            "mean_absolute_error": 4.160044003839316,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.7980021900178819,
+            "bias": -0.33371901604053006,
+            "limits_of_agreement": [
+              -17.274450929211227,
+              16.60701289713017
+            ],
+            "mean_absolute_error": 5.977441038116448,
+            "n": 135,
+            "excluded_undefined": 1
+          }
+        }
+      },
+      "hybrid model": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.8907417142969948,
+            "low": 0.8706469023376693,
+            "high": 0.9066127430891027,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8527352963910668,
+            "low": 0.8324776775231042,
+            "high": 0.8686051407460812,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8220050415798791,
+            "low": 0.8137311431840046,
+            "high": 0.8300585442931501,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8526119779191597,
+            "low": 0.8439719004818126,
+            "high": 0.8609939816541955,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9387482865331653,
+            "low": 0.9338827843203424,
+            "high": 0.9434490013863863,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.8763919656823813,
+            "low": 0.8651966591581326,
+            "high": 0.8877136552599487,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 14.933192558519906,
+            "low": 13.129664574839556,
+            "high": 17.01031300341347,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 16.62277203099311,
+            "low": 14.132514634392106,
+            "high": 19.430402111334,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 13.34714573622865,
+            "low": 11.837833930395103,
+            "high": 15.05045945113191,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 13.803082919259962,
+            "low": 12.094093606256695,
+            "high": 15.745931621437826,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 10.134149165578815,
+            "low": 8.785981268246873,
+            "high": 11.796512211298742,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 12.854486267531783,
+            "low": 11.125572746784712,
+            "high": 14.848036375553205,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 6.8942825546300845,
+            "low": 5.777932542372252,
+            "high": 8.085793051083083,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 7.4147743409614835,
+            "low": 5.857259956869471,
+            "high": 9.330999455058484,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 5.053861913567014,
+            "low": 4.267364756205514,
+            "high": 6.079011684980975,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.106380208397098,
+            "low": 5.168320197943689,
+            "high": 7.3023074613898515,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 4.81822689590731,
+            "low": 3.959455508078173,
+            "high": 5.880128317822687,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 7.212931950197231,
+            "low": 6.081050708257134,
+            "high": 8.47568045263149,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9430194758822518,
+            "bias": -1.3791187035949344,
+            "limits_of_agreement": [
+              -11.662103367311627,
+              8.903865960121756
+            ],
+            "mean_absolute_error": 4.299558315626891,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.8010002220740257,
+            "bias": -0.7020177717012285,
+            "limits_of_agreement": [
+              -17.454716056443925,
+              16.050680513041467
+            ],
+            "mean_absolute_error": 5.930766141605641,
+            "n": 135,
+            "excluded_undefined": 1
+          }
+        }
+      },
+      "hybrid model + LCC": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.8907959769644739,
+            "low": 0.870694067057517,
+            "high": 0.9067963162095731,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8532138359881615,
+            "low": 0.8329459090139166,
+            "high": 0.8694611031754268,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8215721137356157,
+            "low": 0.8132710005032149,
+            "high": 0.8296536421734336,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8531391644066871,
+            "low": 0.8443618646061163,
+            "high": 0.8615784096362963,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.939047048926309,
+            "low": 0.9342715422116986,
+            "high": 0.9437370149163996,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.8783802179004032,
+            "low": 0.8669354058948227,
+            "high": 0.8897167068087796,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 12.282343203114205,
+            "low": 11.381303268226624,
+            "high": 13.288872027559732,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 12.722090476196056,
+            "low": 11.748847690069498,
+            "high": 13.750557119473406,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 11.946459593675439,
+            "low": 10.956588565330582,
+            "high": 13.172574842048583,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 11.2488904463758,
+            "low": 10.319179539204056,
+            "high": 12.417337074911783,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 8.552562380703966,
+            "low": 7.946141684533076,
+            "high": 9.205888805341807,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 9.439718873921697,
+            "low": 8.84409049486239,
+            "high": 9.990148148187094,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 6.458414827574262,
+            "low": 5.600634316996819,
+            "high": 7.358484644445577,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "RV_es": {
+            "estimate": 6.379953405404807,
+            "low": 5.557023362304445,
+            "high": 7.269692493821552,
+            "n": 135,
+            "excluded_undefined": 1
+          },
+          "MYO_ed": {
+            "estimate": 5.33508337066349,
+            "low": 4.527126012155665,
+            "high": 6.412039142464246,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 5.839413982277715,
+            "low": 4.960400020355122,
+            "high": 6.935838973609584,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 4.4009294781010935,
+            "low": 3.7165211399757307,
+            "high": 5.08324565108327,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 6.1364919587481825,
+            "low": 5.394594062132952,
+            "high": 6.8491594834165355,
+            "n": 136,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9435823484926389,
+            "bias": -1.2166506554795178,
+            "limits_of_agreement": [
+              -11.449689891126104,
+              9.01638858016707
+            ],
+            "mean_absolute_error": 4.243689668935322,
+            "n": 136,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.7944924660723436,
+            "bias": -0.6627030301758575,
+            "limits_of_agreement": [
+              -17.73098698168522,
+              16.405580921333502
+            ],
+            "mean_absolute_error": 6.071660695256232,
+            "n": 135,
+            "excluded_undefined": 1
+          }
+        }
+      }
+    },
+    "mnms2": {
+      "pooled model": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9083950150110965,
+            "low": 0.8993334947437348,
+            "high": 0.9168360786830554,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8807236632372479,
+            "low": 0.8693045980950311,
+            "high": 0.8913107211006444,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.833398874654325,
+            "low": 0.8252636457783451,
+            "high": 0.8414593859969473,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8590070719803485,
+            "low": 0.8515399085852275,
+            "high": 0.8662960192490802,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.944473632405904,
+            "low": 0.9402716151299204,
+            "high": 0.9487784158824384,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.915576421920736,
+            "low": 0.9090400526801803,
+            "high": 0.9218888962452869,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 17.865367580903403,
+            "low": 15.339384680725294,
+            "high": 20.610670619622972,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 18.479239566371618,
+            "low": 15.884596901848967,
+            "high": 21.220320229610973,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 14.584475909002526,
+            "low": 13.581939463393592,
+            "high": 15.624424264080682,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 14.909312306372698,
+            "low": 13.757923767860476,
+            "high": 16.21350373721376,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 10.387978816854318,
+            "low": 9.235357111009055,
+            "high": 11.80317424653097,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 11.313718894671583,
+            "low": 10.26716151942817,
+            "high": 12.516032612706338,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 8.28490014130319,
+            "low": 6.919926103241528,
+            "high": 9.891331989854912,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 8.376726835416303,
+            "low": 7.131435947037168,
+            "high": 9.697691123554085,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 5.454551664853504,
+            "low": 4.793446134432185,
+            "high": 6.143050107746278,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.531991010308007,
+            "low": 5.593582470633323,
+            "high": 7.600598994900673,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 5.418006568538611,
+            "low": 4.751177424284147,
+            "high": 6.139285067721789,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 6.1538425882622185,
+            "low": 5.304491547615373,
+            "high": 7.096285412460348,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9566375839055323,
+            "bias": 0.519150137934029,
+            "limits_of_agreement": [
+              -8.522426250960942,
+              9.560726526828999
+            ],
+            "mean_absolute_error": 3.6161034228257867,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.7970069858242993,
+            "bias": -0.5328877007525792,
+            "limits_of_agreement": [
+              -18.750494482995464,
+              17.684719081490307
+            ],
+            "mean_absolute_error": 6.133715621392566,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        }
+      },
+      "pooled model + LCC": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9103053896147827,
+            "low": 0.9013860390878243,
+            "high": 0.9186493751005359,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8841135709550734,
+            "low": 0.8727457080247253,
+            "high": 0.8944912503536064,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8323748399307865,
+            "low": 0.8240782401879514,
+            "high": 0.8404491151478526,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8596047002931133,
+            "low": 0.8523644315753187,
+            "high": 0.866794428997358,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9448096570069054,
+            "low": 0.9405847095930446,
+            "high": 0.9490811620073349,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.916281443927681,
+            "low": 0.9097709441337137,
+            "high": 0.9225593460893527,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 12.778242866515935,
+            "low": 11.830493094576266,
+            "high": 13.80506910566086,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 12.81003005028136,
+            "low": 11.867876255311801,
+            "high": 13.790640237488606,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 14.218623213854835,
+            "low": 13.38452907911855,
+            "high": 15.078630667873377,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 13.393462300531485,
+            "low": 12.653584771295572,
+            "high": 14.170550588978998,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 8.97380710601061,
+            "low": 8.420642281560689,
+            "high": 9.56753971517299,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 9.710218567968742,
+            "low": 9.02226791895961,
+            "high": 10.420622647997106,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 7.14977855011829,
+            "low": 6.206544195768518,
+            "high": 8.189468070236003,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 6.912583306130995,
+            "low": 6.140307779076183,
+            "high": 7.73272310321341,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 5.971867375356706,
+            "low": 5.288001903367156,
+            "high": 6.697504673506925,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.209434080110093,
+            "low": 5.448711801735154,
+            "high": 6.979055146541837,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 5.3077367306106495,
+            "low": 4.652940313635224,
+            "high": 5.993856199032191,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 5.679327022076218,
+            "low": 4.93554616907636,
+            "high": 6.4108700457977665,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.9561369689772033,
+            "bias": 0.559096734397128,
+            "limits_of_agreement": [
+              -8.522221038954248,
+              9.640414507748504
+            ],
+            "mean_absolute_error": 3.6086008592666197,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.7970932866562416,
+            "bias": -0.32702828352587615,
+            "limits_of_agreement": [
+              -18.552294464559875,
+              17.89823789750812
+            ],
+            "mean_absolute_error": 6.1695062257696955,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        }
+      },
+      "hybrid model": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9074875854181546,
+            "low": 0.8981019550528745,
+            "high": 0.9160474370683047,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8776317323983683,
+            "low": 0.865396646408535,
+            "high": 0.8884368758654867,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8286208103193777,
+            "low": 0.8205441767281763,
+            "high": 0.8366645198769143,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8562908523705566,
+            "low": 0.8485975098402079,
+            "high": 0.8636187304590563,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.9424575523260417,
+            "low": 0.9380484780475609,
+            "high": 0.9469022110726559,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.9131402439164205,
+            "low": 0.9067311494483693,
+            "high": 0.9198085219805612,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 17.296874688400592,
+            "low": 15.088259742449036,
+            "high": 19.620249636277535,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 19.45254379607826,
+            "low": 16.986513582057107,
+            "high": 22.12331045936252,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 16.19778857152574,
+            "low": 14.616070407290675,
+            "high": 18.000483509819478,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 16.96197709278473,
+            "low": 15.369124067010242,
+            "high": 18.76304934943255,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 13.958112702487563,
+            "low": 11.789353401482325,
+            "high": 16.528720209342413,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 16.12206695597761,
+            "low": 13.605855325021444,
+            "high": 18.77855985538071,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 8.45952040830107,
+            "low": 7.101199796401682,
+            "high": 10.052469783975619,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 9.165629640022994,
+            "low": 7.68628062537297,
+            "high": 11.04502823123634,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 5.849700633614184,
+            "low": 5.116763881088837,
+            "high": 6.582926580046069,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.65209669466563,
+            "low": 5.648315098288636,
+            "high": 7.764981920359799,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 5.895196430213931,
+            "low": 5.1385209154877876,
+            "high": 6.653771441983875,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 6.856364456119873,
+            "low": 5.851297212068411,
+            "high": 7.96220496063425,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.952830443108333,
+            "bias": 0.10948418797352684,
+            "limits_of_agreement": [
+              -9.1629734008708,
+              9.381941776817854
+            ],
+            "mean_absolute_error": 3.623309125335092,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.7707580529109838,
+            "bias": -1.0691344836164245,
+            "limits_of_agreement": [
+              -20.751305325652837,
+              18.61303635841999
+            ],
+            "mean_absolute_error": 6.279528951903203,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        }
+      },
+      "hybrid model + LCC": {
+        "dice": {
+          "RV_ed": {
+            "estimate": 0.9095714756355328,
+            "low": 0.9005388736133736,
+            "high": 0.9177830156231128,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 0.8810582057226817,
+            "low": 0.8694410025002933,
+            "high": 0.8913398335989449,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 0.8280003608922307,
+            "low": 0.8200883814238781,
+            "high": 0.8361324269768845,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 0.8571996352983093,
+            "low": 0.849717713467579,
+            "high": 0.8645858178998262,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 0.942998972480621,
+            "low": 0.9386185457095232,
+            "high": 0.9472620147941204,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 0.914993929447828,
+            "low": 0.9087973157796972,
+            "high": 0.9212647091107639,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hausdorff_mm": {
+          "RV_ed": {
+            "estimate": 12.873680966722727,
+            "low": 11.98395680787438,
+            "high": 13.868743510519646,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 13.109895058502124,
+            "low": 12.130415870747303,
+            "high": 14.136263362490709,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 14.323410548225706,
+            "low": 13.509479214929279,
+            "high": 15.150574281508444,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 13.282301888874027,
+            "low": 12.584339044636348,
+            "high": 14.05266434570289,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 9.357985494227174,
+            "low": 8.83385164704826,
+            "high": 9.894834564341922,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 10.166164927447898,
+            "low": 9.500595065107815,
+            "high": 10.878402209349034,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "hd95_mm": {
+          "RV_ed": {
+            "estimate": 7.080022119279659,
+            "low": 6.193219648901643,
+            "high": 8.000815037061765,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_es": {
+            "estimate": 7.165402009273501,
+            "low": 6.363411845863933,
+            "high": 8.025142050240646,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_ed": {
+            "estimate": 6.318993441709422,
+            "low": 5.592056169349655,
+            "high": 7.050587704191001,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "MYO_es": {
+            "estimate": 6.203730557782594,
+            "low": 5.455367726205104,
+            "high": 6.952007715484038,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_ed": {
+            "estimate": 5.638991863236534,
+            "low": 4.911233956163139,
+            "high": 6.354607629888431,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "LV_es": {
+            "estimate": 6.073495032318804,
+            "low": 5.3155642025014975,
+            "high": 6.866644846587453,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        },
+        "derived_measures": {
+          "LV_ejection_fraction_percent": {
+            "correlation": 0.956131788522705,
+            "bias": 0.27291969567256824,
+            "limits_of_agreement": [
+              -8.651439235561158,
+              9.197278626906295
+            ],
+            "mean_absolute_error": 3.5281419061724506,
+            "n": 160,
+            "excluded_undefined": 0
+          },
+          "RV_ejection_fraction_percent": {
+            "correlation": 0.7691234995487961,
+            "bias": -0.8696045114484858,
+            "limits_of_agreement": [
+              -20.706153823000935,
+              18.966944800103963
+            ],
+            "mean_absolute_error": 6.401109132557534,
+            "n": 160,
+            "excluded_undefined": 0
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "config": {
+    "epochs": 5,
+    "base_width": 16,
+    "batch_size": 16,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "seed": 42,
+    "augment": true,
+    "device": null,
+    "myo_weight": 1.0,
+    "init_checkpoint": "/home/user/nexus-ai-engine/results/mri_segmentation_pooled/mri_segmenter.pt",
+    "weak_weight": 0.5,
+    "bf16": true,
+    "silver_method": "frustum"
+  },
+  "kaggle_patients": 680,
+  "silver_patients": 64,
+  "history": [
+    {
+      "epoch": 1,
+      "gold_loss": 0.12994952661000073,
+      "weak_loss": 0.23670271290407865,
+      "train_soft_ef_abs_error_points": 5.618930916001648,
+      "val_dice": {
+        "RV": 0.9008229056184219,
+        "MYO": 0.8554310308393127,
+        "LV": 0.9223881765728144
+      },
+      "val_mean_dice": 0.8928807043435163
+    },
+    {
+      "epoch": 2,
+      "gold_loss": 0.13384005137615734,
+      "weak_loss": 0.22805357626208525,
+      "train_soft_ef_abs_error_points": 5.122933306549014,
+      "val_dice": {
+        "RV": 0.9036239266074647,
+        "MYO": 0.8535491047123447,
+        "LV": 0.9246148911054566
+      },
+      "val_mean_dice": 0.8939293074750886
+    },
+    {
+      "epoch": 3,
+      "gold_loss": 0.1298744368204285,
+      "weak_loss": 0.18409936705181698,
+      "train_soft_ef_abs_error_points": 4.253528120694385,
+      "val_dice": {
+        "RV": 0.9023253740036006,
+        "MYO": 0.8555707869866861,
+        "LV": 0.9242333400598571
+      },
+      "val_mean_dice": 0.8940431670167146
+    },
+    {
+      "epoch": 4,
+      "gold_loss": 0.1292221268254613,
+      "weak_loss": 0.16271941242759191,
+      "train_soft_ef_abs_error_points": 3.9421798964806065,
+      "val_dice": {
+        "RV": 0.9035958003758292,
+        "MYO": 0.8581340508308506,
+        "LV": 0.9265427332152214
+      },
+      "val_mean_dice": 0.896090861473967
+    },
+    {
+      "epoch": 5,
+      "gold_loss": 0.12796447845915007,
+      "weak_loss": 0.16248789474808753,
+      "train_soft_ef_abs_error_points": 3.794626844730992,
+      "val_dice": {
+        "RV": 0.9024948560331463,
+        "MYO": 0.85596656156673,
+        "LV": 0.9261199635682285
+      },
+      "val_mean_dice": 0.8948604603893683
+    }
+  ]
+}
