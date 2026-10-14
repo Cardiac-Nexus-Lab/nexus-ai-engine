@@ -1,0 +1,92 @@
+{
+  "checkpoint": "/home/user/nexus-ai-engine/results/mri_segmentation_pooled/mri_segmenter.pt",
+  "splits": [
+    "train",
+    "val"
+  ],
+  "bf16": true,
+  "patients": 700,
+  "failed": [],
+  "cylindrical": {
+    "scored": 692,
+    "lv_edv_ml": {
+      "correlation": 0.5094124979240459,
+      "bias": -2.1421676300578048,
+      "limits_of_agreement": [
+        -189.34760473496175,
+        185.06326947484615
+      ],
+      "mean_absolute_error": 27.333872832369945,
+      "n": 692,
+      "rmse": 95.46797754287648
+    },
+    "lv_esv_ml": {
+      "correlation": 0.7544181645744904,
+      "bias": -7.816618497109827,
+      "limits_of_agreement": [
+        -72.87054236927648,
+        57.23730537505682
+      ],
+      "mean_absolute_error": 15.873410404624277,
+      "n": 692,
+      "rmse": 34.07543524715769
+    },
+    "lv_ef_percent": {
+      "correlation": 0.7653172797561936,
+      "bias": 4.431092916068785,
+      "limits_of_agreement": [
+        -11.190643880996612,
+        20.05282971313418
+      ],
+      "mean_absolute_error": 5.924001541569294,
+      "n": 692,
+      "rmse": 9.114167574347725
+    }
+  },
+  "frustum": {
+    "scored": 688,
+    "lv_edv_ml": {
+      "correlation": 0.4993676953187854,
+      "bias": -8.117909214883927,
+      "limits_of_agreement": [
+        -195.1686938705739,
+        178.93287544080604
+      ],
+      "mean_absolute_error": 30.569590539682967,
+      "n": 688,
+      "rmse": 95.70958683108095
+    },
+    "lv_esv_ml": {
+      "correlation": 0.749023807419724,
+      "bias": -10.108379708203689,
+      "limits_of_agreement": [
+        -75.10521973335065,
+        54.88846031694328
+      ],
+      "mean_absolute_error": 17.36047432857471,
+      "n": 688,
+      "rmse": 34.64500224697401
+    },
+    "lv_ef_percent": {
+      "correlation": 0.7915628316008594,
+      "bias": 4.318620549143134,
+      "limits_of_agreement": [
+        -10.302397253940073,
+        18.93963835222634
+      ],
+      "mean_absolute_error": 5.774842204854639,
+      "n": 688,
+      "rmse": 8.614915507316041
+    }
+  },
+  "slice_spacing_audit": {
+    "patients": 700,
+    "header_minus_stated_mm": {
+      "max_abs": 95.94888305664062,
+      "mean": -0.6826742374045508
+    },
+    "header_dz_values_mm": {
+      "10.0": 700
+    }
+  }
+}
