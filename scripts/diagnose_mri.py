@@ -116,7 +116,15 @@ def main() -> None:
 
             device = select_device(None)
             segmenter, checkpoint = load_segmenter(args.checkpoint, device)
-            assert sorted(checkpoint["splits"]["test"]) == sorted(int(i) for i in test), "split mismatch"
+            if sorted(checkpoint["splits"]["test"]) != sorted(int(i) for i in test):
+                # A pooled-cohort checkpoint indexes the pooled table; check by patient id that no ACDC
+                # test patient was used for its training or epoch selection.
+                from cardiac_nexus import mri_cohorts
+                pooled = mri_cohorts.fetch_all()
+                seen = {(row.cohort, row.pid) for row in pooled.iloc[np.concatenate(
+                    [checkpoint["splits"]["train"], checkpoint["splits"]["val"]])].itertuples()}
+                leaked = [pid for pid in metadata.iloc[test]["pid"] if ("acdc", pid) in seen]
+                assert not leaked, f"ACDC test patients used in training: {leaked}"
             images = normalize_volumes(cache["images"], cache["patient"], cache["phase"])
             volumes = predict_volumes(segmenter, images, cache["masks"], cache["patient"], cache["phase"],
                                       cache["spacing"], test, device)
