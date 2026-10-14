@@ -75,6 +75,11 @@ def main() -> None:
     kaggle_table = pd.read_csv(KAGGLE_RESULTS)
     assert not (kaggle_table["source_split"] == "test").any(), "Kaggle test patients must not be used"
     kaggle_table = kaggle_table[kaggle_table["error"].fillna("") == ""].dropna(subset=["edv_true", "esv_true"])
+    # Every stored stack has a 10 mm header spacing, but some originals list impossible spacings (1 mm, or
+    # 18-340 mm); their clinician volumes cannot be matched to the stored stack, so they are left out.
+    plausible = kaggle_table["dz_stated"].between(5.0, 12.5)
+    print(f"Leaving out {int((~plausible).sum())} Kaggle patients with implausible stated slice spacing")
+    kaggle_table = kaggle_table[plausible]
     silver = silver_patients(kaggle_table, args.silver_method)
     kaggle = KaggleVolumes(EDES, kaggle_table, silver)
     print(f"Gold training patients {len(splits['train'])}; Kaggle weak patients {len(kaggle)} "
