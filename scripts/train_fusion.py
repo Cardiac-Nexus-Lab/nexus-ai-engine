@@ -1,0 +1,274 @@
+"""Train and test the ECG + MRI + health-record fusion network (cardiac_nexus.fusion).
+
+Virtual patients. No public dataset has an ECG, an MRI and a health record for the
+same people, so each training example joins an ECG, an MRI and a health record of
+three different patients who share the label (heart disease present or not). Each
+source keeps its own patient-wise split, so no test patient of any modality is
+seen in training:
+
+* ECG: PTB-XL fold 9, 80% train / 20% validation (the ECG network never trained on
+  fold 9); fold 10 test;
+* MRI: the pooled segmenter's patient-wise train / validation / test splits of
+  ACDC, M&Ms and M&Ms-2;
+* health record: UCI Heart Disease, the same 184 test patients as the stand-alone
+  health-record model; its 736 training patients 80% train / 20% validation.
+
+Training draws fresh virtual patients every epoch, drops each whole modality with
+probability 0.3 (keeping at least one) and blanks each health-record field with
+probability 0.25, so the network learns to work with whatever a user provides.
+Validation and test use fixed sets of virtual patients, with every combination of
+modalities scored. The model is selected on validation AUROC averaged over the
+seven combinations, calibrated with one slope and intercept on validation, and the
+decision threshold is set on validation (Youden's J) before the test set is read.
+
+A simple baseline is reported alongside: the mean of the three single-modality
+probabilities that the same network gives with the other two switched off.
+
+Results are on virtual patients and say how well the network combines evidence
+from three independent sources; they are not a clinical validation.
+
+Usage:
+    python scripts/train_fusion.py
+"""
+
+from __future__ import annotations
+
+import copy
+import itertools
+import json
+import sys
+import time
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+import numpy as np
+import torch
+from sklearn.metrics import average_precision_score, brier_score_loss, confusion_matrix, roc_auc_score, roc_curve
+from sklearn.model_selection import train_test_split
+from torch import nn
+
+from cardiac_nexus import ehr
+from cardiac_nexus.evaluate import VectorScaler, bootstrap_metric, expected_calibration_error
+from cardiac_nexus.fusion import (CLINICAL_FIELDS, FIELD_COLUMNS, CLINICAL_COLUMNS, MODALITIES, MRI_FEATURES,
+                                  FusionNet, clinical_stats, encode_clinical)
+
+INPUTS = REPO_ROOT / "data" / "fusion" / "branch_inputs.npz"
+OUTPUT = REPO_ROOT / "results" / "fusion_dl"
+SEED = 42
+MODALITY_DROP, FIELD_DROP = 0.3, 0.25
+SUBSETS = [tuple(m for m, keep in zip(MODALITIES, mask) if keep)
+           for mask in itertools.product([1, 0], repeat=3) if any(mask)]
+
+
+def pools() -> tuple[dict, dict]:
+    """Per split, per modality: inputs [n, d] and labels [n]; plus the statistics used to encode them."""
+    z = np.load(INPUTS, allow_pickle=False)
+    rng = np.random.default_rng(SEED)
+    fold9 = np.flatnonzero(z["ecg_split"] == "fold9")
+    val9 = set(rng.choice(fold9, size=len(fold9) // 5, replace=False).tolist())
+    ecg_split = np.array(["test" if s == "fold10" else ("val" if i in val9 else "train")
+                          for i, s in enumerate(z["ecg_split"])])
+
+    measures = z["mri_measurements"]
+    train_m = z["mri_split"] == "train"
+    median = np.nanmedian(measures[train_m], axis=0)
+    filled = np.where(np.isfinite(measures), measures, median)
+    mean, std = filled[train_m].mean(axis=0), filled[train_m].std(axis=0) + 1e-6
+    mri = np.concatenate([z["mri_features"], (filled - mean) / std], axis=1).astype(np.float32)
+    mri_stats = {"measure_median": median.tolist(), "measure_mean": mean.tolist(), "measure_std": std.tolist()}
+
+    table = ehr.fetch()
+    strata = table["site"] + "_" + table["cad"].astype(str)
+    train_val, test = train_test_split(table, test_size=0.2, stratify=strata, random_state=SEED)
+    strata = train_val["site"] + "_" + train_val["cad"].astype(str)
+    train, val = train_test_split(train_val, test_size=0.2, stratify=strata, random_state=SEED)
+    stats = clinical_stats(train)
+
+    def encoded(part):
+        return np.stack([encode_clinical(r, stats)[0] for r in part[CLINICAL_FIELDS].to_dict("records")])
+
+    out = {}
+    for split in ("train", "val", "test"):
+        ehr_part = {"train": train, "val": val, "test": test}[split]
+        out[split] = {
+            "ecg": (z["ecg_embedding"][ecg_split == split], z["ecg_label"][ecg_split == split].astype(int)),
+            "mri": (mri[z["mri_split"] == split], z["mri_label"][z["mri_split"] == split].astype(int)),
+            "clinical": (encoded(ehr_part), ehr_part["cad"].to_numpy().astype(int)),
+        }
+    return out, {"clinical": stats, "mri": mri_stats}
+
+
+def virtual_patients(pool: dict, n: int, rng: np.random.Generator) -> tuple[dict, np.ndarray]:
+    """n virtual patients, half with heart disease: for each, one record of each modality with that label."""
+    y = rng.permutation(np.arange(n) % 2)
+    batch = {}
+    for m in MODALITIES:
+        x, labels = pool[m]
+        by_label = [np.flatnonzero(labels == k) for k in (0, 1)]
+        picks = np.array([rng.choice(by_label[k]) for k in y])
+        batch[m] = x[picks]
+    return batch, y
+
+
+def masks(n: int, subset: tuple | None, rng: np.random.Generator) -> np.ndarray:
+    """[n, 3] presence: a fixed subset, or random modality dropout keeping at least one."""
+    if subset is not None:
+        return np.tile([m in subset for m in MODALITIES], (n, 1))
+    present = rng.random((n, 3)) >= MODALITY_DROP
+    empty = ~present.any(axis=1)
+    present[empty, rng.integers(0, 3, empty.sum())] = True
+    return present
+
+
+def blank_random_fields(x: np.ndarray, stats: dict, rng: np.random.Generator) -> np.ndarray:
+    x = x.copy()
+    for field in CLINICAL_FIELDS:
+        rows = rng.random(len(x)) < FIELD_DROP
+        for column in FIELD_COLUMNS[field]:
+            i = CLINICAL_COLUMNS.index(column)
+            x[rows, i] = stats["column_mean"][i]
+    return x
+
+
+def tensors(batch: dict, present: np.ndarray):
+    return (torch.from_numpy(batch["ecg"]), torch.from_numpy(batch["mri"]),
+            torch.from_numpy(batch["clinical"].astype(np.float32)), torch.from_numpy(present))
+
+
+@torch.no_grad()
+def logits_for(model, batch, present, chunk: int = 1024) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    model.eval()
+    out = [[], [], []]
+    for s in range(0, len(present), chunk):
+        part = {m: batch[m][s:s + chunk] for m in MODALITIES}
+        logit, weights, solo = model(*tensors(part, present[s:s + chunk]))
+        for k, v in enumerate((logit, weights, solo)):
+            out[k].append(v.numpy())
+    return tuple(np.concatenate(o) for o in out)
+
+
+def metrics(y: np.ndarray, p: np.ndarray, threshold: float) -> dict:
+    tn, fp, fn, tp = confusion_matrix(y, p >= threshold, labels=[0, 1]).ravel()
+    return {"auroc": bootstrap_metric(y, p, roc_auc_score, 1000, seed=SEED),
+            "auprc": bootstrap_metric(y, p, average_precision_score, 1000, seed=SEED),
+            "brier": float(brier_score_loss(y, p)), "ece": expected_calibration_error(y, p)["ece"],
+            "threshold": threshold, "confusion": {"tp": int(tp), "fp": int(fp), "fn": int(fn), "tn": int(tn)},
+            "accuracy": float((tp + tn) / len(y)), "precision": float(tp / max(tp + fp, 1)),
+            "recall": float(tp / max(tp + fn, 1)), "specificity": float(tn / max(tn + fp, 1)),
+            "f1": float(2 * tp / max(2 * tp + fp + fn, 1))}
+
+
+def main() -> None:
+    started = time.perf_counter()
+    torch.manual_seed(SEED)
+    data, stats = pools()
+    for split, part in data.items():
+        print(split, {m: f"{len(y)} ({y.mean():.0%} disease)" for m, (_, y) in part.items()}, flush=True)
+
+    val_batch, val_y = virtual_patients(data["val"], 3000, np.random.default_rng(1))
+    test_batch, test_y = virtual_patients(data["test"], 5000, np.random.default_rng(2))
+
+    model_args = {"ecg_dim": int(data["train"]["ecg"][0].shape[1]), "mri_dim": int(data["train"]["mri"][0].shape[1]),
+                  "clinical_dim": len(CLINICAL_COLUMNS)}
+    model = FusionNet(**model_args)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
+    criterion = nn.BCEWithLogitsLoss(reduction="none")
+    rng = np.random.default_rng(SEED)
+    epochs, patience = 60, 8
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
+
+    def val_score() -> dict:
+        return {"+".join(s): float(roc_auc_score(val_y, logits_for(model, val_batch, masks(len(val_y), s, rng))[0]))
+                for s in SUBSETS}
+
+    history, best, best_epoch, best_state, waited = [], -1.0, 0, None, 0
+    for epoch in range(1, epochs + 1):
+        model.train()
+        batch, y = virtual_patients(data["train"], 8192, rng)
+        batch["clinical"] = blank_random_fields(batch["clinical"], stats["clinical"], rng)
+        present = masks(len(y), None, rng)
+        order, losses = rng.permutation(len(y)), []
+        for s in range(0, len(y), 64):
+            idx = order[s:s + 64]
+            part = {m: batch[m][idx] for m in MODALITIES}
+            target = torch.from_numpy(y[idx].astype(np.float32))
+            logit, _, solo = model(*tensors(part, present[idx]))
+            solo_loss = (criterion(solo, target[:, None].expand_as(solo)) * torch.from_numpy(present[idx])).sum() \
+                / max(int(present[idx].sum()), 1)
+            loss = criterion(logit, target).mean() + 0.3 * solo_loss
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            losses.append(loss.item())
+        scheduler.step()
+        scores = val_score()
+        mean = float(np.mean(list(scores.values())))
+        history.append({"epoch": epoch, "train_loss": float(np.mean(losses)), "val_auroc": scores, "val_mean": mean})
+        marker = ""
+        if mean > best:
+            best, best_epoch, best_state, waited, marker = mean, epoch, copy.deepcopy(model.state_dict()), 0, "  <- best"
+        else:
+            waited += 1
+        print(f"Epoch {epoch:02d}: loss {np.mean(losses):.4f} | val AUROC mean {mean:.4f}, all three "
+              f"{scores['ecg+mri+clinical']:.4f}{marker}", flush=True)
+        if waited >= patience:
+            break
+    model.load_state_dict(best_state)
+
+    # Calibration and threshold, on validation only.
+    cal_rng = np.random.default_rng(3)
+    z_val = np.concatenate([logits_for(model, val_batch, masks(len(val_y), s, cal_rng))[0] for s in SUBSETS])
+    scaler = VectorScaler(1)
+    scaler.fit(z_val[:, None], np.tile(val_y, len(SUBSETS))[:, None].astype(np.float32))
+    calibration = {"scale": float(scaler.scales[0]), "bias": float(scaler.biases[0])}
+
+    def calibrated(z):
+        return 1.0 / (1.0 + np.exp(-(z * calibration["scale"] + calibration["bias"])))
+
+    full = ("ecg", "mri", "clinical")
+    p_val = calibrated(logits_for(model, val_batch, masks(len(val_y), full, cal_rng))[0])
+    fpr, tpr, cut = roc_curve(val_y, p_val)
+    threshold = float(cut[np.argmax(tpr - fpr)])
+
+    report = {"target": "heart disease present (ECG not normal; MRI not NOR; UCI num > 0)",
+              "training_data": {split: {m: {"records": int(len(y)), "with_disease": int(y.sum())}
+                                        for m, (_, y) in part.items()} for split, part in data.items()},
+              "virtual_patients": {"train_per_epoch": 8192, "validation": 3000, "test": 5000},
+              "settings": {"optimizer": "AdamW", "learning_rate": 1e-3, "weight_decay": 1e-4, "batch": 64,
+                           "schedule": "cosine", "max_epochs": epochs, "patience": patience,
+                           "modality_dropout": MODALITY_DROP, "field_dropout": FIELD_DROP, "solo_loss_weight": 0.3,
+                           "parameters": int(sum(p.numel() for p in model.parameters()))},
+              "selected_epoch": best_epoch, "calibration": calibration, "threshold": threshold, "test": {},
+              "caveat": "Virtual patients join three different people with the same label; results measure how "
+                        "the network combines independent evidence, not clinical performance."}
+    test_rng = np.random.default_rng(4)
+    solo_probs = {}
+    for subset in SUBSETS:
+        present = masks(len(test_y), subset, test_rng)
+        z, weights, _ = logits_for(model, test_batch, present)
+        p = calibrated(z)
+        if len(subset) == 1:
+            solo_probs[subset[0]] = p
+        entry = metrics(test_y, p, threshold)
+        entry["mean_gate_weight"] = {m: float(weights[:, i].mean()) for i, m in enumerate(MODALITIES) if m in subset}
+        report["test"]["+".join(subset)] = entry
+        print(f"test {'+'.join(subset):22} AUROC {entry['auroc']['estimate']:.3f} "
+              f"({entry['auroc']['low']:.3f}-{entry['auroc']['high']:.3f})  F1 {entry['f1']:.3f}", flush=True)
+    baseline = np.mean([solo_probs[m] for m in MODALITIES], axis=0)
+    report["test"]["baseline: mean of single-modality probabilities"] = metrics(test_y, baseline, threshold)
+    print(f"baseline mean of three AUROC {report['test']['baseline: mean of single-modality probabilities']['auroc']['estimate']:.3f}")
+
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    torch.save({"model_state_dict": model.state_dict(), "model_args": model_args, "calibration": calibration,
+                "threshold": threshold, "clinical_stats": stats["clinical"], "mri_stats": stats["mri"],
+                "mri_features": MRI_FEATURES, "selected_epoch": best_epoch}, OUTPUT / "fusion_model.pt")
+    report["history"] = history
+    report["minutes"] = (time.perf_counter() - started) / 60
+    (OUTPUT / "fusion_report.json").write_text(json.dumps(report, indent=2))
+    print(f"Wrote {OUTPUT} in {report['minutes']:.1f} min")
+
+
+if __name__ == "__main__":
+    main()
