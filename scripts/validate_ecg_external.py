@@ -86,16 +86,26 @@ AMBIGUOUS = {
 }
 
 
+def _read_text(url: str, attempts: int = 6) -> str:
+    """A small listing file, retried: PhysioNet times out under load."""
+    for attempt in range(attempts):
+        try:
+            return urllib.request.urlopen(url, timeout=180).read().decode()
+        except OSError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(10 * (attempt + 1))
+    return ""
+
+
 def records(source: str) -> list[str]:
     """Record paths like 'g1/E00001'. Only the project root has a folder list; each folder has its own."""
     root = BASE.rsplit("/training", 1)[0]
-    folders = [line[len(f"training/{source}/"):] for line in
-               urllib.request.urlopen(f"{root}/RECORDS", timeout=60).read().decode().split()
+    folders = [line[len(f"training/{source}/"):] for line in _read_text(f"{root}/RECORDS").split()
                if line.startswith(f"training/{source}/")]
     names = []
     for folder in folders:
-        listing = urllib.request.urlopen(f"{BASE}/{source}/{folder}RECORDS", timeout=60).read().decode().split()
-        names += [f"{folder}{name}" for name in listing]
+        names += [f"{folder}{name}" for name in _read_text(f"{BASE}/{source}/{folder}RECORDS").split()]
     return names
 
 
@@ -114,7 +124,8 @@ def download(sources, workers: int = 16) -> None:
             for attempt in range(4):
                 try:
                     partial = path.with_suffix(path.suffix + ".part")
-                    urllib.request.urlretrieve(url, partial)
+                    with urllib.request.urlopen(url, timeout=180) as response:
+                        partial.write_bytes(response.read())
                     partial.replace(path)
                     return True
                 except Exception:
