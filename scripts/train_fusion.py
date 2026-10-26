@@ -6,8 +6,8 @@ three different patients who share the label (heart disease present or not). Eac
 source keeps its own patient-wise split, so no test patient of any modality is
 seen in training:
 
-* ECG: PTB-XL fold 9, 80% train / 20% validation (the ECG network never trained on
-  fold 9); fold 10 test;
+* ECG: PTB-XL fold 9, 80% train / 20% validation by patient (the ECG network never
+  trained on fold 9); fold 10 test (PTB-XL's folds never share a patient);
 * MRI: the pooled segmenter's patient-wise train / validation / test splits of
   ACDC, M&Ms and M&Ms-2;
 * health record: UCI Heart Disease, the same 184 test patients as the stand-alone
@@ -56,6 +56,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 import numpy as np
+import pandas as pd
 import torch
 from sklearn.metrics import average_precision_score, brier_score_loss, confusion_matrix, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
@@ -82,9 +83,13 @@ def pools() -> tuple[dict, dict]:
     """Per split, per modality: inputs [n, d] and labels [n]; plus the statistics used to encode them."""
     z = np.load(INPUTS, allow_pickle=False)
     rng = np.random.default_rng(SEED)
-    fold9 = np.flatnonzero(z["ecg_split"] == "fold9")
-    val9 = set(rng.choice(fold9, size=len(fold9) // 5, replace=False).tolist())
-    ecg_split = np.array(["test" if s == "fold10" else ("val" if i in val9 else "train")
+    # Fold 9 is split by patient, not by recording: 2,146 recordings come from 1,917 patients,
+    # and one patient's recordings must not sit in both training and validation.
+    patient_of = pd.read_csv(REPO_ROOT / "data" / "ptbxl" / "ptbxl_database.csv", index_col=0)["patient_id"]
+    patients = patient_of.loc[z["ecg_record"]].to_numpy()
+    fold9_patients = np.unique(patients[z["ecg_split"] == "fold9"])
+    val_patients = set(rng.choice(fold9_patients, size=len(fold9_patients) // 5, replace=False).tolist())
+    ecg_split = np.array(["test" if s == "fold10" else ("val" if patients[i] in val_patients else "train")
                           for i, s in enumerate(z["ecg_split"])])
 
     measures = z["mri_measurements"]
