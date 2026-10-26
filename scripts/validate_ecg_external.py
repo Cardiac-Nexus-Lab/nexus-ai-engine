@@ -76,7 +76,11 @@ AMBIGUOUS = {
 
 
 def records(source: str) -> list[str]:
-    folders = urllib.request.urlopen(f"{BASE}/{source}/RECORDS", timeout=60).read().decode().split()
+    """Record paths like 'g1/E00001'. Only the project root has a folder list; each folder has its own."""
+    root = BASE.rsplit("/training", 1)[0]
+    folders = [line[len(f"training/{source}/"):] for line in
+               urllib.request.urlopen(f"{root}/RECORDS", timeout=60).read().decode().split()
+               if line.startswith(f"training/{source}/")]
     names = []
     for folder in folders:
         listing = urllib.request.urlopen(f"{BASE}/{source}/{folder}RECORDS", timeout=60).read().decode().split()
