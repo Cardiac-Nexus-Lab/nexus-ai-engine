@@ -76,6 +76,64 @@ def measurement_features(ed_mask: np.ndarray, es_mask: np.ndarray, spacing: tupl
     }
 
 
+# Measurements that need no height or weight, for training across cohorts that do not
+# record them (M&Ms-2 never does, M&Ms for about 40% of patients).
+POOLED_FEATURES = {
+    "lv_edv_ml": ("LV end-diastolic volume", "mL"),
+    "lv_ef": ("LV ejection fraction", "%"),
+    "rv_edv_ml": ("RV end-diastolic volume", "mL"),
+    "rv_ef": ("RV ejection fraction", "%"),
+    "myo_mass_g": ("LV myocardial mass", "g"),
+    "mass_to_volume": ("LV mass-to-volume ratio", "g/mL"),
+    "rv_to_lv_edv": ("RV/LV end-diastolic volume ratio", ""),
+    "lv_ef_minus_rv_ef": ("LV EF minus RV EF", "points"),
+}
+
+# Each cohort's diagnosis in ACDC's five classes. Conditions with no ACDC counterpart
+# map to None: kept out of training, and used to check the "uncertain" result.
+# M&Ms-2 "LV" (dilated left ventricle) is counted as DCM by the project's decision of
+# 26 Oct 2026; a dilated LV is not always cardiomyopathy, so this is a loose match.
+COHORT_LABELS = {
+    "acdc": {"NOR": "NOR", "MINF": "MINF", "DCM": "DCM", "HCM": "HCM", "RV": "RV"},
+    "mnms": {"NOR": "NOR", "DCM": "DCM", "HCM": "HCM", "ARV": "RV", "IHD": "MINF"},
+    "mnms2": {"NOR": "NOR", "LV": "DCM", "HCM": "HCM", "RV": "RV"},
+}
+
+
+def pooled_features(ed_mask: np.ndarray, es_mask: np.ndarray, spacing: tuple[float, float, float]) -> dict[str, float]:
+    """The POOLED_FEATURES for one patient, from end-diastolic and end-systolic masks."""
+    ed = structure_volumes_ml(ed_mask, spacing)
+    es = structure_volumes_ml(es_mask, spacing)
+
+    def ratio(numerator: float, denominator: float) -> float:
+        return numerator / denominator if denominator > 0 else float("nan")
+
+    lv_ef = 100.0 * (1.0 - ratio(es["LV"], ed["LV"]))
+    rv_ef = 100.0 * (1.0 - ratio(es["RV"], ed["RV"]))
+    mass = ed["MYO"] * MYOCARDIAL_DENSITY_G_PER_ML
+    return {
+        "lv_edv_ml": ed["LV"], "lv_ef": lv_ef, "rv_edv_ml": ed["RV"], "rv_ef": rv_ef, "myo_mass_g": mass,
+        "mass_to_volume": ratio(mass, ed["LV"]), "rv_to_lv_edv": ratio(ed["RV"], ed["LV"]),
+        "lv_ef_minus_rv_ef": lv_ef - rv_ef,
+    }
+
+
+def uncertainty_threshold(probabilities: np.ndarray, correct: np.ndarray, target: float = 0.9) -> dict:
+    """Lowest top-class probability at which the cases still called are `target` accurate.
+
+    Chosen on out-of-fold predictions of training patients only. Below it the
+    result is reported as uncertain rather than forced into a class.
+    """
+    top = probabilities.max(axis=1)
+    for threshold in np.round(np.arange(0.30, 0.96, 0.01), 2):
+        called = top >= threshold
+        if called.any() and correct[called].mean() >= target:
+            return {"threshold": float(threshold), "target_accuracy": target,
+                    "training_coverage": float(called.mean()), "training_accuracy_when_called": float(correct[called].mean())}
+    return {"threshold": 0.95, "target_accuracy": target, "training_coverage": float((top >= 0.95).mean()),
+            "training_accuracy_when_called": float(correct[top >= 0.95].mean()) if (top >= 0.95).any() else None}
+
+
 def feature_table(metadata: pd.DataFrame, patients, masks_for) -> pd.DataFrame:
     """One row of measurements per patient; `masks_for(index, phase)` returns (mask, spacing)."""
     rows = []
