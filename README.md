@@ -6,7 +6,7 @@ This repository holds code and artifacts: training and evaluation code, model ch
 
 ## What is built
 
-The ECG, cardiac MRI and health-record models are each trained and tested on their own data, and combined into one probability by Bayes' rule. No public dataset has all three for the same patients, so the combination itself cannot be trained or validated.
+The ECG, cardiac MRI and health-record networks are each trained and tested on their own data, and a deep learning fusion network combines them into one probability of heart disease, explained in plain words. No public dataset has all three for the same patients, so the fusion network is trained and tested on virtual patients.
 
 | Component | State |
 | --- | --- |
@@ -20,7 +20,7 @@ The ECG, cardiac MRI and health-record models are each trained and tested on the
 | Ejection fraction from the predicted masks | LV r 0.991 against expert masks, limits of agreement -6.6 to +5.8 points |
 | MRI diagnosis from measurements | 45/50 test patients from the ACDC-only model's masks; 43/50 from the pooled model's (served) |
 | Health-record model, coronary artery disease (UCI, 4 centres) | Internal test AUROC 0.85 (184 patients); 0.73–0.87 at a centre left out of training |
-| Three-way combination (health record, ECG, MRI) | Bayes' rule over the three validated models; the combination is not validated |
+| Fusion network (ECG, MRI, health record) | Attention-based deep learning fusion; AUROC 0.973 on 5,000 virtual test patients |
 | MRI explainability with checks | Uncertainty detects errors at AUROC 0.861; Grad-CAM depends on learned weights on average |
 | Web application serving these models | Live in [nexus-web-portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal) |
 
@@ -81,7 +81,6 @@ External check on the Kaggle Data Science Bowl cardiac cohort (439 test patients
 python scripts/train_mri_pooled.py                       # label checks, training, per-cohort test
 python scripts/train_mri_pooled.py --evaluate-only
 python scripts/validate_mri_kaggle.py --bf16 --checkpoints results/mri_segmentation_pooled/mri_segmenter.pt results/mri_segmentation/mri_segmenter.pt
-python scripts/fusion_likelihood_ratios.py               # MRI likelihood ratios used by the web portal
 ```
 
 Raw records: `results/mri_segmentation_pooled/` and `results/mri_segmentation_pooled/kaggle/`.
@@ -180,7 +179,7 @@ repositories side by side. The files it uses:
 | `results/mri_segmentation_pooled/mri_segmenter.pt` | MRI segmenter (pooled; falls back to `results/mri_segmentation/` in older checkouts) |
 | `results/mri_diagnosis/diagnosis_model.joblib` | MRI diagnosis classifier |
 | `results/ehr/ehr_model.joblib` and `ehr_report.json` | Health-record model (coronary artery disease) |
-| `results/fusion/likelihood_ratios.json` and `three_way.json` | Settings for combining the three models |
+| `results/fusion_dl/` | The fusion network, its test report, and earlier runs |
 
 ## Repository structure
 
