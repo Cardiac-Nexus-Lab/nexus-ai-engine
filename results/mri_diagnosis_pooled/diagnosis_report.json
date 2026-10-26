@@ -1,0 +1,950 @@
+{
+  "features": [
+    "lv_edv_ml",
+    "lv_ef",
+    "rv_edv_ml",
+    "rv_ef",
+    "myo_mass_g",
+    "mass_to_volume",
+    "rv_to_lv_edv",
+    "lv_ef_minus_rv_ef"
+  ],
+  "label_map": {
+    "acdc": {
+      "NOR": "NOR",
+      "MINF": "MINF",
+      "DCM": "DCM",
+      "HCM": "HCM",
+      "RV": "RV"
+    },
+    "mnms": {
+      "NOR": "NOR",
+      "DCM": "DCM",
+      "HCM": "HCM",
+      "ARV": "RV",
+      "IHD": "MINF"
+    },
+    "mnms2": {
+      "NOR": "NOR",
+      "LV": "DCM",
+      "HCM": "HCM",
+      "RV": "RV"
+    }
+  },
+  "patients_by_cohort_and_class": {
+    "DCM": {
+      "acdc": 30,
+      "mnms": 97,
+      "mnms2": 30
+    },
+    "HCM": {
+      "acdc": 30,
+      "mnms": 81,
+      "mnms2": 31
+    },
+    "MINF": {
+      "acdc": 30,
+      "mnms": 3,
+      "mnms2": 0
+    },
+    "NOR": {
+      "acdc": 30,
+      "mnms": 78,
+      "mnms2": 35
+    },
+    "RV": {
+      "acdc": 30,
+      "mnms": 15,
+      "mnms2": 30
+    },
+    "out of scope / unlabelled": {
+      "acdc": 0,
+      "mnms": 46,
+      "mnms2": 234
+    }
+  },
+  "training_patients": 297,
+  "selected_model": "logistic_C1",
+  "cross_validation": {
+    "logistic_C0.1": {
+      "mean_accuracy": 0.7221694915254236,
+      "sd_accuracy": 0.05615805681530617
+    },
+    "logistic_C1": {
+      "mean_accuracy": 0.7311864406779661,
+      "sd_accuracy": 0.05173558956787658
+    },
+    "logistic_C10": {
+      "mean_accuracy": 0.729186440677966,
+      "sd_accuracy": 0.0531779624252518
+    },
+    "random_forest": {
+      "mean_accuracy": 0.7292824858757061,
+      "sd_accuracy": 0.05260498699162134
+    }
+  },
+  "uncertainty": {
+    "threshold": 0.69,
+    "target_accuracy": 0.9,
+    "training_coverage": 0.4781144781144781,
+    "training_accuracy_when_called": 0.9084507042253521
+  },
+  "test": {
+    "acdc": {
+      "expert_masks": {
+        "patients": 50,
+        "correct": 39,
+        "accuracy": 0.78,
+        "accuracy_95ci": [
+          0.6475818431054045,
+          0.8724621377569771
+        ],
+        "balanced_accuracy": 0.78,
+        "recall_by_class": {
+          "DCM": {
+            "patients": 10,
+            "correct": 10
+          },
+          "HCM": {
+            "patients": 10,
+            "correct": 10
+          },
+          "MINF": {
+            "patients": 10,
+            "correct": 4
+          },
+          "NOR": {
+            "patients": 10,
+            "correct": 5
+          },
+          "RV": {
+            "patients": 10,
+            "correct": 10
+          }
+        },
+        "with_uncertain": {
+          "called": 34,
+          "coverage": 0.68,
+          "correct_when_called": 29,
+          "accuracy_when_called": 0.8529411764705882
+        },
+        "confusion_matrix": {
+          "labels": [
+            "DCM",
+            "HCM",
+            "MINF",
+            "NOR",
+            "RV"
+          ],
+          "rows_true_columns_predicted": [
+            [
+              10,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              10,
+              0,
+              0,
+              0
+            ],
+            [
+              6,
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              1,
+              4,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              10
+            ]
+          ]
+        }
+      },
+      "model_masks": {
+        "patients": 50,
+        "correct": 37,
+        "accuracy": 0.74,
+        "accuracy_95ci": [
+          0.6044657801100008,
+          0.8412862034863262
+        ],
+        "balanced_accuracy": 0.74,
+        "recall_by_class": {
+          "DCM": {
+            "patients": 10,
+            "correct": 9
+          },
+          "HCM": {
+            "patients": 10,
+            "correct": 10
+          },
+          "MINF": {
+            "patients": 10,
+            "correct": 4
+          },
+          "NOR": {
+            "patients": 10,
+            "correct": 5
+          },
+          "RV": {
+            "patients": 10,
+            "correct": 9
+          }
+        },
+        "with_uncertain": {
+          "called": 31,
+          "coverage": 0.62,
+          "correct_when_called": 27,
+          "accuracy_when_called": 0.8709677419354839
+        },
+        "confusion_matrix": {
+          "labels": [
+            "DCM",
+            "HCM",
+            "MINF",
+            "NOR",
+            "RV"
+          ],
+          "rows_true_columns_predicted": [
+            [
+              9,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              10,
+              0,
+              0,
+              0
+            ],
+            [
+              5,
+              1,
+              4,
+              0,
+              0
+            ],
+            [
+              0,
+              5,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              9
+            ]
+          ]
+        }
+      }
+    },
+    "mnms": {
+      "expert_masks": {
+        "patients": 98,
+        "correct": 58,
+        "accuracy": 0.5918367346938775,
+        "accuracy_95ci": [
+          0.49285190219841635,
+          0.683893160722826
+        ],
+        "balanced_accuracy": 0.5295117878848593,
+        "recall_by_class": {
+          "DCM": {
+            "patients": 35,
+            "correct": 23
+          },
+          "HCM": {
+            "patients": 23,
+            "correct": 14
+          },
+          "MINF": {
+            "patients": 3,
+            "correct": 1
+          },
+          "NOR": {
+            "patients": 31,
+            "correct": 17
+          },
+          "RV": {
+            "patients": 6,
+            "correct": 3
+          }
+        },
+        "with_uncertain": {
+          "called": 38,
+          "coverage": 0.3877551020408163,
+          "correct_when_called": 26,
+          "accuracy_when_called": 0.6842105263157895
+        },
+        "confusion_matrix": {
+          "labels": [
+            "DCM",
+            "HCM",
+            "MINF",
+            "NOR",
+            "RV"
+          ],
+          "rows_true_columns_predicted": [
+            [
+              23,
+              7,
+              2,
+              2,
+              1
+            ],
+            [
+              4,
+              14,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              1,
+              1,
+              1,
+              0
+            ],
+            [
+              10,
+              4,
+              0,
+              17,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              1,
+              3
+            ]
+          ]
+        }
+      },
+      "model_masks": {
+        "patients": 98,
+        "correct": 55,
+        "accuracy": 0.5612244897959183,
+        "accuracy_95ci": [
+          0.46250823376575,
+          0.6553218081817449
+        ],
+        "balanced_accuracy": 0.43793494957590334,
+        "recall_by_class": {
+          "DCM": {
+            "patients": 35,
+            "correct": 15
+          },
+          "HCM": {
+            "patients": 23,
+            "correct": 18
+          },
+          "MINF": {
+            "patients": 3,
+            "correct": 0
+          },
+          "NOR": {
+            "patients": 31,
+            "correct": 20
+          },
+          "RV": {
+            "patients": 6,
+            "correct": 2
+          }
+        },
+        "with_uncertain": {
+          "called": 44,
+          "coverage": 0.4489795918367347,
+          "correct_when_called": 32,
+          "accuracy_when_called": 0.7272727272727273
+        },
+        "confusion_matrix": {
+          "labels": [
+            "DCM",
+            "HCM",
+            "MINF",
+            "NOR",
+            "RV"
+          ],
+          "rows_true_columns_predicted": [
+            [
+              15,
+              8,
+              2,
+              9,
+              1
+            ],
+            [
+              0,
+              18,
+              0,
+              5,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              5,
+              6,
+              0,
+              20,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              2,
+              2
+            ]
+          ]
+        }
+      }
+    },
+    "mnms2": {
+      "expert_masks": {
+        "patients": 105,
+        "correct": 55,
+        "accuracy": 0.5238095238095238,
+        "accuracy_95ci": [
+          0.4291367039754026,
+          0.6168016137266525
+        ],
+        "balanced_accuracy": 0.5183333333333333,
+        "recall_by_class": {
+          "DCM": {
+            "patients": 25,
+            "correct": 22
+          },
+          "HCM": {
+            "patients": 25,
+            "correct": 13
+          },
+          "NOR": {
+            "patients": 30,
+            "correct": 19
+          },
+          "RV": {
+            "patients": 25,
+            "correct": 1
+          }
+        },
+        "with_uncertain": {
+          "called": 57,
+          "coverage": 0.5428571428571428,
+          "correct_when_called": 35,
+          "accuracy_when_called": 0.6140350877192983
+        },
+        "confusion_matrix": {
+          "labels": [
+            "DCM",
+            "HCM",
+            "MINF",
+            "NOR",
+            "RV"
+          ],
+          "rows_true_columns_predicted": [
+            [
+              22,
+              0,
+              3,
+              0,
+              0
+            ],
+            [
+              5,
+              13,
+              0,
+              7,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              8,
+              2,
+              0,
+              19,
+              1
+            ],
+            [
+              20,
+              2,
+              0,
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "model_masks": {
+        "patients": 105,
+        "correct": 54,
+        "accuracy": 0.5142857142857142,
+        "accuracy_95ci": [
+          0.4198832356208336,
+          0.6076797550003994
+        ],
+        "balanced_accuracy": 0.5166666666666667,
+        "recall_by_class": {
+          "DCM": {
+            "patients": 25,
+            "correct": 21
+          },
+          "HCM": {
+            "patients": 25,
+            "correct": 16
+          },
+          "NOR": {
+            "patients": 30,
+            "correct": 14
+          },
+          "RV": {
+            "patients": 25,
+            "correct": 3
+          }
+        },
+        "with_uncertain": {
+          "called": 60,
+          "coverage": 0.5714285714285714,
+          "correct_when_called": 35,
+          "accuracy_when_called": 0.5833333333333334
+        },
+        "confusion_matrix": {
+          "labels": [
+            "DCM",
+            "HCM",
+            "MINF",
+            "NOR",
+            "RV"
+          ],
+          "rows_true_columns_predicted": [
+            [
+              21,
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              1,
+              16,
+              0,
+              8,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              14,
+              1,
+              0,
+              14,
+              1
+            ],
+            [
+              20,
+              1,
+              0,
+              1,
+              3
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "deployed_model_on_acdc_test": {
+    "expert_masks": {
+      "patients": 50,
+      "correct": 46
+    },
+    "model_masks": {
+      "patients": 50,
+      "correct": 43
+    }
+  },
+  "out_of_scope_test_patients": {
+    "mnms": {
+      "HHD": {
+        "patients": 10,
+        "uncertain": 9,
+        "called_as": {
+          "HCM": 7,
+          "DCM": 1,
+          "NOR": 1,
+          "MINF": 1
+        }
+      },
+      "LVNC": {
+        "patients": 2,
+        "uncertain": 1,
+        "called_as": {
+          "DCM": 2
+        }
+      },
+      "Other": {
+        "patients": 24,
+        "uncertain": 13,
+        "called_as": {
+          "NOR": 11,
+          "DCM": 7,
+          "HCM": 6
+        }
+      }
+    },
+    "mnms2": {
+      "ARR": {
+        "patients": 10,
+        "uncertain": 6,
+        "called_as": {
+          "DCM": 6,
+          "NOR": 3,
+          "RV": 1
+        }
+      },
+      "CIA": {
+        "patients": 10,
+        "uncertain": 3,
+        "called_as": {
+          "RV": 7,
+          "NOR": 2,
+          "DCM": 1
+        }
+      },
+      "FALL": {
+        "patients": 10,
+        "uncertain": 6,
+        "called_as": {
+          "RV": 6,
+          "DCM": 3,
+          "NOR": 1
+        }
+      },
+      "TRI": {
+        "patients": 25,
+        "uncertain": 13,
+        "called_as": {
+          "DCM": 11,
+          "NOR": 7,
+          "RV": 5,
+          "HCM": 2
+        }
+      }
+    }
+  },
+  "leave_one_dataset_out": {
+    "acdc": {
+      "trained_on": 400,
+      "selected_model": "random_forest",
+      "uncertainty": {
+        "threshold": 0.92,
+        "target_accuracy": 0.9,
+        "training_coverage": 0.0525,
+        "training_accuracy_when_called": 0.9523809523809523
+      },
+      "patients": 150,
+      "correct": 97,
+      "accuracy": 0.6466666666666666,
+      "accuracy_95ci": [
+        0.5673798898960487,
+        0.7186285759545403
+      ],
+      "balanced_accuracy": 0.6466666666666667,
+      "recall_by_class": {
+        "DCM": {
+          "patients": 30,
+          "correct": 28
+        },
+        "HCM": {
+          "patients": 30,
+          "correct": 30
+        },
+        "MINF": {
+          "patients": 30,
+          "correct": 0
+        },
+        "NOR": {
+          "patients": 30,
+          "correct": 18
+        },
+        "RV": {
+          "patients": 30,
+          "correct": 21
+        }
+      },
+      "with_uncertain": {
+        "called": 15,
+        "coverage": 0.1,
+        "correct_when_called": 12,
+        "accuracy_when_called": 0.8
+      },
+      "confusion_matrix": {
+        "labels": [
+          "DCM",
+          "HCM",
+          "MINF",
+          "NOR",
+          "RV"
+        ],
+        "rows_true_columns_predicted": [
+          [
+            28,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            30,
+            0,
+            0,
+            0
+          ],
+          [
+            24,
+            4,
+            0,
+            0,
+            2
+          ],
+          [
+            2,
+            10,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            9,
+            21
+          ]
+        ]
+      }
+    },
+    "mnms": {
+      "trained_on": 276,
+      "selected_model": "random_forest",
+      "uncertainty": {
+        "threshold": 0.74,
+        "target_accuracy": 0.9,
+        "training_coverage": 0.36594202898550726,
+        "training_accuracy_when_called": 0.900990099009901
+      },
+      "patients": 274,
+      "correct": 151,
+      "accuracy": 0.551094890510949,
+      "accuracy_95ci": [
+        0.49189869711839995,
+        0.6088781483935753
+      ],
+      "balanced_accuracy": 0.592709294015136,
+      "recall_by_class": {
+        "DCM": {
+          "patients": 97,
+          "correct": 29
+        },
+        "HCM": {
+          "patients": 81,
+          "correct": 53
+        },
+        "MINF": {
+          "patients": 3,
+          "correct": 2
+        },
+        "NOR": {
+          "patients": 78,
+          "correct": 58
+        },
+        "RV": {
+          "patients": 15,
+          "correct": 9
+        }
+      },
+      "with_uncertain": {
+        "called": 82,
+        "coverage": 0.29927007299270075,
+        "correct_when_called": 62,
+        "accuracy_when_called": 0.7560975609756098
+      },
+      "confusion_matrix": {
+        "labels": [
+          "DCM",
+          "HCM",
+          "MINF",
+          "NOR",
+          "RV"
+        ],
+        "rows_true_columns_predicted": [
+          [
+            29,
+            9,
+            14,
+            28,
+            17
+          ],
+          [
+            0,
+            53,
+            3,
+            21,
+            4
+          ],
+          [
+            0,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            13,
+            1,
+            58,
+            6
+          ],
+          [
+            1,
+            1,
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    },
+    "mnms2": {
+      "trained_on": 424,
+      "selected_model": "logistic_C0.1",
+      "uncertainty": {
+        "threshold": 0.66,
+        "target_accuracy": 0.9,
+        "training_coverage": 0.330188679245283,
+        "training_accuracy_when_called": 0.9
+      },
+      "patients": 126,
+      "correct": 66,
+      "accuracy": 0.5238095238095238,
+      "accuracy_95ci": [
+        0.43719565492558715,
+        0.6090144965204826
+      ],
+      "balanced_accuracy": 0.5188556067588326,
+      "recall_by_class": {
+        "DCM": {
+          "patients": 30,
+          "correct": 27
+        },
+        "HCM": {
+          "patients": 31,
+          "correct": 14
+        },
+        "NOR": {
+          "patients": 35,
+          "correct": 23
+        },
+        "RV": {
+          "patients": 30,
+          "correct": 2
+        }
+      },
+      "with_uncertain": {
+        "called": 44,
+        "coverage": 0.3492063492063492,
+        "correct_when_called": 30,
+        "accuracy_when_called": 0.6818181818181818
+      },
+      "confusion_matrix": {
+        "labels": [
+          "DCM",
+          "HCM",
+          "MINF",
+          "NOR",
+          "RV"
+        ],
+        "rows_true_columns_predicted": [
+          [
+            27,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            7,
+            14,
+            0,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            3,
+            0,
+            23,
+            2
+          ],
+          [
+            24,
+            2,
+            0,
+            2,
+            2
+          ]
+        ]
+      }
+    }
+  },
+  "minutes": 54.11155771499998
+}
