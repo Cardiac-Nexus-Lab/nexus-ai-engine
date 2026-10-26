@@ -1,0 +1,36 @@
+{
+  "target": "ischaemic heart disease (coronary artery disease or previous infarction)",
+  "prior": {
+    "model": "results/ehr/ehr_model.joblib",
+    "outcome": "angiographic coronary artery disease"
+  },
+  "ecg": {
+    "class": "MI",
+    "calibration_fold": 9,
+    "calibration_records": 2146,
+    "calibration_rate": 0.2516309412861137
+  },
+  "mri": {
+    "class": "MINF",
+    "lr_positive": 28.54285714285712,
+    "lr_positive_95ci": [
+      8.339361398021138,
+      97.6926955187324
+    ],
+    "lr_negative": 0.12283894449499548,
+    "lr_negative_95ci": [
+      0.03834929666455226,
+      0.393472829935687
+    ],
+    "source": "out-of-fold predictions, logistic_C10, 100 ACDC training patients, expert masks"
+  },
+  "probability_clip": [
+    0.02,
+    0.98
+  ],
+  "assumptions": [
+    "The health-record, ECG and MRI findings are independent given the true state.",
+    "ECG and MRI evidence of infarction applies to coronary artery disease as the health-record model defines it (angiographic narrowing).",
+    "No dataset with all three for the same patients exists publicly, so the combined probability is not validated."
+  ]
+}

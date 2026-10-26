@@ -6,7 +6,7 @@ This repository holds code and artifacts: training and evaluation code, model ch
 
 ## What is built
 
-The ECG and cardiac MRI tracks are complete for their current scope. Tabular EHR and multimodal fusion are planned but not started.
+The ECG, cardiac MRI and health-record models are each trained and tested on their own data, and combined into one probability by Bayes' rule. No public dataset has all three for the same patients, so the combination itself cannot be trained or validated.
 
 | Component | State |
 | --- | --- |
@@ -18,7 +18,9 @@ The ECG and cardiac MRI tracks are complete for their current scope. Tabular EHR
 | Cardiac MRI segmentation (ACDC) | Test LV Dice 0.956 (ED); RV 0.933; myocardium 0.870 |
 | Pooled MRI segmentation (ACDC, M&Ms, M&Ms-2) | M&Ms-2 test RV Dice 0.433 → 0.908 (ED); Kaggle external LV EF MAE 5.65 points |
 | Ejection fraction from the predicted masks | LV r 0.991 against expert masks, limits of agreement -6.6 to +5.8 points |
-| MRI diagnosis from measurements | 45/50 test patients from the model's own masks |
+| MRI diagnosis from measurements | 45/50 test patients from the ACDC-only model's masks; 43/50 from the pooled model's (served) |
+| Health-record model, coronary artery disease (UCI, 4 centres) | Internal test AUROC 0.85 (184 patients); 0.73–0.87 at a centre left out of training |
+| Three-way combination (health record, ECG, MRI) | Bayes' rule over the three validated models; the combination is not validated |
 | MRI explainability with checks | Uncertainty detects errors at AUROC 0.861; Grad-CAM depends on learned weights on average |
 | Web application serving these models | Live in [nexus-web-portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal) |
 
@@ -84,6 +86,44 @@ python scripts/fusion_likelihood_ratios.py               # MRI likelihood ratios
 
 Raw records: `results/mri_segmentation_pooled/` and `results/mri_segmentation_pooled/kaggle/`.
 
+## Health record and the three-way combination
+
+The health-record model estimates angiographic coronary artery disease (more than 50% narrowing of a major
+vessel) from the seven findings the web form asks for: age, sex, chest-pain type, resting blood pressure,
+cholesterol, maximum heart rate on exercise and exercise angina. Data: UCI Heart Disease, 920 patients referred
+for angiography at Cleveland, Budapest, Zurich and Basel, and VA Long Beach (CC BY 4.0). Values recorded as 0
+(all Swiss cholesterol, many at VA) are treated as missing.
+
+Missingness marks the centre in this collection (Switzerland has no cholesterol and 93% disease), so the model is
+not given it: training gaps take the median, and a field left blank in use is averaged over the training patients'
+values instead. With missing-value flags the model had learned "blank means disease": a 58-year-old man with
+nothing else entered scored 90%.
+
+| Test | Patients | AUROC (95% CI) |
+| --- | --- | --- |
+| Internal, held out before model selection | 184 | 0.850 (0.79–0.90) |
+| Cleveland, left out of training | 303 | 0.859 |
+| Hungary, left out of training | 294 | 0.870 |
+| Switzerland, left out of training | 123 | 0.788 |
+| VA Long Beach, left out of training | 200 | 0.731 |
+
+Probabilities are calibrated on the internal test but shift with a centre's disease rate (Switzerland: 93%
+observed, 69% predicted; Hungary: 36% observed, 52% predicted), and every patient was referred for angiography, so a probability applies to such
+patients, not to the general population.
+
+The combination starts from the health-record probability and multiplies its odds by two likelihood ratios: the
+ECG's, from its calibrated MI probability against the MI rate of the fold it was calibrated on (25.2%), and the MRI
+classifier's for calling previous infarction (out-of-fold, ACDC training patients). It assumes the three findings
+are independent given the true state and that infarction evidence carries over to angiographic disease; neither
+can be tested without patients who have all three.
+
+```bash
+python scripts/train_ehr.py           # cleaning, model selection, internal and leave-one-centre-out tests
+python scripts/fusion_three_way.py    # combination settings used by the web portal
+```
+
+Raw records: `results/ehr/ehr_report.json` and `results/fusion/three_way.json`.
+
 ## Web application
 
 The trained models are served by the backend in
@@ -95,8 +135,10 @@ repositories side by side. The files it uses:
 | --- | --- |
 | `results/local_xresnet18_full/ecg_multilabel.pt` and `evaluation_report.json` | ECG classifier and its calibration |
 | `results/digitizer/trace_localizer.pt` | ECG printout digitizer |
-| `results/mri_segmentation/mri_segmenter.pt` | MRI segmenter |
+| `results/mri_segmentation_pooled/mri_segmenter.pt` | MRI segmenter (pooled; falls back to `results/mri_segmentation/` in older checkouts) |
 | `results/mri_diagnosis/diagnosis_model.joblib` | MRI diagnosis classifier |
+| `results/ehr/ehr_model.joblib` and `ehr_report.json` | Health-record model (coronary artery disease) |
+| `results/fusion/likelihood_ratios.json` and `three_way.json` | Settings for combining the three models |
 
 ## Repository structure
 

@@ -1,0 +1,227 @@
+{
+  "dataset": "UCI Heart Disease (Cleveland, Hungary, Switzerland, VA Long Beach); CC BY 4.0",
+  "outcome": "angiographic coronary artery disease (>50% narrowing of a major vessel)",
+  "features": [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "sex",
+    "cp",
+    "exang"
+  ],
+  "cleaning": {
+    "Cleveland": {
+      "patients": 303,
+      "disease_rate": 0.45874587458745875,
+      "missing": {}
+    },
+    "Hungary": {
+      "patients": 294,
+      "disease_rate": 0.36054421768707484,
+      "missing": {
+        "trestbps": 1,
+        "chol": 23,
+        "thalach": 1,
+        "exang": 1
+      }
+    },
+    "Switzerland": {
+      "patients": 123,
+      "disease_rate": 0.9349593495934959,
+      "missing": {
+        "trestbps": 2,
+        "chol": 123,
+        "thalach": 1,
+        "exang": 1
+      }
+    },
+    "VA Long Beach": {
+      "patients": 200,
+      "disease_rate": 0.745,
+      "missing": {
+        "trestbps": 57,
+        "chol": 56,
+        "thalach": 53,
+        "exang": 53
+      }
+    }
+  },
+  "split": {
+    "train": 736,
+    "test": 184,
+    "seed": 42
+  },
+  "selected_model": "logistic_C0.1",
+  "cross_validation": {
+    "logistic_C0.1": {
+      "mean_auroc": 0.8699891212872243,
+      "sd_auroc": 0.026872134821967736
+    },
+    "logistic_C1": {
+      "mean_auroc": 0.8697129954257327,
+      "sd_auroc": 0.02715116751431381
+    },
+    "logistic_C10": {
+      "mean_auroc": 0.8694603901568673,
+      "sd_auroc": 0.027154263253433567
+    }
+  },
+  "internal_test": {
+    "patients": 184,
+    "with_disease": 102,
+    "auroc": 0.8498326159732186,
+    "auroc_95ci": [
+      0.7915464396346944,
+      0.9044737224086116
+    ],
+    "brier": 0.15403810399216844,
+    "brier_95ci": [
+      0.12393634506213944,
+      0.18433606606444836
+    ],
+    "observed_rate": 0.5543478260869565,
+    "mean_predicted": 0.555726293028881,
+    "calibration": [
+      {
+        "mean_predicted": 0.12247981159863479,
+        "observed_rate": 0.10810810810810811,
+        "patients": 37
+      },
+      {
+        "mean_predicted": 0.33948890459043707,
+        "observed_rate": 0.35135135135135137,
+        "patients": 37
+      },
+      {
+        "mean_predicted": 0.6253193844639875,
+        "observed_rate": 0.5675675675675675,
+        "patients": 37
+      },
+      {
+        "mean_predicted": 0.7917961709926558,
+        "observed_rate": 0.8648648648648649,
+        "patients": 37
+      },
+      {
+        "mean_predicted": 0.9090977740672952,
+        "observed_rate": 0.8888888888888888,
+        "patients": 36
+      }
+    ]
+  },
+  "leave_one_centre_out": {
+    "Cleveland": {
+      "selected_model": "logistic_C0.1",
+      "patients": 303,
+      "with_disease": 139,
+      "auroc": 0.858703281277417,
+      "auroc_95ci": [
+        0.8172258683911263,
+        0.9003187246182331
+      ],
+      "brier": 0.15984548667294365,
+      "brier_95ci": [
+        0.13910528013252996,
+        0.18077984319175391
+      ],
+      "observed_rate": 0.45874587458745875,
+      "mean_predicted": 0.531657287944324
+    },
+    "Hungary": {
+      "selected_model": "logistic_C0.1",
+      "patients": 294,
+      "with_disease": 106,
+      "auroc": 0.8699317543155359,
+      "auroc_95ci": [
+        0.826113210069286,
+        0.9112024247668076
+      ],
+      "brier": 0.166232547491064,
+      "brier_95ci": [
+        0.1425047859951558,
+        0.19128532559713848
+      ],
+      "observed_rate": 0.36054421768707484,
+      "mean_predicted": 0.517956812366966
+    },
+    "Switzerland": {
+      "selected_model": "logistic_C1",
+      "patients": 123,
+      "with_disease": 115,
+      "auroc": 0.7880434782608696,
+      "auroc_95ci": [
+        0.603988603988604,
+        0.9508474576271186
+      ],
+      "brier": 0.13922667253731374,
+      "brier_95ci": [
+        0.10852055928962186,
+        0.17198537062716826
+      ],
+      "observed_rate": 0.9349593495934959,
+      "mean_predicted": 0.6910166661288664
+    },
+    "VA Long Beach": {
+      "selected_model": "logistic_C1",
+      "patients": 200,
+      "with_disease": 149,
+      "auroc": 0.7314120278984078,
+      "auroc_95ci": [
+        0.641967748903519,
+        0.8103162042802453
+      ],
+      "brier": 0.16597988067419642,
+      "brier_95ci": [
+        0.13535836124238915,
+        0.20052110813432514
+      ],
+      "observed_rate": 0.745,
+      "mean_predicted": 0.7428415830984976
+    }
+  },
+  "blank_form_check": [
+    {
+      "sex": "Male",
+      "age": "30-44",
+      "patients": 102,
+      "observed_rate": 0.4117647058823529,
+      "predicted": 0.4650166700400343
+    },
+    {
+      "sex": "Male",
+      "age": "45-59",
+      "patients": 318,
+      "observed_rate": 0.6226415094339622,
+      "predicted": 0.5638481386469439
+    },
+    {
+      "sex": "Male",
+      "age": "60-79",
+      "patients": 161,
+      "observed_rate": 0.8074534161490683,
+      "predicted": 0.6757382545201861
+    },
+    {
+      "sex": "Female",
+      "age": "30-44",
+      "patients": 30,
+      "observed_rate": 0.06666666666666667,
+      "predicted": 0.27680840509210913
+    },
+    {
+      "sex": "Female",
+      "age": "45-59",
+      "patients": 81,
+      "observed_rate": 0.2222222222222222,
+      "predicted": 0.36682869982814575
+    },
+    {
+      "sex": "Female",
+      "age": "60-79",
+      "patients": 40,
+      "observed_rate": 0.425,
+      "predicted": 0.4798795996307745
+    }
+  ]
+}
