@@ -173,7 +173,9 @@ def ecg_embedding(classifier, signals: np.ndarray, batch: int = 256) -> tuple[np
 # --- the fusion network -----------------------------------------------------------
 
 class FusionNet(nn.Module):
-    """Three branch projections, cross-modal attention, a gate over modalities, one output."""
+    """Three branch projections, cross-modal attention, a gate over modalities, one output.
+
+    The output is hybrid: each branch's own log-odds summed, plus the attention layers' correction."""
 
     def __init__(self, ecg_dim: int = 128, mri_dim: int = 256 * 2 + len(MRI_FEATURES),
                  clinical_dim: int = len(CLINICAL_COLUMNS), width: int = WIDTH, heads: int = 4,
@@ -213,7 +215,12 @@ class FusionNet(nn.Module):
         scores = self.gate(mixed).squeeze(-1).masked_fill(~present, float("-inf"))
         weights = torch.softmax(scores, dim=1)
         fused = (weights.unsqueeze(-1) * mixed).sum(dim=1)
-        return self.head(fused).squeeze(-1), weights, solo
+        # Hybrid fusion: the branches' own log-odds, summed over the modalities present,
+        # plus a correction from the attention layers. For evidence that is independent
+        # given the diagnosis (as in virtual patients) the sum is already the right
+        # combination, so the network has to learn only what the modalities add together.
+        late = (solo * present).sum(dim=1)
+        return late + self.head(fused).squeeze(-1), weights, solo
 
 
 @dataclass

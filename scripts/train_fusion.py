@@ -25,7 +25,13 @@ the test set is read.
 Run history: the first configuration (no input dropout, weight decay 1e-4, one
 threshold for every combination) over-trusted the MRI, whose training pool is a
 few hundred patients, and called everyone ill without an MRI because the one
-threshold did not fit them; its report is kept in results/fusion_dl/run1.
+threshold did not fit them; its report is kept in results/fusion_dl/run1. The
+second (input dropout 0.2/0.5/0.1, weight decay 1e-3, a threshold per combination)
+improved with every modality added but stayed below the mean of the three single
+readings (results/fusion_dl/run2). Since the modalities of a virtual patient are
+independent given the label, summed log-odds are the right base, so the network's
+output became that sum plus the attention layers' correction (FusionNet.forward),
+with a lower learning rate, the first epoch having been the best.
 
 A simple baseline is reported alongside: the mean of the three single-modality
 probabilities that the same network gives with the other two switched off.
@@ -66,6 +72,7 @@ SEED = 42
 MODALITY_DROP, FIELD_DROP = 0.3, 0.25
 INPUT_DROPOUT = {"ecg": 0.2, "mri": 0.5, "clinical": 0.1}
 WEIGHT_DECAY = 1e-3
+LEARNING_RATE = 3e-4
 SUBSETS = [tuple(m for m, keep in zip(MODALITIES, mask) if keep)
            for mask in itertools.product([1, 0], repeat=3) if any(mask)]
 
@@ -181,7 +188,7 @@ def main() -> None:
     model_args = {"ecg_dim": int(data["train"]["ecg"][0].shape[1]), "mri_dim": int(data["train"]["mri"][0].shape[1]),
                   "clinical_dim": len(CLINICAL_COLUMNS), "input_dropout": INPUT_DROPOUT}
     model = FusionNet(**model_args)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=WEIGHT_DECAY)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
     criterion = nn.BCEWithLogitsLoss(reduction="none")
     rng = np.random.default_rng(SEED)
     epochs, patience = 60, 8
@@ -213,6 +220,8 @@ def main() -> None:
         scheduler.step()
         scores = val_score()
         mean = float(np.mean(list(scores.values())))
+        solo_val = [logits_for(model, val_batch, masks(len(val_y), (m,), rng))[0] for m in MODALITIES]
+        scores["baseline: sum of single readings"] = float(roc_auc_score(val_y, np.sum(solo_val, axis=0)))
         history.append({"epoch": epoch, "train_loss": float(np.mean(losses)), "val_auroc": scores, "val_mean": mean})
         marker = ""
         if mean > best:
@@ -220,7 +229,8 @@ def main() -> None:
         else:
             waited += 1
         print(f"Epoch {epoch:02d}: loss {np.mean(losses):.4f} | val AUROC mean {mean:.4f}, all three "
-              f"{scores['ecg+mri+clinical']:.4f}{marker}", flush=True)
+              f"{scores['ecg+mri+clinical']:.4f}, baseline {scores['baseline: sum of single readings']:.4f}{marker}",
+              flush=True)
         if waited >= patience:
             break
     model.load_state_dict(best_state)
@@ -245,7 +255,7 @@ def main() -> None:
               "training_data": {split: {m: {"records": int(len(y)), "with_disease": int(y.sum())}
                                         for m, (_, y) in part.items()} for split, part in data.items()},
               "virtual_patients": {"train_per_epoch": 8192, "validation": 3000, "test": 5000},
-              "settings": {"optimizer": "AdamW", "learning_rate": 1e-3, "weight_decay": WEIGHT_DECAY,
+              "settings": {"optimizer": "AdamW", "learning_rate": LEARNING_RATE, "weight_decay": WEIGHT_DECAY,
                            "input_dropout": INPUT_DROPOUT, "batch": 64,
                            "schedule": "cosine", "max_epochs": epochs, "patience": patience,
                            "modality_dropout": MODALITY_DROP, "field_dropout": FIELD_DROP, "solo_loss_weight": 0.3,
