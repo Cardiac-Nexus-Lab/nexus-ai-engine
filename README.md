@@ -86,7 +86,7 @@ python scripts/fusion_likelihood_ratios.py               # MRI likelihood ratios
 
 Raw records: `results/mri_segmentation_pooled/` and `results/mri_segmentation_pooled/kaggle/`.
 
-## Health record and the three-way combination
+## Health record and the deep learning fusion
 
 The health-record model estimates angiographic coronary artery disease (more than 50% narrowing of a major
 vessel) from the seven findings the web form asks for: age, sex, chest-pain type, resting blood pressure,
@@ -111,18 +111,60 @@ Probabilities are calibrated on the internal test but shift with a centre's dise
 observed, 69% predicted; Hungary: 36% observed, 52% predicted), and every patient was referred for angiography, so a probability applies to such
 patients, not to the general population.
 
-The combination starts from the health-record probability and multiplies its odds by two likelihood ratios: the
-ECG's, from its calibrated MI probability against the MI rate of the fold it was calibrated on (25.2%), and the MRI
-classifier's for calling previous infarction (out-of-fold, ACDC training patients). It assumes the three findings
-are independent given the true state and that infarction evidence carries over to angiographic disease; neither
-can be tested without patients who have all three.
+The stand-alone model above is a baseline. In the app the health record is read by a neural network branch of
+the fusion network.
+
+### Fusion network: ECG + MRI + health record
+
+`src/cardiac_nexus/fusion.py`. Each modality keeps its trained network as a branch: the ECG classifier's
+128-number embedding, the pooled MRI segmenter's deepest feature map (256 channels, averaged over the heart's
+slices, at end-diastole and end-systole) with the eight measurements of its outlines, and a small network over the
+seven form fields (encoded as ten numbers; a blank field takes the training mean). Each is projected to 128
+numbers; two transformer attention layers (four heads) let the three inform each other; a learned gate weighs
+them. The output is hybrid: the branches' own log-odds summed, plus the attention layers' correction. Any modality
+can be missing (training drops each whole modality with probability 0.3). 401,001 parameters.
+
+The target is the one outcome all three datasets label: heart disease present (an ECG that is not normal, an MRI
+that is not NOR, UCI num > 0). No public dataset has all three for the same people, so training and testing use
+virtual patients that join an ECG, an MRI and a health record of different people with the same label, each
+source keeping its own patient-wise split: PTB-XL fold 9 (which the ECG network never trained on) for training and
+validation and fold 10 for testing; the MRI segmenter's splits of ACDC, M&Ms and M&Ms-2 (550 labelled patients);
+UCI's 736/184 split. AdamW, learning rate 3e-4, weight decay 1e-3, batch 64, input dropout 0.2/0.5/0.1, epoch
+4 chosen on validation; one calibration and a threshold per input combination set on validation.
+
+5,000 virtual test patients, half with heart disease:
+
+| Inputs | AUROC (95% CI) | Precision | Recall | F1 | Brier | ECE |
+| --- | --- | --- | --- | --- | --- | --- |
+| ECG + MRI + health record | 0.973 (0.970–0.977) | 0.904 | 0.928 | 0.916 | 0.065 | 0.028 |
+| ECG + MRI | 0.957 (0.952–0.962) | 0.835 | 0.930 | 0.880 | 0.084 | 0.038 |
+| ECG + health record | 0.966 (0.961–0.970) | 0.888 | 0.916 | 0.902 | 0.073 | 0.043 |
+| MRI + health record | 0.906 (0.898–0.914) | 0.790 | 0.842 | 0.815 | 0.133 | 0.058 |
+| ECG | 0.943 (0.937–0.949) | 0.890 | 0.871 | 0.880 | 0.095 | 0.050 |
+| MRI | 0.850 (0.839–0.861) | 0.824 | 0.663 | 0.735 | 0.174 | 0.097 |
+| health record | 0.823 (0.811–0.835) | 0.747 | 0.815 | 0.779 | 0.171 | 0.063 |
+| Mean of the three single readings (baseline) | 0.973 | 0.902 | 0.929 | 0.916 | 0.102 | 0.185 |
+
+Every modality added helps. The mean of the single readings ranks as well, as expected when a virtual patient's
+modalities are independent given the label (their summed log-odds are then the best possible combination), but it
+is badly calibrated; the network's probabilities are not. The network cannot learn how modalities interact within
+one person from virtual patients; that needs paired data (MIMIC-IV with MIMIC-IV-ECG, UK Biobank).
+
+Explanations (`fusion.predict`, `fusion.explain_in_words`): each modality's own reading, how far the result moves
+when it is left out, the attention weights, Integrated Gradients over the health-record fields, and sentences for
+patients and for clinicians built only from those numbers.
+
+Run history: `results/fusion_dl/run1` (no input dropout, one threshold for all combinations: over-trusted the MRI and
+called everyone ill without it) and `run2` (input dropout and per-combination thresholds, plain output: below the
+baseline) are kept; the hybrid output is run 3.
 
 ```bash
-python scripts/train_ehr.py           # cleaning, model selection, internal and leave-one-centre-out tests
-python scripts/fusion_three_way.py    # combination settings used by the web portal
+python scripts/train_ehr.py             # stand-alone health-record baseline
+python scripts/fusion_embeddings.py     # branch inputs from the deployed ECG and MRI networks (data/fusion)
+python scripts/train_fusion.py          # train, calibrate and test the fusion network
 ```
 
-Raw records: `results/ehr/ehr_report.json` and `results/fusion/three_way.json`.
+Raw records: `results/ehr/ehr_report.json` and `results/fusion_dl/fusion_report.json`.
 
 ## Web application
 
