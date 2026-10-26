@@ -124,7 +124,7 @@ them. The output is hybrid: the branches' own log-odds summed, plus the attentio
 can be missing (training drops each whole modality with probability 0.3), and the MRI can be one 3D frame or
 both (training reduces a third of the MRIs to one frame of either phase). The model stores the SHA-256 of
 the ECG and MRI checkpoints it was built on; the portal leaves the combined result out if either has changed,
-until `scripts/rebuild_fusion.py` has rebuilt it. 401,001 parameters.
+until `scripts/rebuild_fusion.py` has rebuilt it. 401,261 parameters.
 
 The target is the one outcome all three datasets label: heart disease present (an ECG that is not normal, an MRI
 that is not NOR, UCI num > 0). No public dataset has all three for the same people, so training and testing use
