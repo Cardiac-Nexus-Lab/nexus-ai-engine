@@ -33,39 +33,13 @@ import numpy as np
 import torch
 
 from cardiac_nexus import data
-from cardiac_nexus.ecg_image.render import LAYOUTS, layout_columns, rhythm_leads
+from cardiac_nexus.ecg_layouts import LAYOUTS, reduce_to_layout
 from cardiac_nexus.evaluate import evaluate_with_uncertainty
 from evaluate_ecg import load_checkpoint
 
 CHECKPOINT = REPO_ROOT / "results" / "local_xresnet18_full" / "ecg_multilabel.pt"
 REPORT = REPO_ROOT / "results" / "local_xresnet18_full" / "evaluation_report.json"
 OUTPUT = REPO_ROOT / "results" / "ecg_layouts"
-
-
-def printed_windows(layout: str, samples: int) -> list[tuple[int, int]]:
-    """For each of the 12 leads, the sample range a page in this layout prints."""
-    windows = [(0, samples)] * 12
-    columns = layout_columns(layout)
-    width = samples // len(columns)
-    for c, column in enumerate(columns):
-        for lead in column:
-            windows[lead] = (c * width, (c + 1) * width)
-    for lead in rhythm_leads(layout):
-        windows[lead] = (0, samples)
-    return windows
-
-
-def reduce(signals: np.ndarray, layout: str, fill: str) -> np.ndarray:
-    out = np.zeros_like(signals)
-    samples = signals.shape[-1]
-    for lead, (start, end) in enumerate(printed_windows(layout, samples)):
-        part = signals[:, lead, start:end]
-        part = (part - part.mean(axis=1, keepdims=True)) / (part.std(axis=1, keepdims=True) + 1e-6)
-        if fill == "repeat":
-            out[:, lead] = np.tile(part, (1, -(-samples // part.shape[1])))[:, :samples]
-        else:
-            out[:, lead, start:end] = part
-    return out
 
 
 def main() -> None:
@@ -86,7 +60,7 @@ def main() -> None:
     report = {"checkpoint": str(CHECKPOINT.relative_to(REPO_ROOT)), "test_records": int(len(test)), "layouts": {}}
     for layout in LAYOUTS:
         for fill in (("full",) if layout == "12x1" else ("zeros", "repeat")):
-            batch = x if fill == "full" else reduce(x, layout, fill)
+            batch = x if fill == "full" else reduce_to_layout(x, layout, fill)
             rows = evaluate_with_uncertainty(y, probabilities(batch), classes, resamples=1000)
             entry = {r["class"]: {"auroc": r["auroc"], "support": r["support"]} for r in rows}
             entry["macro_auroc"] = float(np.mean([r["auroc"]["estimate"] for r in rows]))
