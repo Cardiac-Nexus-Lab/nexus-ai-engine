@@ -326,25 +326,29 @@ def explain_in_words(result: dict, findings: dict | None = None, audience: str =
     ranked = sorted(result["modalities"].items(), key=lambda kv: -abs(kv[1].get("effect", 0.0)))
     for m, entry in ranked:
         name = MODALITY_NAMES[m]
-        what = f" ({findings[m]})" if m in findings else ""
-        if "effect" in entry:
-            points = 100 * entry["effect"]
-            direction = "raised" if points > 0.5 else "lowered" if points < -0.5 else "barely changed"
-            amount = f" by {abs(points):.0f} points" if direction != "barely changed" else ""
-            sentence = f"The {name}{what} {direction} it{amount}"
-            sentence += f" (from {_pct(entry['without_it'])} without it)." if direction != "barely changed" else "."
+        subject = f"The {name}" + (f" ({findings[m]})" if m in findings else "")
+        alone = f"on its own it suggests {_pct(entry['alone'])}"
+        if "effect" not in entry:
+            sentence = f"{subject} is the only input; {alone}."
         else:
-            sentence = f"This rests on the {name}{what} alone."
+            points = 100 * entry["effect"]
+            if abs(points) < 2:
+                sentence = (f"{subject}: {alone}. Leaving it out would give about the same result, because the "
+                            f"other findings already point the same way.")
+            else:
+                verb = "raised the result" if points > 0 else "brought the result down"
+                sentence = (f"{subject}: {alone}, and it {verb} by {abs(points):.0f} points; without it the "
+                            f"estimate would be {_pct(entry['without_it'])}.")
         if audience == "clinician":
-            sentence += f" Fusion weight {entry['weight']:.2f}; on its own the {name} gives {_pct(entry['alone'])}."
+            sentence += f" Attention weight {entry['weight']:.2f}."
         lines.append(sentence)
     fields = [f for f in result.get("clinical_fields", []) if abs(f["points"]) >= 1]
     if fields:
-        parts = [f"{f['name']} ({'+' if f['points'] > 0 else '−'}{abs(f['points']):.0f})" for f in fields[:3]]
-        lines.append("In the health record, the values that mattered most were " + ", ".join(parts) +
-                     " points, compared with a blank form.")
+        parts = [f"{f['name']} ({'+' if f['points'] > 0 else '−'}{abs(f['points']):.0f} points)" for f in fields[:3]]
+        lines.append("In the health record, the values that mattered most, compared with a blank form, were "
+                     + ", ".join(parts) + ".")
     if missing:
-        lines.append(f"No {' or '.join(missing)} was given, so it could not add to this estimate.")
+        lines.append(f"The model had no usable {' or '.join(missing)}, so it could not add to this estimate.")
     lines.append("The model was trained on ECGs, scans and health records of different people with the same "
                  "diagnosis, because no public dataset has all three for one person. Treat this as a research "
                  "estimate, not a diagnosis, and discuss it with a doctor.")

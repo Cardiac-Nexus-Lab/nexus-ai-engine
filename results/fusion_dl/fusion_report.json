@@ -1,0 +1,520 @@
+{
+  "target": "heart disease present (ECG not normal; MRI not NOR; UCI num > 0)",
+  "training_data": {
+    "train": {
+      "ecg": {
+        "records": 1717,
+        "with_disease": 964
+      },
+      "mri": {
+        "records": 230,
+        "with_disease": 176
+      },
+      "clinical": {
+        "records": 588,
+        "with_disease": 325
+      }
+    },
+    "val": {
+      "ecg": {
+        "records": 429,
+        "with_disease": 268
+      },
+      "mri": {
+        "records": 67,
+        "with_disease": 49
+      },
+      "clinical": {
+        "records": 148,
+        "with_disease": 82
+      }
+    },
+    "test": {
+      "ecg": {
+        "records": 2158,
+        "with_disease": 1246
+      },
+      "mri": {
+        "records": 253,
+        "with_disease": 182
+      },
+      "clinical": {
+        "records": 184,
+        "with_disease": 102
+      }
+    }
+  },
+  "virtual_patients": {
+    "train_per_epoch": 8192,
+    "validation": 3000,
+    "test": 5000
+  },
+  "settings": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.001,
+    "input_dropout": {
+      "ecg": 0.2,
+      "mri": 0.5,
+      "clinical": 0.1
+    },
+    "batch": 64,
+    "schedule": "cosine",
+    "max_epochs": 60,
+    "patience": 8,
+    "modality_dropout": 0.3,
+    "field_dropout": 0.25,
+    "solo_loss_weight": 0.3,
+    "parameters": 401001
+  },
+  "selected_epoch": 4,
+  "calibration": {
+    "scale": 0.68681800365448,
+    "bias": 0.008890606462955475
+  },
+  "thresholds": {
+    "ecg+mri+clinical": 0.5090467929840088,
+    "ecg+mri": 0.3472653925418854,
+    "ecg+clinical": 0.3668327331542969,
+    "ecg": 0.35132455825805664,
+    "mri+clinical": 0.47735166549682617,
+    "mri": 0.7895134687423706,
+    "clinical": 0.4843897819519043
+  },
+  "test": {
+    "ecg+mri+clinical": {
+      "auroc": {
+        "estimate": 0.97330784,
+        "low": 0.9696912178505284,
+        "high": 0.9768983474390778,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.9750755546462715,
+        "low": 0.9714297697836871,
+        "high": 0.9785729467761268,
+        "resamples": 1000
+      },
+      "brier": 0.06476407498121262,
+      "ece": 0.02754537965878846,
+      "threshold": 0.5090467929840088,
+      "confusion": {
+        "tp": 2319,
+        "fp": 246,
+        "fn": 181,
+        "tn": 2254
+      },
+      "accuracy": 0.9146,
+      "precision": 0.904093567251462,
+      "recall": 0.9276,
+      "specificity": 0.9016,
+      "f1": 0.9156959526159921,
+      "mean_gate_weight": {
+        "ecg": 0.2697252333164215,
+        "mri": 0.5303353071212769,
+        "clinical": 0.19993944466114044
+      }
+    },
+    "ecg+mri": {
+      "auroc": {
+        "estimate": 0.9570302399999999,
+        "low": 0.9516703305249381,
+        "high": 0.961987503530633,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.9608310157398209,
+        "low": 0.956000143042262,
+        "high": 0.965734721180794,
+        "resamples": 1000
+      },
+      "brier": 0.08443458378314972,
+      "ece": 0.03797719442695378,
+      "threshold": 0.3472653925418854,
+      "confusion": {
+        "tp": 2325,
+        "fp": 459,
+        "fn": 175,
+        "tn": 2041
+      },
+      "accuracy": 0.8732,
+      "precision": 0.8351293103448276,
+      "recall": 0.93,
+      "specificity": 0.8164,
+      "f1": 0.8800151400454201,
+      "mean_gate_weight": {
+        "ecg": 0.3464048206806183,
+        "mri": 0.6535950899124146
+      }
+    },
+    "ecg+clinical": {
+      "auroc": {
+        "estimate": 0.96597472,
+        "low": 0.9613255316852329,
+        "high": 0.9702261698191511,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.9692842389666345,
+        "low": 0.9648726563780843,
+        "high": 0.9732763499917702,
+        "resamples": 1000
+      },
+      "brier": 0.07302381843328476,
+      "ece": 0.042792977648973454,
+      "threshold": 0.3668327331542969,
+      "confusion": {
+        "tp": 2291,
+        "fp": 290,
+        "fn": 209,
+        "tn": 2210
+      },
+      "accuracy": 0.9002,
+      "precision": 0.8876404494382022,
+      "recall": 0.9164,
+      "specificity": 0.884,
+      "f1": 0.9017909860263728,
+      "mean_gate_weight": {
+        "ecg": 0.5446628928184509,
+        "clinical": 0.4553370475769043
+      }
+    },
+    "ecg": {
+      "auroc": {
+        "estimate": 0.9433588799999999,
+        "low": 0.9373067807185035,
+        "high": 0.9492292153553712,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.9521319018411041,
+        "low": 0.946577493574151,
+        "high": 0.9574316272384074,
+        "resamples": 1000
+      },
+      "brier": 0.09451640397310257,
+      "ece": 0.04997234032452105,
+      "threshold": 0.35132455825805664,
+      "confusion": {
+        "tp": 2177,
+        "fp": 269,
+        "fn": 323,
+        "tn": 2231
+      },
+      "accuracy": 0.8816,
+      "precision": 0.8900245298446443,
+      "recall": 0.8708,
+      "specificity": 0.8924,
+      "f1": 0.8803073190456935,
+      "mean_gate_weight": {
+        "ecg": 1.0
+      }
+    },
+    "mri+clinical": {
+      "auroc": {
+        "estimate": 0.9058419200000001,
+        "low": 0.8980092861501237,
+        "high": 0.9137450609446569,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.9100895691927946,
+        "low": 0.9015395949521323,
+        "high": 0.9187281842812985,
+        "resamples": 1000
+      },
+      "brier": 0.1327391415834427,
+      "ece": 0.057840953654050814,
+      "threshold": 0.47735166549682617,
+      "confusion": {
+        "tp": 2104,
+        "fp": 560,
+        "fn": 396,
+        "tn": 1940
+      },
+      "accuracy": 0.8088,
+      "precision": 0.7897897897897898,
+      "recall": 0.8416,
+      "specificity": 0.776,
+      "f1": 0.814872192099148,
+      "mean_gate_weight": {
+        "mri": 0.7020074129104614,
+        "clinical": 0.29799261689186096
+      }
+    },
+    "mri": {
+      "auroc": {
+        "estimate": 0.8497716799999999,
+        "low": 0.8391337824673114,
+        "high": 0.8607935846828975,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.8647388853055674,
+        "low": 0.8533041434642124,
+        "high": 0.876250841483022,
+        "resamples": 1000
+      },
+      "brier": 0.17364101111888885,
+      "ece": 0.0969591088414192,
+      "threshold": 0.7895134687423706,
+      "confusion": {
+        "tp": 1658,
+        "fp": 353,
+        "fn": 842,
+        "tn": 2147
+      },
+      "accuracy": 0.761,
+      "precision": 0.8244654400795625,
+      "recall": 0.6632,
+      "specificity": 0.8588,
+      "f1": 0.735091997339836,
+      "mean_gate_weight": {
+        "mri": 1.0
+      }
+    },
+    "clinical": {
+      "auroc": {
+        "estimate": 0.82320144,
+        "low": 0.8110078769112095,
+        "high": 0.8348557127917194,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.7807040472001255,
+        "low": 0.762420408025335,
+        "high": 0.79864819953977,
+        "resamples": 1000
+      },
+      "brier": 0.17084836959838867,
+      "ece": 0.0628472417294979,
+      "threshold": 0.4843897819519043,
+      "confusion": {
+        "tp": 2038,
+        "fp": 692,
+        "fn": 462,
+        "tn": 1808
+      },
+      "accuracy": 0.7692,
+      "precision": 0.7465201465201465,
+      "recall": 0.8152,
+      "specificity": 0.7232,
+      "f1": 0.7793499043977056,
+      "mean_gate_weight": {
+        "clinical": 1.0
+      }
+    },
+    "baseline: mean of single-modality probabilities": {
+      "auroc": {
+        "estimate": 0.9732192000000001,
+        "low": 0.9693999622712133,
+        "high": 0.9769790232365133,
+        "resamples": 1000
+      },
+      "auprc": {
+        "estimate": 0.9747764595171651,
+        "low": 0.9707721674358342,
+        "high": 0.9786258838201346,
+        "resamples": 1000
+      },
+      "brier": 0.1017555445432663,
+      "ece": 0.1852265173345804,
+      "threshold": 0.4876837432384491,
+      "confusion": {
+        "tp": 2323,
+        "fp": 251,
+        "fn": 177,
+        "tn": 2249
+      },
+      "accuracy": 0.9144,
+      "precision": 0.9024864024864024,
+      "recall": 0.9292,
+      "specificity": 0.8996,
+      "f1": 0.9156484036263303
+    }
+  },
+  "caveat": "Virtual patients join three different people with the same label; results measure how the network combines independent evidence, not clinical performance.",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.4625864536501467,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9763271111111111,
+        "ecg+mri": 0.9556146666666668,
+        "ecg+clinical": 0.9572266666666667,
+        "ecg": 0.921094222222222,
+        "mri+clinical": 0.9396275555555555,
+        "mri": 0.8462777777777778,
+        "clinical": 0.8742786666666668,
+        "baseline: sum of single readings": 0.9787213333333333
+      },
+      "val_mean": 0.9243495238095238
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.35560357675421983,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9754435555555555,
+        "ecg+mri": 0.952972888888889,
+        "ecg+clinical": 0.962727111111111,
+        "ecg": 0.9180986666666666,
+        "mri+clinical": 0.9274640000000001,
+        "mri": 0.8416568888888889,
+        "clinical": 0.882216,
+        "baseline: sum of single readings": 0.9762031111111111
+      },
+      "val_mean": 0.9229398730158731
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.30565511458553374,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9680044444444443,
+        "ecg+mri": 0.9479715555555556,
+        "ecg+clinical": 0.9613528888888889,
+        "ecg": 0.9212426666666667,
+        "mri+clinical": 0.9108271111111111,
+        "mri": 0.8442955555555555,
+        "clinical": 0.8665808888888888,
+        "baseline: sum of single readings": 0.9712524444444444
+      },
+      "val_mean": 0.9171821587301586
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.2914045675424859,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9768688888888889,
+        "ecg+mri": 0.953156,
+        "ecg+clinical": 0.9653724444444445,
+        "ecg": 0.9239155555555555,
+        "mri+clinical": 0.9282604444444444,
+        "mri": 0.8342626666666667,
+        "clinical": 0.8963537777777777,
+        "baseline: sum of single readings": 0.9764324444444444
+      },
+      "val_mean": 0.9254556825396826
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.2742272986797616,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9716937777777777,
+        "ecg+mri": 0.9464466666666667,
+        "ecg+clinical": 0.9651053333333334,
+        "ecg": 0.9240866666666666,
+        "mri+clinical": 0.9193315555555557,
+        "mri": 0.8342617777777777,
+        "clinical": 0.8797928888888888,
+        "baseline: sum of single readings": 0.9742084444444443
+      },
+      "val_mean": 0.9201026666666667
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.24862598726758733,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9702328888888889,
+        "ecg+mri": 0.9451013333333333,
+        "ecg+clinical": 0.9629737777777778,
+        "ecg": 0.9236831111111111,
+        "mri+clinical": 0.9069764444444444,
+        "mri": 0.8257168888888888,
+        "clinical": 0.8813404444444445,
+        "baseline: sum of single readings": 0.9702768888888889
+      },
+      "val_mean": 0.9165749841269841
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.23455924377776682,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9682822222222224,
+        "ecg+mri": 0.9440582222222222,
+        "ecg+clinical": 0.9632799999999999,
+        "ecg": 0.9242391111111111,
+        "mri+clinical": 0.8974813333333334,
+        "mri": 0.8253795555555555,
+        "clinical": 0.8857533333333333,
+        "baseline: sum of single readings": 0.9681791111111111
+      },
+      "val_mean": 0.9154962539682538
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.2358329666312784,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9659933333333333,
+        "ecg+mri": 0.9358693333333334,
+        "ecg+clinical": 0.9668511111111111,
+        "ecg": 0.9252964444444445,
+        "mri+clinical": 0.8991795555555555,
+        "mri": 0.8171946666666666,
+        "clinical": 0.8814951111111111,
+        "baseline: sum of single readings": 0.9675653333333333
+      },
+      "val_mean": 0.9131256507936507
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.22610634798184037,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9496959999999999,
+        "ecg+mri": 0.9163159999999999,
+        "ecg+clinical": 0.9633133333333332,
+        "ecg": 0.9194186666666667,
+        "mri+clinical": 0.8566155555555555,
+        "mri": 0.7699062222222222,
+        "clinical": 0.8721186666666667,
+        "baseline: sum of single readings": 0.9514742222222221
+      },
+      "val_mean": 0.892483492063492
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.21484979696106166,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.958291111111111,
+        "ecg+mri": 0.9252528888888889,
+        "ecg+clinical": 0.9643222222222223,
+        "ecg": 0.9219555555555555,
+        "mri+clinical": 0.8671697777777777,
+        "mri": 0.7776888888888889,
+        "clinical": 0.8712506666666666,
+        "baseline: sum of single readings": 0.9566075555555555
+      },
+      "val_mean": 0.8979901587301587
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.21277969295624644,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9389844444444444,
+        "ecg+mri": 0.9071124444444444,
+        "ecg+clinical": 0.9616866666666668,
+        "ecg": 0.9233577777777778,
+        "mri+clinical": 0.8403831111111111,
+        "mri": 0.7673404444444444,
+        "clinical": 0.880916888888889,
+        "baseline: sum of single readings": 0.948039111111111
+      },
+      "val_mean": 0.8885402539682541
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.19863205990986899,
+      "val_auroc": {
+        "ecg+mri+clinical": 0.9501297777777777,
+        "ecg+mri": 0.9207093333333334,
+        "ecg+clinical": 0.9645431111111111,
+        "ecg": 0.9234573333333332,
+        "mri+clinical": 0.8747795555555555,
+        "mri": 0.8038333333333333,
+        "clinical": 0.8852231111111111,
+        "baseline: sum of single readings": 0.9533426666666667
+      },
+      "val_mean": 0.9032393650793651
+    }
+  ],
+  "minutes": 1.0715411766666876
+}
