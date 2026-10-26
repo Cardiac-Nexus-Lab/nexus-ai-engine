@@ -20,7 +20,7 @@ The ECG, cardiac MRI and health-record networks are each trained and tested on t
 | Ejection fraction from the predicted masks | LV r 0.991 against expert masks, limits of agreement -6.6 to +5.8 points |
 | MRI diagnosis from measurements | 45/50 test patients from the ACDC-only model's masks; 43/50 from the pooled model's (served) |
 | Health-record model, coronary artery disease (UCI, 4 centres) | Internal test AUROC 0.85 (184 patients); 0.73–0.87 at a centre left out of training |
-| Fusion network (ECG, MRI, health record) | Attention-based deep learning fusion; AUROC 0.973 on 5,000 virtual test patients |
+| Fusion network (ECG, MRI, health record) | Attention-based deep learning fusion; AUROC 0.965 on 5,000 virtual test patients |
 | MRI explainability with checks | Uncertainty detects errors at AUROC 0.861; Grad-CAM depends on learned weights on average |
 | Web application serving these models | Live in [nexus-web-portal](https://github.com/Cardiac-Nexus-Lab/nexus-web-portal) |
 
@@ -121,28 +121,33 @@ slices, at end-diastole and end-systole) with the eight measurements of its outl
 seven form fields (encoded as ten numbers; a blank field takes the training mean). Each is projected to 128
 numbers; two transformer attention layers (four heads) let the three inform each other; a learned gate weighs
 them. The output is hybrid: the branches' own log-odds summed, plus the attention layers' correction. Any modality
-can be missing (training drops each whole modality with probability 0.3). 401,001 parameters.
+can be missing (training drops each whole modality with probability 0.3), and the MRI can be one 3D frame or
+both (training reduces a third of the MRIs to one frame of either phase). The model stores the SHA-256 of
+the ECG and MRI checkpoints it was built on; the portal leaves the combined result out if either has changed,
+until `scripts/rebuild_fusion.py` has rebuilt it. 401,001 parameters.
 
 The target is the one outcome all three datasets label: heart disease present (an ECG that is not normal, an MRI
 that is not NOR, UCI num > 0). No public dataset has all three for the same people, so training and testing use
 virtual patients that join an ECG, an MRI and a health record of different people with the same label, each
-source keeping its own patient-wise split: PTB-XL fold 9 (which the ECG network never trained on) for training and
+source keeping its own patient-wise split: PTB-XL fold 9 (which the ECG network never trained on), split by patient, for training and
 validation and fold 10 for testing; the MRI segmenter's splits of ACDC, M&Ms and M&Ms-2 (550 labelled patients);
 UCI's 736/184 split. AdamW, learning rate 3e-4, weight decay 1e-3, batch 64, input dropout 0.2/0.5/0.1, epoch
-4 chosen on validation; one calibration and a threshold per input combination set on validation.
+8 chosen on validation; one calibration and a threshold per input combination set on validation.
 
 5,000 virtual test patients, half with heart disease:
 
 | Inputs | AUROC (95% CI) | Precision | Recall | F1 | Brier | ECE |
 | --- | --- | --- | --- | --- | --- | --- |
-| ECG + MRI + health record | 0.973 (0.970–0.977) | 0.904 | 0.928 | 0.916 | 0.065 | 0.028 |
-| ECG + MRI | 0.957 (0.952–0.962) | 0.835 | 0.930 | 0.880 | 0.084 | 0.038 |
-| ECG + health record | 0.966 (0.961–0.970) | 0.888 | 0.916 | 0.902 | 0.073 | 0.043 |
-| MRI + health record | 0.906 (0.898–0.914) | 0.790 | 0.842 | 0.815 | 0.133 | 0.058 |
-| ECG | 0.943 (0.937–0.949) | 0.890 | 0.871 | 0.880 | 0.095 | 0.050 |
-| MRI | 0.850 (0.839–0.861) | 0.824 | 0.663 | 0.735 | 0.174 | 0.097 |
-| health record | 0.823 (0.811–0.835) | 0.747 | 0.815 | 0.779 | 0.171 | 0.063 |
-| Mean of the three single readings (baseline) | 0.973 | 0.902 | 0.929 | 0.916 | 0.102 | 0.185 |
+| ECG + MRI + health record | 0.965 (0.961–0.970) | 0.826 | 0.951 | 0.884 | 0.080 | 0.049 |
+| ECG + MRI + health record, one MRI frame | 0.977 (0.973–0.980) | 0.902 | 0.946 | 0.923 | 0.059 | 0.037 |
+| ECG + MRI | 0.946 (0.940–0.952) | 0.825 | 0.914 | 0.867 | 0.105 | 0.065 |
+| ECG + health record | 0.961 (0.956–0.966) | 0.882 | 0.909 | 0.896 | 0.078 | 0.035 |
+| MRI + health record | 0.894 (0.886–0.903) | 0.711 | 0.919 | 0.802 | 0.147 | 0.085 |
+| ECG | 0.940 (0.934–0.946) | 0.877 | 0.862 | 0.870 | 0.100 | 0.069 |
+| MRI | 0.833 (0.822–0.845) | 0.706 | 0.833 | 0.764 | 0.189 | 0.128 |
+| MRI, one MRI frame | 0.840 (0.829–0.851) | 0.915 | 0.600 | 0.725 | 0.176 | 0.124 |
+| health record | 0.820 (0.809–0.832) | 0.753 | 0.769 | 0.761 | 0.171 | 0.047 |
+| Mean of the three single readings (baseline) | 0.966 | 0.849 | 0.949 | 0.896 | 0.108 | 0.173 |
 
 Every modality added helps. The mean of the single readings ranks as well, as expected when a virtual patient's
 modalities are independent given the label (their summed log-odds are then the best possible combination), but it
