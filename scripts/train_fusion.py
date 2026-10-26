@@ -64,12 +64,13 @@ from torch import nn
 from cardiac_nexus import ehr
 from cardiac_nexus.evaluate import VectorScaler, bootstrap_metric, expected_calibration_error
 from cardiac_nexus.fusion import (CLINICAL_FIELDS, FIELD_COLUMNS, CLINICAL_COLUMNS, MODALITIES, MRI_FEATURES,
-                                  FusionNet, clinical_stats, encode_clinical)
+                                  FusionNet, clinical_stats, encode_clinical, mri_vector)
 
 INPUTS = REPO_ROOT / "data" / "fusion" / "branch_inputs.npz"
 OUTPUT = REPO_ROOT / "results" / "fusion_dl"
 SEED = 42
 MODALITY_DROP, FIELD_DROP = 0.3, 0.25
+SINGLE_FRAME = 0.35   # share of training MRIs reduced to one frame (either phase), as most uploads are
 INPUT_DROPOUT = {"ecg": 0.2, "mri": 0.5, "clinical": 0.1}
 WEIGHT_DECAY = 1e-3
 LEARNING_RATE = 3e-4
@@ -91,8 +92,16 @@ def pools() -> tuple[dict, dict]:
     median = np.nanmedian(measures[train_m], axis=0)
     filled = np.where(np.isfinite(measures), measures, median)
     mean, std = filled[train_m].mean(axis=0), filled[train_m].std(axis=0) + 1e-6
-    mri = np.concatenate([z["mri_features"], (filled - mean) / std], axis=1).astype(np.float32)
     mri_stats = {"measure_median": median.tolist(), "measure_mean": mean.tolist(), "measure_std": std.tolist()}
+    names = list(z["mri_measurement_names"])
+    ed, es = z["mri_features"][:, :256], z["mri_features"][:, 256:]
+
+    def vectors(first, second, table):
+        return np.stack([mri_vector(first[i], None if second is None else second[i], dict(zip(names, table[i])),
+                                    mri_stats) for i in range(len(first))]).astype(np.float32)
+    mri = vectors(ed, es, measures)
+    mri_ed_only = vectors(ed, None, z["mri_measurements_ed_only"])
+    mri_es_only = vectors(es, None, z["mri_measurements_es_only"])
 
     table = ehr.fetch()
     strata = table["site"] + "_" + table["cad"].astype(str)
@@ -110,20 +119,31 @@ def pools() -> tuple[dict, dict]:
         out[split] = {
             "ecg": (z["ecg_embedding"][ecg_split == split], z["ecg_label"][ecg_split == split].astype(int)),
             "mri": (mri[z["mri_split"] == split], z["mri_label"][z["mri_split"] == split].astype(int)),
+            "mri_single": (mri_ed_only[z["mri_split"] == split], mri_es_only[z["mri_split"] == split]),
             "clinical": (encoded(ehr_part), ehr_part["cad"].to_numpy().astype(int)),
         }
-    return out, {"clinical": stats, "mri": mri_stats}
+    branches = {"ecg": {"path": str(z["ecg_checkpoint"]), "sha256": str(z["ecg_sha256"])},
+                "mri": {"path": str(z["mri_checkpoint"]), "sha256": str(z["mri_sha256"])}}
+    return out, {"clinical": stats, "mri": mri_stats, "branches": branches}
 
 
-def virtual_patients(pool: dict, n: int, rng: np.random.Generator) -> tuple[dict, np.ndarray]:
-    """n virtual patients, half with heart disease: for each, one record of each modality with that label."""
+def virtual_patients(pool: dict, n: int, rng: np.random.Generator, single_frame: float = 0.0) -> tuple[dict, np.ndarray]:
+    """n virtual patients, half with heart disease: for each, one record of each modality with that label.
+
+    A `single_frame` share of the MRIs is replaced by one of that patient's two frames alone."""
     y = rng.permutation(np.arange(n) % 2)
-    batch = {}
+    batch, picks = {}, {}
     for m in MODALITIES:
         x, labels = pool[m]
         by_label = [np.flatnonzero(labels == k) for k in (0, 1)]
-        picks = np.array([rng.choice(by_label[k]) for k in y])
-        batch[m] = x[picks]
+        picks[m] = np.array([rng.choice(by_label[k]) for k in y])
+        batch[m] = x[picks[m]].copy()
+    if single_frame:  # drawn after every pick, so the same seed gives the same patients either way
+        ed_only, es_only = pool["mri_single"]
+        one = rng.random(n) < single_frame
+        phase = rng.random(n) < 0.5
+        batch["mri"][one & phase] = ed_only[picks["mri"][one & phase]]
+        batch["mri"][one & ~phase] = es_only[picks["mri"][one & ~phase]]
     return batch, y
 
 
@@ -201,7 +221,7 @@ def main() -> None:
     history, best, best_epoch, best_state, waited = [], -1.0, 0, None, 0
     for epoch in range(1, epochs + 1):
         model.train()
-        batch, y = virtual_patients(data["train"], 8192, rng)
+        batch, y = virtual_patients(data["train"], 8192, rng, single_frame=SINGLE_FRAME)
         batch["clinical"] = blank_random_fields(batch["clinical"], stats["clinical"], rng)
         present = masks(len(y), None, rng)
         order, losses = rng.permutation(len(y)), []
@@ -258,7 +278,8 @@ def main() -> None:
               "settings": {"optimizer": "AdamW", "learning_rate": LEARNING_RATE, "weight_decay": WEIGHT_DECAY,
                            "input_dropout": INPUT_DROPOUT, "batch": 64,
                            "schedule": "cosine", "max_epochs": epochs, "patience": patience,
-                           "modality_dropout": MODALITY_DROP, "field_dropout": FIELD_DROP, "solo_loss_weight": 0.3,
+                           "modality_dropout": MODALITY_DROP, "field_dropout": FIELD_DROP,
+                           "single_frame_mri": SINGLE_FRAME, "solo_loss_weight": 0.3,
                            "parameters": int(sum(p.numel() for p in model.parameters()))},
               "selected_epoch": best_epoch, "calibration": calibration, "thresholds": thresholds, "test": {},
               "caveat": "Virtual patients join three different people with the same label; results measure how "
@@ -276,6 +297,15 @@ def main() -> None:
         report["test"]["+".join(subset)] = entry
         print(f"test {'+'.join(subset):22} AUROC {entry['auroc']['estimate']:.3f} "
               f"({entry['auroc']['low']:.3f}-{entry['auroc']['high']:.3f})  F1 {entry['f1']:.3f}", flush=True)
+    # The commonest upload: one MRI frame. Same test patients, each MRI reduced to one of its frames.
+    single_batch, single_y = virtual_patients(data["test"], 5000, np.random.default_rng(2), single_frame=1.0)
+    assert np.array_equal(single_y, test_y) and np.array_equal(single_batch["ecg"], test_batch["ecg"])
+    for subset in (("ecg", "mri", "clinical"), ("mri",)):
+        z, _, _ = logits_for(model, single_batch, masks(len(test_y), subset, test_rng))
+        entry = metrics(test_y, calibrated(z), thresholds["+".join(subset)])
+        report["test"]["+".join(subset) + " (MRI: one frame only)"] = entry
+        print(f"test {'+'.join(subset) + ' one MRI frame':22} AUROC {entry['auroc']['estimate']:.3f}  F1 {entry['f1']:.3f}",
+              flush=True)
     baseline = np.mean([solo_probs[m] for m in MODALITIES], axis=0)
     fpr, tpr, cut = roc_curve(val_y, np.mean([calibrated(logits_for(model, val_batch, masks(len(val_y), (m,), cal_rng))[0])
                                               for m in MODALITIES], axis=0))
@@ -286,7 +316,8 @@ def main() -> None:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     torch.save({"model_state_dict": model.state_dict(), "model_args": model_args, "calibration": calibration,
                 "thresholds": thresholds, "clinical_stats": stats["clinical"], "mri_stats": stats["mri"],
-                "mri_features": MRI_FEATURES, "selected_epoch": best_epoch}, OUTPUT / "fusion_model.pt")
+                "mri_features": MRI_FEATURES, "selected_epoch": best_epoch,
+                "branch_checkpoints": stats["branches"]}, OUTPUT / "fusion_model.pt")
     report["history"] = history
     report["minutes"] = (time.perf_counter() - started) / 60
     (OUTPUT / "fusion_report.json").write_text(json.dumps(report, indent=2))

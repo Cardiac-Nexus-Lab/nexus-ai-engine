@@ -6,7 +6,10 @@ Each modality keeps its own trained network as a branch:
   recording (the layer before its five-finding output);
 * MRI: the pooled 2.5D U-Net's deepest feature map (256 channels), averaged over
   the slices where it finds the heart, at end-diastole and end-systole, plus the
-  eight measurements its outlines give (volumes, ejection fractions, mass);
+  eight measurements its outlines give (volumes, ejection fractions, mass). A
+  single 3D frame, the commonest upload, also works: its features fill the first
+  slot, ejection fractions are marked unavailable, and two flags say which case
+  it is; training reduces a third of the MRIs to one frame of either phase;
 * health record: the seven form fields, encoded as ten numbers.
 
 The fusion network projects each to a 128-number token, lets the three tokens
@@ -44,6 +47,8 @@ MODALITIES = ("ecg", "mri", "clinical")
 MODALITY_NAMES = {"ecg": "ECG", "mri": "cardiac MRI", "clinical": "health record"}
 WIDTH = 128
 MRI_FEATURES = list(POOLED_FEATURES)
+EJECTION_FEATURES = ("lv_ef", "rv_ef", "lv_ef_minus_rv_ef")  # need both frames
+MRI_DIM = 256 * 2 + len(MRI_FEATURES) + 2
 
 # Health-record encoding. Numbers are standardized with the training patients' mean
 # and spread; categories are one-hot. A blank field takes the training patients'
@@ -149,12 +154,31 @@ def mri_branch_input(segmenter, ed_volume: np.ndarray, es_volume: np.ndarray, sp
     return np.concatenate([ed_pooled, es_pooled]), pooled_features(ed_masks, es_masks, spacing), ed_masks, es_masks
 
 
-def mri_vector(features: np.ndarray, measurements: dict, stats: dict) -> np.ndarray:
-    """Feature map summary plus standardized measurements; an undefined measurement takes the training median."""
+def single_frame_measurements(mask: np.ndarray, spacing) -> dict:
+    """What one frame's outline gives: volumes, mass and their ratios, read as if end-diastolic; no ejection fraction."""
+    values = pooled_features(mask, mask, spacing)
+    return values | {k: float("nan") for k in EJECTION_FEATURES}
+
+
+def mri_vector(first: np.ndarray, second: np.ndarray | None, measurements: dict, stats: dict) -> np.ndarray:
+    """The MRI branch's input: end-diastole (or the only frame) features, end-systole features or zeros,
+    standardized measurements (an undefined one takes the training median), and flags for each frame."""
     values = np.array([measurements.get(k, np.nan) for k in MRI_FEATURES], dtype=np.float32)
     values = np.where(np.isfinite(values), values, np.asarray(stats["measure_median"], dtype=np.float32))
     values = (values - np.asarray(stats["measure_mean"])) / np.asarray(stats["measure_std"])
-    return np.concatenate([features.astype(np.float32), values.astype(np.float32)])
+    flags = np.array([1.0, 0.0 if second is None else 1.0], dtype=np.float32)
+    second = np.zeros_like(first) if second is None else second
+    return np.concatenate([first.astype(np.float32), second.astype(np.float32), values.astype(np.float32), flags])
+
+
+def file_fingerprint(path) -> str:
+    """SHA-256 of a model file: the fusion network is only valid on the branch models it was built from."""
+    import hashlib
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 @torch.no_grad()
@@ -177,7 +201,7 @@ class FusionNet(nn.Module):
 
     The output is hybrid: each branch's own log-odds summed, plus the attention layers' correction."""
 
-    def __init__(self, ecg_dim: int = 128, mri_dim: int = 256 * 2 + len(MRI_FEATURES),
+    def __init__(self, ecg_dim: int = 128, mri_dim: int = MRI_DIM,
                  clinical_dim: int = len(CLINICAL_COLUMNS), width: int = WIDTH, heads: int = 4,
                  layers: int = 2, dropout: float = 0.3, input_dropout: dict | None = None):
         super().__init__()
@@ -226,10 +250,10 @@ class FusionNet(nn.Module):
 @dataclass
 class FusionInputs:
     ecg: np.ndarray | None          # [128]
-    mri: np.ndarray | None          # [520]
+    mri: np.ndarray | None          # [MRI_DIM]
     clinical: np.ndarray | None     # [10]
 
-    def tensors(self, ecg_dim: int = 128, mri_dim: int = 520, clinical_dim: int = len(CLINICAL_COLUMNS)):
+    def tensors(self, ecg_dim: int = 128, mri_dim: int = MRI_DIM, clinical_dim: int = len(CLINICAL_COLUMNS)):
         def t(x, dim):
             return torch.zeros(1, dim) if x is None else torch.from_numpy(np.asarray(x, np.float32))[None]
         present = torch.tensor([[self.ecg is not None, self.mri is not None, self.clinical is not None]])

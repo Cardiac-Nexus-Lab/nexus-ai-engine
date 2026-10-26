@@ -9,8 +9,13 @@ Fold 9 (which only calibrated it) trains and validates the fusion network; fold
 MRI: the deployed pooled segmenter, run on every ACDC, M&Ms and M&Ms-2 patient
 with a diagnosis in ACDC's classes, gives the deepest feature map averaged over
 the heart's slices (end-diastole and end-systole) and the eight measurements of
-its own outlines, exactly as the portal computes them. Splits are the
-segmenter's own patient-wise splits. Label: anything other than NOR.
+its own outlines, exactly as the portal computes them, and each frame's own
+single-frame measurements, so the fusion network can also learn from one frame.
+Splits are the segmenter's own patient-wise splits. Label: anything other than NOR.
+
+Both model files' SHA-256 are stored with the inputs, and train_fusion.py copies
+them into the fusion model, so the portal can refuse to combine features from a
+retrained branch with a fusion network that was built on the old one.
 
 The health record needs no network to precompute; train_fusion.py reads UCI.
 
@@ -34,7 +39,8 @@ import numpy as np
 import torch
 
 from cardiac_nexus import data, mri_cohorts
-from cardiac_nexus.fusion import MRI_FEATURES, ecg_embedding, mri_branch_input
+from cardiac_nexus.fusion import (MRI_FEATURES, ecg_embedding, file_fingerprint, mri_branch_input,
+                                  single_frame_measurements)
 from diagnose_mri_pooled import SEGMENTER, mapped_labels
 from evaluate_ecg import load_checkpoint
 from evaluate_mri import load_segmenter
@@ -65,6 +71,7 @@ def main() -> None:
         split_of |= {int(i): "test" for i in ids}
     patients = [i for i in mri_meta.index if isinstance(mri_labels[i], str) and int(i) in split_of]
     mri_feat, mri_measure, mri_class, mri_split, mri_cohort = [], [], [], [], []
+    single = {0: [], 1: []}
     for n, index in enumerate(patients, 1):
         volumes = {}
         for phase in (0, 1):
@@ -72,7 +79,9 @@ def main() -> None:
             order = np.argsort(cache["position"][selected]) if "position" in cache else slice(None)
             volumes[phase] = cache["images"][selected][order]
             spacing = tuple(float(s) for s in cache["spacing"][selected][0])
-        features, measurements, _, _ = mri_branch_input(segmenter, volumes[0], volumes[1], spacing, device)
+        features, measurements, ed_masks, es_masks = mri_branch_input(segmenter, volumes[0], volumes[1], spacing, device)
+        for phase, masks in ((0, ed_masks), (1, es_masks)):
+            single[phase].append([single_frame_measurements(masks, spacing)[k] for k in MRI_FEATURES])
         mri_feat.append(features)
         mri_measure.append([measurements[k] for k in MRI_FEATURES])
         mri_class.append(mri_labels[index])
@@ -90,6 +99,10 @@ def main() -> None:
         ecg_label=abnormal.astype(np.int8), ecg_split=ecg_split, ecg_classes=np.array(classes),
         ecg_record=metadata.index.to_numpy()[ecg_rows],
         mri_features=np.asarray(mri_feat, np.float32), mri_measurements=np.asarray(mri_measure, np.float32),
+        mri_measurements_ed_only=np.asarray(single[0], np.float32),
+        mri_measurements_es_only=np.asarray(single[1], np.float32),
+        ecg_checkpoint=str(ECG_CHECKPOINT.relative_to(REPO_ROOT)), ecg_sha256=file_fingerprint(ECG_CHECKPOINT),
+        mri_checkpoint=str(SEGMENTER.relative_to(REPO_ROOT)), mri_sha256=file_fingerprint(SEGMENTER),
         mri_class=mri_class, mri_label=(mri_class != "NOR").astype(np.int8), mri_split=np.array(mri_split),
         mri_cohort=np.array(mri_cohort), mri_patient=np.asarray(patients),
         mri_measurement_names=np.array(MRI_FEATURES),
