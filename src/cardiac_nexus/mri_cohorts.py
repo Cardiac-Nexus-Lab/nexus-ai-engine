@@ -58,8 +58,9 @@ def fetch_cohort(name: str, root: Path = DATA_ROOT) -> pd.DataFrame:
 
     columns = [f"sax_{phase}{suffix}" for phase in PHASES for suffix in ("", "_gt")]
     missing = [row[c] for _, row in table.iterrows() for c in columns if not (folder / row[c]).exists()]
-    for relative in tqdm(missing, desc=f"{name} ED/ES files", disable=not missing):
-        _download(f"{base}/{relative}", folder / relative)
+    if missing:
+        mri_data.download_all([(f"{base}/{relative}", folder / relative) for relative in missing],
+                              f"{name} ED/ES files")
     return table
 
 

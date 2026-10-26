@@ -15,9 +15,11 @@ the expert masks and comparing it with the value the mirror states.
 
 from __future__ import annotations
 
+import shutil
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import urlretrieve
+from urllib.request import urlopen
 
 import nibabel as nib
 import numpy as np
@@ -43,13 +45,21 @@ def _download(url: str, destination: Path, attempts: int = 4) -> None:
     last_error: Exception | None = None
     for _ in range(attempts):
         try:
-            urlretrieve(url, temporary)
+            # A timeout, so one stalled connection is retried instead of hanging the run forever.
+            with urlopen(url, timeout=120) as response, open(temporary, "wb") as out:
+                shutil.copyfileobj(response, out)
             temporary.replace(destination)
             return
         except (HTTPError, URLError, OSError) as error:
             last_error = error
     temporary.unlink(missing_ok=True)
     raise RuntimeError(f"failed to download {url} after {attempts} attempts") from last_error
+
+
+def download_all(jobs: list[tuple[str, Path]], description: str, workers: int = 8) -> None:
+    """Fetch (url, destination) pairs a few at a time; the mirror's per-file latency dominates."""
+    with ThreadPoolExecutor(workers) as pool:
+        list(tqdm(pool.map(lambda job: _download(*job), jobs), total=len(jobs), desc=description))
 
 
 def fetch_acdc(root: Path = DATA_ROOT) -> pd.DataFrame:
@@ -66,8 +76,7 @@ def fetch_acdc(root: Path = DATA_ROOT) -> pd.DataFrame:
     wanted = [(row[column], root / row[column]) for _, row in metadata.iterrows() for column in columns]
     missing = [(relative, path) for relative, path in wanted if not path.exists()]
     if missing:
-        for relative, path in tqdm(missing, desc="ACDC ED/ES files"):
-            _download(f"{ACDC_BASE}/{relative}", path)
+        download_all([(f"{ACDC_BASE}/{relative}", path) for relative, path in missing], "ACDC ED/ES files")
     else:
         print(f"All {len(wanted)} ACDC files already present.")
     return metadata

@@ -16,8 +16,16 @@ the same thing (AMBIGUOUS), and negative otherwise. NORM is positive only when e
 code is a plain sinus rhythm, and negative when the recording has any code of the
 other four classes; recordings with other findings are left out of NORM.
 
+Chapman-Shaoxing and Ningbo are also published together as PhysioNet's "ECG
+Arrhythmia" database (same recordings and SNOMED codes, records JS00001-JS10646 and
+JS10647-JS45551). When PhysioNet is too slow to download per file, a copy of that
+database (e.g. the Hugging Face mirror huseyincavus/physionet-ecg-arrhythmia-1.0.0)
+can be unpacked under data/ecg_arrhythmia; every file is then checked against
+PhysioNet's own SHA256SUMS.txt and any mismatch is skipped.
+
 Usage:
-    python scripts/validate_ecg_external.py --download     # fetch the three sources once (resumable)
+    python scripts/validate_ecg_external.py --download georgia   # per-file from PhysioNet (resumable)
+    python scripts/validate_ecg_external.py --verify-mirror      # check data/ecg_arrhythmia against SHA256SUMS
     python scripts/validate_ecg_external.py
 """
 
@@ -49,6 +57,9 @@ BASE = "https://physionet.org/files/challenge-2021/1.0.3/training"
 SOURCES = {"georgia": "Georgia (Emory, USA)", "chapman_shaoxing": "Chapman-Shaoxing (China)",
            "ningbo": "Ningbo (China)"}
 DATA = REPO_ROOT / "data" / "challenge2021"
+MIRROR = REPO_ROOT / "data" / "ecg_arrhythmia"
+CHECKSUMS = "https://physionet.org/files/ecg-arrhythmia/1.0.0/SHA256SUMS.txt"
+LAST_CHAPMAN = 10646  # JS00001-JS10646 Chapman-Shaoxing, JS10647 onwards Ningbo
 OUTPUT = REPO_ROOT / "results" / "ecg_external"
 CHECKPOINT = REPO_ROOT / "results" / "local_xresnet18_full" / "ecg_multilabel.pt"
 REPORT = REPO_ROOT / "results" / "local_xresnet18_full" / "evaluation_report.json"
@@ -120,6 +131,57 @@ def download(sources, workers: int = 16) -> None:
         print(f"{source}: finished, {failed} files failed", flush=True)
 
 
+def mirror_root() -> Path | None:
+    """The folder holding WFDBRecords/ inside an unpacked copy of the ECG Arrhythmia database."""
+    found = next(MIRROR.rglob("WFDBRecords"), None) if MIRROR.exists() else None
+    return found.parent if found else None
+
+
+def verify_mirror() -> None:
+    """Hash every record file of the mirror against PhysioNet's published SHA256 sums."""
+    import hashlib
+    root = mirror_root()
+    if root is None:
+        raise SystemExit(f"No WFDBRecords folder under {MIRROR}")
+    sums_path = MIRROR / "SHA256SUMS.txt"
+    if not sums_path.exists():
+        urllib.request.urlretrieve(CHECKSUMS, sums_path)
+    expected = {}
+    for line in sums_path.read_text().splitlines():
+        digest, _, name = line.partition(" ")
+        if name.strip().endswith((".hea", ".mat")):
+            expected[name.strip()] = digest
+    good, bad, absent = [], [], []
+    for name, digest in expected.items():
+        path = root / name
+        if not path.exists():
+            absent.append(name)
+        elif hashlib.sha256(path.read_bytes()).hexdigest() == digest:
+            good.append(name)
+        else:
+            bad.append(name)
+    (MIRROR / "verified.txt").write_text("\n".join(good))
+    print(f"mirror check: {len(good)} files match PhysioNet, {len(bad)} differ, {len(absent)} missing")
+
+
+def source_headers(source: str) -> list[Path]:
+    """Headers for one source: the Challenge download, or the verified ECG Arrhythmia mirror."""
+    headers = sorted((DATA / source).rglob("*.hea"))
+    if headers or source == "georgia":
+        return headers
+    root, verified = mirror_root(), MIRROR / "verified.txt"
+    if root is None or not verified.exists():
+        return []
+    ok = set(verified.read_text().split())
+    chosen = []
+    for name in sorted(ok):
+        if name.endswith(".hea") and name.replace(".hea", ".mat") in ok:
+            number = int(Path(name).stem[2:])
+            if (number <= LAST_CHAPMAN) == (source == "chapman_shaoxing"):
+                chosen.append(root / name)
+    return chosen
+
+
 def read_record(header: Path):
     """Signal in mV as [12, samples], sampling rate and SNOMED codes, from a Challenge record."""
     lines = header.read_text().splitlines()
@@ -180,7 +242,7 @@ def evaluate(resamples: int) -> None:
     rows, skipped = [], {}
     for source in SOURCES:
         batch, meta = [], []
-        headers = sorted((DATA / source).rglob("*.hea"))
+        headers = source_headers(source)
         for header in headers:
             if not header.with_suffix(".mat").exists():
                 skipped[source] = skipped.get(source, 0) + 1
@@ -226,11 +288,15 @@ def evaluate(resamples: int) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--download", action="store_true")
+    parser.add_argument("--download", nargs="*", choices=list(SOURCES), default=None,
+                        help="sources to fetch per file from PhysioNet (all three if none named)")
+    parser.add_argument("--verify-mirror", action="store_true")
     parser.add_argument("--resamples", type=int, default=1000)
     args = parser.parse_args()
-    if args.download:
-        download(SOURCES)
+    if args.download is not None:
+        download(args.download or list(SOURCES))
+    elif args.verify_mirror:
+        verify_mirror()
     else:
         evaluate(args.resamples)
 
