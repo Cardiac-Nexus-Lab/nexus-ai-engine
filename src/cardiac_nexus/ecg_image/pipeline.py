@@ -59,10 +59,26 @@ class DigitizedECG:
     confidence: np.ndarray              # [12, samples], per-sample peak probability
     page: np.ndarray                    # the dewarped page, for display
     warnings: list[str] = field(default_factory=list)
+    # Which samples the page actually printed. A 3x4 page prints 2.5 of each lead's
+    # 10 seconds; the rest of `signal` is fill, and checks must not score it.
+    printed: np.ndarray | None = None
+    layout: str = "12x1"
 
     @property
     def mean_confidence(self) -> float:
-        return float(self.confidence.mean())
+        return float(self.confidence[self.printed_mask].mean())
+
+    @property
+    def printed_mask(self) -> np.ndarray:
+        return self.printed if self.printed is not None else np.ones(self.signal.shape, bool)
+
+    def low_confidence_share(self, floor: float = 0.15) -> float:
+        """Share of printed samples read with low confidence."""
+        return float((self.confidence[self.printed_mask] < floor).mean())
+
+
+class PageNotReadable(ValueError):
+    """The page's layout could not be found; the message says which step failed."""
 
 
 def find_page(image: np.ndarray, min_area_fraction: float = 0.5,
@@ -258,3 +274,82 @@ def load_localizer(checkpoint_path, device: torch.device | None = None) -> Trace
     model = TraceLocalizer(height=checkpoint.get("strip_height", STRIP_HEIGHT))
     model.load_state_dict(checkpoint["model_state_dict"])
     return model.to(device).eval()
+
+
+@torch.no_grad()
+def digitize_layout(image: np.ndarray, model: TraceLocalizer, layout: str, device: torch.device | None = None,
+                    confidence_floor: float = 0.15, sampling_rate: int = 100, seconds: float = 10.0,
+                    fill: str = "zeros") -> DigitizedECG:
+    """Read a 12-lead signal off a photographed printout in any standard layout.
+
+    The page is read rather than assumed (layout.locate): grid scale, rows and the
+    trace start come from the page itself, and each lead segment is cut into 2.5 s
+    strips exactly as LayoutStripDataset cuts its training strips. Each strip's
+    reading goes to its own time slot; a rhythm strip supplies its lead for the full
+    duration. What the layout never printed is filled (`fill`: "zeros", the mean of
+    a standardized lead, or "repeat", the printed window repeated) and marked in
+    `printed`, so nothing downstream mistakes it for a reading.
+
+    Raises PageNotReadable when the layout cannot be found, rather than cutting the
+    page by a guess.
+    """
+    from .layout import crop_box, lead_segments, locate
+
+    device = device or next(model.parameters()).device
+    model.eval()
+    page, found = find_page(image)
+    warnings: list[str] = []
+    if not found:
+        warnings.append("No page border detected; using the image as-is. Perspective was not corrected.")
+    geometry, reason = locate(page, layout)
+    if geometry is None:
+        raise PageNotReadable(reason)
+
+    window_samples = int(round(STRIP_SECONDS * sampling_rate))
+    window_width = STRIP_SECONDS * MM_PER_SECOND * geometry.pixels_per_mm
+    strips, slots = [], []
+    for segment in lead_segments(geometry):
+        x0, y0, x1, y1 = segment["box"]
+        for w in range(int(round((x1 - x0) / window_width))):
+            left = x0 + w * window_width
+            crop = crop_box(page, (left, y0, left + window_width, y1))
+            strips.append(cv2.resize(crop, (STRIP_WIDTH, STRIP_HEIGHT), interpolation=cv2.INTER_AREA))
+            slots.append((segment["lead"], int(round(segment["t0"] * sampling_rate)) + w * window_samples,
+                          bool(segment.get("rhythm"))))
+    batch = torch.from_numpy(np.stack([s.astype(np.float32).transpose(2, 0, 1) / 255.0 for s in strips])).to(device)
+    logits = model(batch)
+    rows = expected_rows(logits).cpu().numpy()
+    peak = row_confidence(logits).cpu().numpy()
+
+    samples = int(round(seconds * sampling_rate))
+    signal = np.zeros((12, samples), np.float32)
+    confidence = np.zeros((12, samples), np.float32)
+    printed = np.zeros((12, samples), bool)
+    source, target = np.linspace(0, 1, STRIP_WIDTH), np.linspace(0, 1, window_samples)
+    # Grid segments first, so a rhythm strip of the same lead overwrites them.
+    for k in sorted(range(len(slots)), key=lambda k: slots[k][2]):
+        lead, start, _ = slots[k]
+        end = min(samples, start + window_samples)
+        signal[lead, start:end] = np.interp(target, source, STRIP_HEIGHT / 2.0 - rows[k])[: end - start]
+        confidence[lead, start:end] = np.interp(target, source, peak[k])[: end - start]
+        printed[lead, start:end] = True
+
+    for lead in range(12):
+        part = signal[lead, printed[lead]]
+        signal[lead, printed[lead]] = (part - part.mean()) / (part.std() + 1e-6)
+        if fill == "repeat" and not printed[lead].all():
+            window = signal[lead, printed[lead]]
+            signal[lead] = np.tile(window, -(-samples // len(window)))[:samples]
+        elif not printed[lead].all():
+            signal[lead, ~printed[lead]] = 0.0
+
+    result = DigitizedECG(signal=signal, confidence=confidence, page=page, warnings=warnings,
+                          printed=printed, layout=layout)
+    weak = result.low_confidence_share(confidence_floor)
+    if weak > 0:
+        warnings.append(f"{100 * weak:.1f}% of printed samples were read with low confidence; "
+                        "the trace may be obscured there.")
+    if not printed.all():
+        warnings.append(f"A {layout} page prints {100 * printed.mean():.0f}% of the twelve leads' ten seconds; "
+                        "the rest was never on the page and is not a reading.")
+    return result

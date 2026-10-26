@@ -35,7 +35,7 @@ MM_PER_MV = 10.0
 class PaperSpec:
     """Physical description of the printout."""
 
-    layout: str = "12x1"          # "12x1", "3x4", or "3x4+rhythm"
+    layout: str = "12x1"          # one of LAYOUTS ("3x4+rhythm" is kept as an alias of "3x4+1R")
     pixels_per_mm: float = 4.0    # ~100 dpi
     sampling_rate: int = 100
     grid_minor_mm: float = 1.0
@@ -51,6 +51,11 @@ class PaperSpec:
     trace_width: int = 2
     show_labels: bool = True
     show_calibration: bool = True
+    # Real machines print the pulse at the start of every row, ending where the trace
+    # begins, and a short tick where one column hands over to the next. The original
+    # 12x1 training pages had one pulse in the margin and no ticks; kept as the default.
+    pulse_every_row: bool = False
+    column_ticks: bool = False
 
     def mm(self, millimetres: float) -> float:
         return millimetres * self.pixels_per_mm
@@ -94,24 +99,40 @@ def _draw_grid(draw: ImageDraw.ImageDraw, width: int, height: int, spec: PaperSp
         y += major
 
 
+LAYOUTS = ("12x1", "6x2", "6x2+1R", "3x4", "3x4+1R", "3x4+3R")
+# Rhythm strips run the full ten seconds under the grid: lead II alone, or V1, II and V5.
+RHYTHM_LEADS = {"1R": [1], "3R": [6, 1, 10], "rhythm": [1]}
+
+
+def layout_columns(layout: str) -> list[list[int]]:
+    """The leads in each column of the grid part of a layout, top to bottom, in standard machine order."""
+    grid = layout.split("+")[0]
+    if grid == "12x1":
+        return [list(range(12))]
+    if grid == "6x2":
+        return [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]]
+    if grid == "3x4":
+        return [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]]
+    raise ValueError(f"unknown layout {layout!r}; expected one of {LAYOUTS}")
+
+
+def rhythm_leads(layout: str) -> list[int]:
+    return RHYTHM_LEADS[layout.split("+")[1]] if "+" in layout else []
+
+
 def _layout_rows(layout: str, total_samples: int, sampling_rate: int) -> list[list[tuple[int, int, int]]]:
-    """Rows of (lead index, start sample, end sample) describing what to draw where."""
-    if layout == "12x1":
-        return [[(lead, 0, total_samples)] for lead in range(12)]
+    """Rows of (lead index, start sample, end sample) describing what to draw where.
 
-    # 3x4: four columns of 2.5 s, leads ordered by column.
-    quarter = total_samples // 4
-    columns = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]]
+    Each column of the grid shows its leads for its own slice of the recording (a 3x4
+    page shows I, II, III for 0-2.5 s, aVR, aVL, aVF for 2.5-5 s, and so on), as
+    printing machines do; rhythm strips below show one lead for the whole duration.
+    """
+    columns = layout_columns(layout)
+    width = total_samples // len(columns)
     rows: list[list[tuple[int, int, int]]] = []
-    for row_index in range(3):
-        row = []
-        for column_index, column in enumerate(columns):
-            lead = column[row_index]
-            row.append((lead, column_index * quarter, (column_index + 1) * quarter))
-        rows.append(row)
-
-    if layout == "3x4+rhythm":
-        rows.append([(1, 0, total_samples)])  # lead II, full duration
+    for row_index in range(len(columns[0])):
+        rows.append([(column[row_index], c * width, (c + 1) * width) for c, column in enumerate(columns)])
+    rows += [[(lead, 0, total_samples)] for lead in rhythm_leads(layout)]
     return rows
 
 
@@ -191,21 +212,30 @@ def render(signal: np.ndarray, spec: PaperSpec | None = None,
                 }
             )
 
+    if spec.column_ticks:
+        for trace in traces:
+            if trace["x0"] > margin + 1:
+                draw.line([(trace["x0"], trace["baseline_y"] - spec.mm(4)), (trace["x0"], trace["baseline_y"] + spec.mm(4))],
+                          fill=spec.trace_colour, width=spec.trace_width)
+
     if spec.show_calibration:
         # The 1 mV, 200 ms calibration pulse that machines print so a reader can
         # verify the scale. A digitizer can use it the same way.
-        pulse_x = margin / 2
         pulse_height = spec.mm(MM_PER_MV)
-        base = margin + row_height / 2
-        draw.line(
-            [
-                (pulse_x, base),
-                (pulse_x, base - pulse_height),
-                (pulse_x + spec.mm(5), base - pulse_height),
-                (pulse_x + spec.mm(5), base),
-            ],
-            fill=spec.trace_colour,
-            width=spec.trace_width,
-        )
+        if spec.pulse_every_row:
+            placements = [(margin - spec.mm(5.5), margin + r * row_height + row_height / 2) for r in range(len(rows))]
+        else:
+            placements = [(margin / 2, margin + row_height / 2)]
+        for pulse_x, base in placements:
+            draw.line(
+                [
+                    (pulse_x, base),
+                    (pulse_x, base - pulse_height),
+                    (pulse_x + spec.mm(5), base - pulse_height),
+                    (pulse_x + spec.mm(5), base),
+                ],
+                fill=spec.trace_colour,
+                width=spec.trace_width,
+            )
 
     return RenderedECG(image=image, spec=spec, traces=traces)

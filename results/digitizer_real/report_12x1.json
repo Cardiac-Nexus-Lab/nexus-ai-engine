@@ -1,0 +1,87 @@
+{
+  "dataset": "PM-ECG-ID real-world scenarios (photos_*), GPL-3.0-or-later",
+  "all": {
+    "images": 63,
+    "ecgs": 9,
+    "median_correlation": 0.0014811358115825069,
+    "share_correlation_above_0.8": 0.0,
+    "portal_accepts": 0.0,
+    "same_top_class": 0.09523809523809523
+  },
+  "unseen_folds_9_10": {
+    "images": 7,
+    "ecgs": 1,
+    "median_correlation": 0.0023853762084588967,
+    "share_correlation_above_0.8": 0.0,
+    "portal_accepts": 0.0,
+    "same_top_class": 0.0
+  },
+  "by_scenario": {
+    "photos_bents": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": -0.004522074229420341,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.2222222222222222
+    },
+    "photos_crumbles": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": 0.007166060776412791,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.1111111111111111
+    },
+    "photos_doogee": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": 0.005562609418298794,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.1111111111111111
+    },
+    "photos_iphone": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": 0.0014811358115825069,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.0
+    },
+    "photos_samsung": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": 0.0023853762084588967,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.0
+    },
+    "photos_scans": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": 0.0033948993142830794,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.1111111111111111
+    },
+    "photos_screens": {
+      "images": 9,
+      "ecgs": 9,
+      "median_correlation": -0.0035763675244868823,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.1111111111111111
+    }
+  },
+  "by_layout": {
+    "12x1": {
+      "images": 63,
+      "ecgs": 9,
+      "median_correlation": 0.0014811358115825069,
+      "share_correlation_above_0.8": 0.0,
+      "portal_accepts": 0.0,
+      "same_top_class": 0.09523809523809523
+    }
+  }
+}

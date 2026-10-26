@@ -244,6 +244,12 @@ def split_indices(metadata: pd.DataFrame) -> dict[str, np.ndarray]:
 def prepare(root: Path = DATA_ROOT) -> tuple[pd.DataFrame, np.ndarray, dict[str, np.ndarray]]:
     """Fetch, decode and split. Safe to call repeatedly; every stage resumes."""
     metadata = fetch_metadata(root)
-    download_records(metadata, root)
+    # A cache that matches the record index is all training needs; the raw records are
+    # only fetched to build one. (A machine given a copy of the cache, not the records,
+    # would otherwise download all of PTB-XL to rebuild what it already has.)
+    index_path = root / "signals_index.npy"
+    if not (index_path.exists() and (root / "signals_100hz.npy").exists()
+            and np.array_equal(np.load(index_path), metadata.index.to_numpy())):
+        download_records(metadata, root)
     signals = build_signal_cache(metadata, root)
     return metadata, signals, split_indices(metadata)

@@ -3,6 +3,8 @@
 Usage:
     python scripts/train_digitizer.py --epochs 20
     python scripts/train_digitizer.py --epochs 2 --records-per-epoch 200   # quick check
+    python scripts/train_digitizer.py --strips layouts --output results/digitizer_layouts
+        # strips cut from pages in every standard layout, as layout.py cuts real pages
 """
 
 from __future__ import annotations
@@ -22,7 +24,7 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 from cardiac_nexus import data
-from cardiac_nexus.ecg_image.dataset import StripDataset
+from cardiac_nexus.ecg_image.dataset import LayoutStripDataset, StripDataset, concatenate_records
 from cardiac_nexus.ecg_image.digitize import (
     STRIP_HEIGHT,
     TraceLocalizer,
@@ -100,7 +102,12 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", default=None)
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "results" / "digitizer")
+    parser.add_argument("--strips", choices=["12x1", "layouts"], default="12x1",
+                        help="12x1: the original fixed-geometry strips; layouts: every layout, cut as real pages are")
+    parser.add_argument("--init", type=Path, default=None, help="start from this localizer checkpoint")
     args = parser.parse_args()
+    Strips = LayoutStripDataset if args.strips == "layouts" else StripDataset
+    collate = concatenate_records if args.strips == "layouts" else None
 
     torch.manual_seed(args.seed)
     rng = np.random.default_rng(args.seed)
@@ -113,15 +120,18 @@ def main() -> None:
     val_records = splits["val"][: args.val_records]
     print(f"Device: {device}")
     print(f"  train pool: {len(train_pool):,} records, sampling {args.records_per_epoch:,} per epoch")
-    print(f"  validation: {len(val_records):,} records ({len(val_records) * 48:,} strips, fixed)")
+    print(f"  validation: {len(val_records):,} records (fixed), {args.strips} strips")
 
     # Validation is deterministic so the metric moves only when the model does.
     val_loader = DataLoader(
-        StripDataset(signals, val_records, seed=args.seed, deterministic=True),
-        batch_size=args.batch_records, shuffle=False, num_workers=args.workers,
+        Strips(signals, val_records, seed=args.seed, deterministic=True),
+        batch_size=args.batch_records, shuffle=False, num_workers=args.workers, collate_fn=collate,
     )
 
     model = TraceLocalizer().to(device)
+    if args.init:
+        model.load_state_dict(torch.load(args.init, map_location=device, weights_only=True)["model_state_dict"])
+        print(f"  starting from {args.init}")
     print(f"  parameters: {sum(p.numel() for p in model.parameters()):,}")
     criterion = TraceLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=1e-4)
@@ -134,8 +144,8 @@ def main() -> None:
         # generated rather than fixed, so there is no reason to reuse either.
         sample = rng.choice(train_pool, size=min(args.records_per_epoch, len(train_pool)), replace=False)
         train_loader = DataLoader(
-            StripDataset(signals, sample, seed=args.seed + epoch, deterministic=False),
-            batch_size=args.batch_records, shuffle=True, num_workers=args.workers,
+            Strips(signals, sample, seed=args.seed + epoch, deterministic=False),
+            batch_size=args.batch_records, shuffle=True, num_workers=args.workers, collate_fn=collate,
         )
 
         started = time.perf_counter()

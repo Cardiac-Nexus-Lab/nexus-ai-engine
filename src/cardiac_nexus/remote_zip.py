@@ -8,7 +8,9 @@ PTB-XL records the classifier never trained on are wanted.
 
 from __future__ import annotations
 
+import http.client
 import io
+import time
 import urllib.request
 import zipfile
 
@@ -40,15 +42,18 @@ class HttpRangeFile(io.RawIOBase):
         return self.position
 
     def _fetch(self, start: int, end: int) -> bytes:
+        """One byte range, retried until it arrives complete (dropped connections are common)."""
         request = urllib.request.Request(self.url, headers={"Range": f"bytes={start}-{end - 1}"})
-        for attempt in range(4):
+        for attempt in range(8):
             try:
                 with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                    return response.read()
-            except OSError:
-                if attempt == 3:
-                    raise
-        return b""
+                    data = response.read()
+                if len(data) == end - start:
+                    return data
+            except (OSError, http.client.HTTPException):
+                pass
+            time.sleep(min(30, 2 ** attempt))
+        raise OSError(f"could not read bytes {start}-{end - 1} of {self.url}")
 
     def read(self, size: int = -1) -> bytes:
         if size < 0:
