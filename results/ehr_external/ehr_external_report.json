@@ -1,0 +1,96 @@
+{
+  "dataset": "Z-Alizadeh Sani, UCI 412 (CC BY 4.0); 303 angiography patients, Tehran",
+  "outcome": "angiographic coronary artery disease (>=50% narrowing), as in UCI Heart Disease",
+  "fields_used": [
+    "age",
+    "sex",
+    "trestbps",
+    "cp"
+  ],
+  "fields_missing_averaged_over": [
+    "chol",
+    "thalach",
+    "exang"
+  ],
+  "external_z_alizadeh_sani": {
+    "patients": 303,
+    "with_disease": 216,
+    "auroc": 0.7472062579821201,
+    "auroc_95ci": [
+      0.6776844524680604,
+      0.8137745213609034
+    ],
+    "brier": 0.2502551373684652,
+    "brier_95ci": [
+      0.2313096961876378,
+      0.2693163548167244
+    ],
+    "observed_rate": 0.7128712871287128,
+    "mean_predicted": 0.44071708636724405,
+    "calibration": [
+      {
+        "mean_predicted": 0.20120465897180856,
+        "observed_rate": 0.3770491803278688,
+        "patients": 61
+      },
+      {
+        "mean_predicted": 0.3263850637784533,
+        "observed_rate": 0.6065573770491803,
+        "patients": 61
+      },
+      {
+        "mean_predicted": 0.4378579534487125,
+        "observed_rate": 0.819672131147541,
+        "patients": 61
+      },
+      {
+        "mean_predicted": 0.5459569315087444,
+        "observed_rate": 0.95,
+        "patients": 60
+      },
+      {
+        "mean_predicted": 0.6981258838435475,
+        "observed_rate": 0.8166666666666667,
+        "patients": 60
+      }
+    ],
+    "chest_pain_counts": {
+      "1.0": 164,
+      "2.0": 93,
+      "3.0": 16,
+      "4.0": 30
+    }
+  },
+  "uci_internal_test_all_seven_fields": {
+    "patients": 184,
+    "with_disease": 102,
+    "auroc": 0.8498326159732186,
+    "auroc_95ci": [
+      0.7915464396346944,
+      0.9044737224086116
+    ],
+    "brier": 0.15403810399216844,
+    "brier_95ci": [
+      0.12393634506213944,
+      0.18433606606444836
+    ],
+    "observed_rate": 0.5543478260869565,
+    "mean_predicted": 0.555726293028881
+  },
+  "uci_internal_test_same_four_fields": {
+    "patients": 184,
+    "with_disease": 102,
+    "auroc": 0.8236489717838356,
+    "auroc_95ci": [
+      0.7595659690367182,
+      0.883316108248642
+    ],
+    "brier": 0.1712617322879963,
+    "brier_95ci": [
+      0.1481270841680121,
+      0.19466614142829616
+    ],
+    "observed_rate": 0.5543478260869565,
+    "mean_predicted": 0.5445282838126279
+  }
+}
