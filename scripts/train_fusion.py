@@ -287,7 +287,8 @@ def main() -> None:
 
     report = {"target": "heart disease present (ECG not normal; MRI not NOR; UCI num > 0)",
               "training_data": {split: {m: {"records": int(len(y)), "with_disease": int(y.sum())}
-                                        for m, (_, y) in part.items()} for split, part in data.items()},
+                                        for m, (_, y) in part.items() if m in MODALITIES}
+                                for split, part in data.items()},
               "virtual_patients": {"train_per_epoch": 8192, "validation": 3000, "test": 5000},
               "settings": {"optimizer": "AdamW", "learning_rate": LEARNING_RATE, "weight_decay": WEIGHT_DECAY,
                            "input_dropout": INPUT_DROPOUT, "batch": 64,

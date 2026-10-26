@@ -1,0 +1,47 @@
+Reusing signal cache: D:\MainProject\MajorProject\nexus-ai-engine\data\ptbxl\signals_100hz.npy
+ECG: 4304 recordings, 58% with a finding other than normal
+All 600 ACDC files already present.
+Reusing pooled cache: D:\MainProject\MajorProject\nexus-ai-engine\data\pooled_edes_192.npz
+  MRI 50/550
+  MRI 100/550
+  MRI 150/550
+  MRI 200/550
+  MRI 250/550
+  MRI 300/550
+  MRI 350/550
+  MRI 400/550
+  MRI 450/550
+  MRI 500/550
+  MRI 550/550
+MRI: 550 patients, 74% not normal
+Wrote D:\MainProject\MajorProject\nexus-ai-engine\data\fusion\branch_inputs.npz in 22.4 min
+train {'ecg': '1717 (56% disease)', 'mri': '230 (77% disease)', 'mri_single': '230 (16% disease)', 'clinical': '588 (55% disease)'}
+val {'ecg': '429 (62% disease)', 'mri': '67 (73% disease)', 'mri_single': '67 (15% disease)', 'clinical': '148 (55% disease)'}
+test {'ecg': '2158 (58% disease)', 'mri': '253 (72% disease)', 'mri_single': '253 (15% disease)', 'clinical': '184 (55% disease)'}
+Epoch 01: loss 0.5149 | val AUROC mean 0.9229, all three 0.9784, baseline 0.9786  <- best
+Epoch 02: loss 0.4182 | val AUROC mean 0.9267, all three 0.9799, baseline 0.9818  <- best
+Epoch 03: loss 0.3919 | val AUROC mean 0.9248, all three 0.9783, baseline 0.9796
+Epoch 04: loss 0.3686 | val AUROC mean 0.9237, all three 0.9758, baseline 0.9777
+Epoch 05: loss 0.3364 | val AUROC mean 0.9286, all three 0.9786, baseline 0.9802  <- best
+Epoch 06: loss 0.3433 | val AUROC mean 0.9272, all three 0.9777, baseline 0.9776
+Epoch 07: loss 0.3260 | val AUROC mean 0.9313, all three 0.9810, baseline 0.9815  <- best
+Epoch 08: loss 0.3148 | val AUROC mean 0.9260, all three 0.9771, baseline 0.9773
+Epoch 09: loss 0.3105 | val AUROC mean 0.9174, all three 0.9693, baseline 0.9693
+Epoch 10: loss 0.3041 | val AUROC mean 0.9178, all three 0.9713, baseline 0.9708
+Epoch 11: loss 0.3029 | val AUROC mean 0.9195, all three 0.9698, baseline 0.9702
+Epoch 12: loss 0.2921 | val AUROC mean 0.9207, all three 0.9721, baseline 0.9705
+Epoch 13: loss 0.2878 | val AUROC mean 0.9177, all three 0.9685, baseline 0.9675
+Epoch 14: loss 0.2981 | val AUROC mean 0.9138, all three 0.9645, baseline 0.9648
+Epoch 15: loss 0.2815 | val AUROC mean 0.9106, all three 0.9601, baseline 0.9626
+test ecg+mri+clinical       AUROC 0.975 (0.972-0.978)  F1 0.918
+test ecg+mri                AUROC 0.960 (0.955-0.965)  F1 0.896
+test ecg+clinical           AUROC 0.965 (0.960-0.969)  F1 0.901
+test ecg                    AUROC 0.943 (0.937-0.948)  F1 0.875
+test mri+clinical           AUROC 0.915 (0.907-0.922)  F1 0.825
+test mri                    AUROC 0.862 (0.852-0.873)  F1 0.790
+test clinical               AUROC 0.821 (0.810-0.833)  F1 0.783
+test ecg+mri+clinical one MRI frame AUROC 0.979  F1 0.911
+test mri one MRI frame      AUROC 0.858  F1 0.786
+baseline mean of three AUROC 0.976
+Wrote D:\MainProject\MajorProject\nexus-ai-engine\results\fusion_dl in 4.1 min
+RUN_FINISHED_OK  

@@ -1,0 +1,31 @@
+train {'ecg': '1725 (57% disease)', 'mri': '230 (77% disease)', 'clinical': '588 (55% disease)'}
+val {'ecg': '421 (60% disease)', 'mri': '67 (73% disease)', 'clinical': '148 (55% disease)'}
+test {'ecg': '2158 (58% disease)', 'mri': '253 (72% disease)', 'clinical': '184 (55% disease)'}
+Epoch 01: loss 0.5148 | val AUROC mean 0.9231, all three 0.9818, baseline 0.9807  <- best
+Epoch 02: loss 0.4205 | val AUROC mean 0.9302, all three 0.9853, baseline 0.9860  <- best
+Epoch 03: loss 0.3945 | val AUROC mean 0.9256, all three 0.9803, baseline 0.9817
+Epoch 04: loss 0.3688 | val AUROC mean 0.9286, all three 0.9806, baseline 0.9814
+Epoch 05: loss 0.3514 | val AUROC mean 0.9301, all three 0.9817, baseline 0.9832
+Epoch 06: loss 0.3475 | val AUROC mean 0.9295, all three 0.9787, baseline 0.9808
+Epoch 07: loss 0.3288 | val AUROC mean 0.9331, all three 0.9812, baseline 0.9813  <- best
+Epoch 08: loss 0.3181 | val AUROC mean 0.9337, all three 0.9814, baseline 0.9815  <- best
+Epoch 09: loss 0.3164 | val AUROC mean 0.9190, all three 0.9734, baseline 0.9727
+Epoch 10: loss 0.3112 | val AUROC mean 0.9216, all three 0.9737, baseline 0.9720
+Epoch 11: loss 0.3077 | val AUROC mean 0.9231, all three 0.9750, baseline 0.9732
+Epoch 12: loss 0.2975 | val AUROC mean 0.9216, all three 0.9726, baseline 0.9713
+Epoch 13: loss 0.2930 | val AUROC mean 0.9255, all three 0.9767, baseline 0.9741
+Epoch 14: loss 0.2940 | val AUROC mean 0.9180, all three 0.9704, baseline 0.9686
+Epoch 15: loss 0.2864 | val AUROC mean 0.9176, all three 0.9698, baseline 0.9706
+Epoch 16: loss 0.2810 | val AUROC mean 0.9193, all three 0.9723, baseline 0.9746
+test ecg+mri+clinical       AUROC 0.965 (0.961-0.970)  F1 0.884
+test ecg+mri                AUROC 0.946 (0.940-0.952)  F1 0.867
+test ecg+clinical           AUROC 0.961 (0.956-0.966)  F1 0.896
+test ecg                    AUROC 0.940 (0.934-0.946)  F1 0.870
+test mri+clinical           AUROC 0.894 (0.886-0.903)  F1 0.802
+test mri                    AUROC 0.833 (0.822-0.845)  F1 0.764
+test clinical               AUROC 0.820 (0.809-0.832)  F1 0.761
+test ecg+mri+clinical one MRI frame AUROC 0.977  F1 0.923
+test mri one MRI frame      AUROC 0.840  F1 0.725
+baseline mean of three AUROC 0.966
+Wrote D:\MainProject\MajorProject\nexus-ai-engine\results\fusion_dl in 1.2 min
+RUN_FINISHED_OK  
