@@ -18,8 +18,14 @@ probability 0.3 (keeping at least one) and blanks each health-record field with
 probability 0.25, so the network learns to work with whatever a user provides.
 Validation and test use fixed sets of virtual patients, with every combination of
 modalities scored. The model is selected on validation AUROC averaged over the
-seven combinations, calibrated with one slope and intercept on validation, and the
-decision threshold is set on validation (Youden's J) before the test set is read.
+seven combinations, calibrated with one slope and intercept on validation, and a
+decision threshold is set for each combination on validation (Youden's J) before
+the test set is read.
+
+Run history: the first configuration (no input dropout, weight decay 1e-4, one
+threshold for every combination) over-trusted the MRI, whose training pool is a
+few hundred patients, and called everyone ill without an MRI because the one
+threshold did not fit them; its report is kept in results/fusion_dl/run1.
 
 A simple baseline is reported alongside: the mean of the three single-modality
 probabilities that the same network gives with the other two switched off.
@@ -58,6 +64,8 @@ INPUTS = REPO_ROOT / "data" / "fusion" / "branch_inputs.npz"
 OUTPUT = REPO_ROOT / "results" / "fusion_dl"
 SEED = 42
 MODALITY_DROP, FIELD_DROP = 0.3, 0.25
+INPUT_DROPOUT = {"ecg": 0.2, "mri": 0.5, "clinical": 0.1}
+WEIGHT_DECAY = 1e-3
 SUBSETS = [tuple(m for m, keep in zip(MODALITIES, mask) if keep)
            for mask in itertools.product([1, 0], repeat=3) if any(mask)]
 
@@ -171,9 +179,9 @@ def main() -> None:
     test_batch, test_y = virtual_patients(data["test"], 5000, np.random.default_rng(2))
 
     model_args = {"ecg_dim": int(data["train"]["ecg"][0].shape[1]), "mri_dim": int(data["train"]["mri"][0].shape[1]),
-                  "clinical_dim": len(CLINICAL_COLUMNS)}
+                  "clinical_dim": len(CLINICAL_COLUMNS), "input_dropout": INPUT_DROPOUT}
     model = FusionNet(**model_args)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=WEIGHT_DECAY)
     criterion = nn.BCEWithLogitsLoss(reduction="none")
     rng = np.random.default_rng(SEED)
     epochs, patience = 60, 8
@@ -227,20 +235,22 @@ def main() -> None:
     def calibrated(z):
         return 1.0 / (1.0 + np.exp(-(z * calibration["scale"] + calibration["bias"])))
 
-    full = ("ecg", "mri", "clinical")
-    p_val = calibrated(logits_for(model, val_batch, masks(len(val_y), full, cal_rng))[0])
-    fpr, tpr, cut = roc_curve(val_y, p_val)
-    threshold = float(cut[np.argmax(tpr - fpr)])
+    thresholds = {}
+    for subset in SUBSETS:
+        p_val = calibrated(logits_for(model, val_batch, masks(len(val_y), subset, cal_rng))[0])
+        fpr, tpr, cut = roc_curve(val_y, p_val)
+        thresholds["+".join(subset)] = float(cut[np.argmax(tpr - fpr)])
 
     report = {"target": "heart disease present (ECG not normal; MRI not NOR; UCI num > 0)",
               "training_data": {split: {m: {"records": int(len(y)), "with_disease": int(y.sum())}
                                         for m, (_, y) in part.items()} for split, part in data.items()},
               "virtual_patients": {"train_per_epoch": 8192, "validation": 3000, "test": 5000},
-              "settings": {"optimizer": "AdamW", "learning_rate": 1e-3, "weight_decay": 1e-4, "batch": 64,
+              "settings": {"optimizer": "AdamW", "learning_rate": 1e-3, "weight_decay": WEIGHT_DECAY,
+                           "input_dropout": INPUT_DROPOUT, "batch": 64,
                            "schedule": "cosine", "max_epochs": epochs, "patience": patience,
                            "modality_dropout": MODALITY_DROP, "field_dropout": FIELD_DROP, "solo_loss_weight": 0.3,
                            "parameters": int(sum(p.numel() for p in model.parameters()))},
-              "selected_epoch": best_epoch, "calibration": calibration, "threshold": threshold, "test": {},
+              "selected_epoch": best_epoch, "calibration": calibration, "thresholds": thresholds, "test": {},
               "caveat": "Virtual patients join three different people with the same label; results measure how "
                         "the network combines independent evidence, not clinical performance."}
     test_rng = np.random.default_rng(4)
@@ -251,18 +261,21 @@ def main() -> None:
         p = calibrated(z)
         if len(subset) == 1:
             solo_probs[subset[0]] = p
-        entry = metrics(test_y, p, threshold)
+        entry = metrics(test_y, p, thresholds["+".join(subset)])
         entry["mean_gate_weight"] = {m: float(weights[:, i].mean()) for i, m in enumerate(MODALITIES) if m in subset}
         report["test"]["+".join(subset)] = entry
         print(f"test {'+'.join(subset):22} AUROC {entry['auroc']['estimate']:.3f} "
               f"({entry['auroc']['low']:.3f}-{entry['auroc']['high']:.3f})  F1 {entry['f1']:.3f}", flush=True)
     baseline = np.mean([solo_probs[m] for m in MODALITIES], axis=0)
-    report["test"]["baseline: mean of single-modality probabilities"] = metrics(test_y, baseline, threshold)
+    fpr, tpr, cut = roc_curve(val_y, np.mean([calibrated(logits_for(model, val_batch, masks(len(val_y), (m,), cal_rng))[0])
+                                              for m in MODALITIES], axis=0))
+    report["test"]["baseline: mean of single-modality probabilities"] = metrics(test_y, baseline,
+                                                                                float(cut[np.argmax(tpr - fpr)]))
     print(f"baseline mean of three AUROC {report['test']['baseline: mean of single-modality probabilities']['auroc']['estimate']:.3f}")
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     torch.save({"model_state_dict": model.state_dict(), "model_args": model_args, "calibration": calibration,
-                "threshold": threshold, "clinical_stats": stats["clinical"], "mri_stats": stats["mri"],
+                "thresholds": thresholds, "clinical_stats": stats["clinical"], "mri_stats": stats["mri"],
                 "mri_features": MRI_FEATURES, "selected_epoch": best_epoch}, OUTPUT / "fusion_model.pt")
     report["history"] = history
     report["minutes"] = (time.perf_counter() - started) / 60

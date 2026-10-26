@@ -177,15 +177,20 @@ class FusionNet(nn.Module):
 
     def __init__(self, ecg_dim: int = 128, mri_dim: int = 256 * 2 + len(MRI_FEATURES),
                  clinical_dim: int = len(CLINICAL_COLUMNS), width: int = WIDTH, heads: int = 4,
-                 layers: int = 2, dropout: float = 0.3):
+                 layers: int = 2, dropout: float = 0.3, input_dropout: dict | None = None):
         super().__init__()
+        # Dropout on each branch's input features. The MRI pool is a few hundred patients,
+        # each reused across thousands of virtual patients, so without it the network
+        # memorizes their feature vectors and over-trusts the MRI on new patients.
+        input_dropout = input_dropout or {"ecg": 0.0, "mri": 0.0, "clinical": 0.0}
 
-        def branch(dim: int, hidden: int) -> nn.Module:
-            return nn.Sequential(nn.LayerNorm(dim), nn.Linear(dim, hidden), nn.GELU(), nn.Dropout(0.2),
-                                 nn.Linear(hidden, width))
+        def branch(dim: int, hidden: int, p_in: float) -> nn.Module:
+            return nn.Sequential(nn.LayerNorm(dim), nn.Dropout(p_in), nn.Linear(dim, hidden), nn.GELU(),
+                                 nn.Dropout(0.2), nn.Linear(hidden, width))
 
-        self.branches = nn.ModuleDict({"ecg": branch(ecg_dim, width), "mri": branch(mri_dim, width),
-                                       "clinical": branch(clinical_dim, 64)})
+        self.branches = nn.ModuleDict({"ecg": branch(ecg_dim, width, input_dropout["ecg"]),
+                                       "mri": branch(mri_dim, width, input_dropout["mri"]),
+                                       "clinical": branch(clinical_dim, 64, input_dropout["clinical"])})
         self.modality_tag = nn.Parameter(torch.randn(len(MODALITIES), width) * 0.02)
         layer = nn.TransformerEncoderLayer(width, heads, dim_feedforward=2 * width, dropout=0.1,
                                            batch_first=True, norm_first=True)
