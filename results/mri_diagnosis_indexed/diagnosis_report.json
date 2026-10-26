@@ -1,0 +1,720 @@
+{
+  "features": [
+    "lv_edv_index",
+    "lv_esv_index",
+    "lv_ef",
+    "rv_edv_index",
+    "rv_esv_index",
+    "rv_ef",
+    "myo_mass_index",
+    "mass_to_volume",
+    "rv_to_lv_edv",
+    "lv_ef_minus_rv_ef"
+  ],
+  "training_patients": {
+    "acdc": 100,
+    "mnms": 80
+  },
+  "selected_model": "logistic_C1",
+  "uncertainty": {
+    "ACDC + M&Ms, indexed": {
+      "threshold": 0.64,
+      "target_accuracy": 0.9,
+      "training_coverage": 0.6833333333333333,
+      "training_accuracy_when_called": 0.9024390243902439
+    },
+    "deployed (ACDC only)": {
+      "threshold": 0.3,
+      "target_accuracy": 0.9,
+      "training_coverage": 1.0,
+      "training_accuracy_when_called": 0.91
+    }
+  },
+  "test": {
+    "acdc": {
+      "ACDC + M&Ms, indexed": {
+        "expert_masks": {
+          "patients": 50,
+          "correct": 38,
+          "accuracy": 0.76,
+          "accuracy_95ci": [
+            0.6258705062480763,
+            0.8570274759812779
+          ],
+          "balanced_accuracy": 0.76,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 10,
+              "correct": 10
+            },
+            "HCM": {
+              "patients": 10,
+              "correct": 10
+            },
+            "MINF": {
+              "patients": 10,
+              "correct": 2
+            },
+            "NOR": {
+              "patients": 10,
+              "correct": 6
+            },
+            "RV": {
+              "patients": 10,
+              "correct": 10
+            }
+          },
+          "with_uncertain": {
+            "called": 42,
+            "coverage": 0.84,
+            "correct_when_called": 35,
+            "accuracy_when_called": 0.8333333333333334
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                10,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                8,
+                0,
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                6,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                10
+              ]
+            ]
+          }
+        },
+        "model_masks": {
+          "patients": 50,
+          "correct": 39,
+          "accuracy": 0.78,
+          "accuracy_95ci": [
+            0.6475818431054045,
+            0.8724621377569771
+          ],
+          "balanced_accuracy": 0.78,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 10,
+              "correct": 10
+            },
+            "HCM": {
+              "patients": 10,
+              "correct": 10
+            },
+            "MINF": {
+              "patients": 10,
+              "correct": 3
+            },
+            "NOR": {
+              "patients": 10,
+              "correct": 6
+            },
+            "RV": {
+              "patients": 10,
+              "correct": 10
+            }
+          },
+          "with_uncertain": {
+            "called": 39,
+            "coverage": 0.78,
+            "correct_when_called": 34,
+            "accuracy_when_called": 0.8717948717948718
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                10,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                7,
+                0,
+                3,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                6,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                10
+              ]
+            ]
+          }
+        }
+      },
+      "deployed (ACDC only)": {
+        "expert_masks": {
+          "patients": 50,
+          "correct": 46,
+          "accuracy": 0.92,
+          "accuracy_95ci": [
+            0.8116149745493629,
+            0.9684509967442093
+          ],
+          "balanced_accuracy": 0.9199999999999999,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 10,
+              "correct": 8
+            },
+            "HCM": {
+              "patients": 10,
+              "correct": 10
+            },
+            "MINF": {
+              "patients": 10,
+              "correct": 8
+            },
+            "NOR": {
+              "patients": 10,
+              "correct": 10
+            },
+            "RV": {
+              "patients": 10,
+              "correct": 10
+            }
+          },
+          "with_uncertain": {
+            "called": 50,
+            "coverage": 1.0,
+            "correct_when_called": 46,
+            "accuracy_when_called": 0.92
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                8,
+                0,
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                2,
+                0,
+                8,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                10,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                10
+              ]
+            ]
+          }
+        },
+        "model_masks": {
+          "patients": 50,
+          "correct": 43,
+          "accuracy": 0.86,
+          "accuracy_95ci": [
+            0.738135428014719,
+            0.9304925473797714
+          ],
+          "balanced_accuracy": 0.86,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 10,
+              "correct": 8
+            },
+            "HCM": {
+              "patients": 10,
+              "correct": 10
+            },
+            "MINF": {
+              "patients": 10,
+              "correct": 6
+            },
+            "NOR": {
+              "patients": 10,
+              "correct": 9
+            },
+            "RV": {
+              "patients": 10,
+              "correct": 10
+            }
+          },
+          "with_uncertain": {
+            "called": 50,
+            "coverage": 1.0,
+            "correct_when_called": 43,
+            "accuracy_when_called": 0.86
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                8,
+                0,
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                6,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0,
+                9,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                10
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "mnms": {
+      "ACDC + M&Ms, indexed": {
+        "expert_masks": {
+          "patients": 43,
+          "correct": 26,
+          "accuracy": 0.6046511627906976,
+          "accuracy_95ci": [
+            0.4557879659331908,
+            0.7363489380154359
+          ],
+          "balanced_accuracy": 0.43068181818181817,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 11,
+              "correct": 8
+            },
+            "HCM": {
+              "patients": 11,
+              "correct": 4
+            },
+            "MINF": {
+              "patients": 1,
+              "correct": 0
+            },
+            "NOR": {
+              "patients": 16,
+              "correct": 13
+            },
+            "RV": {
+              "patients": 4,
+              "correct": 1
+            }
+          },
+          "with_uncertain": {
+            "called": 28,
+            "coverage": 0.6511627906976745,
+            "correct_when_called": 22,
+            "accuracy_when_called": 0.7857142857142857
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                8,
+                0,
+                2,
+                0,
+                1
+              ],
+              [
+                1,
+                4,
+                0,
+                6,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                2,
+                0,
+                13,
+                1
+              ],
+              [
+                2,
+                0,
+                0,
+                1,
+                1
+              ]
+            ]
+          }
+        },
+        "model_masks": {
+          "patients": 43,
+          "correct": 30,
+          "accuracy": 0.6976744186046512,
+          "accuracy_95ci": [
+            0.5489435424759017,
+            0.8139817205381712
+          ],
+          "balanced_accuracy": 0.509090909090909,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 11,
+              "correct": 9
+            },
+            "HCM": {
+              "patients": 11,
+              "correct": 8
+            },
+            "MINF": {
+              "patients": 1,
+              "correct": 0
+            },
+            "NOR": {
+              "patients": 16,
+              "correct": 12
+            },
+            "RV": {
+              "patients": 4,
+              "correct": 1
+            }
+          },
+          "with_uncertain": {
+            "called": 28,
+            "coverage": 0.6511627906976745,
+            "correct_when_called": 21,
+            "accuracy_when_called": 0.75
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                9,
+                0,
+                1,
+                0,
+                1
+              ],
+              [
+                1,
+                8,
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                12,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                2,
+                1
+              ]
+            ]
+          }
+        }
+      },
+      "deployed (ACDC only)": {
+        "expert_masks": {
+          "patients": 43,
+          "correct": 25,
+          "accuracy": 0.5813953488372093,
+          "accuracy_95ci": [
+            0.43328315755711777,
+            0.7161566566251477
+          ],
+          "balanced_accuracy": 0.39545454545454545,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 11,
+              "correct": 5
+            },
+            "HCM": {
+              "patients": 11,
+              "correct": 3
+            },
+            "MINF": {
+              "patients": 1,
+              "correct": 0
+            },
+            "NOR": {
+              "patients": 16,
+              "correct": 16
+            },
+            "RV": {
+              "patients": 4,
+              "correct": 1
+            }
+          },
+          "with_uncertain": {
+            "called": 43,
+            "coverage": 1.0,
+            "correct_when_called": 25,
+            "accuracy_when_called": 0.5813953488372093
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                5,
+                0,
+                5,
+                0,
+                1
+              ],
+              [
+                0,
+                3,
+                1,
+                7,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                16,
+                0
+              ],
+              [
+                0,
+                0,
+                1,
+                2,
+                1
+              ]
+            ]
+          }
+        },
+        "model_masks": {
+          "patients": 43,
+          "correct": 25,
+          "accuracy": 0.5813953488372093,
+          "accuracy_95ci": [
+            0.43328315755711777,
+            0.7161566566251477
+          ],
+          "balanced_accuracy": 0.3693181818181818,
+          "recall_by_class": {
+            "DCM": {
+              "patients": 11,
+              "correct": 4
+            },
+            "HCM": {
+              "patients": 11,
+              "correct": 6
+            },
+            "MINF": {
+              "patients": 1,
+              "correct": 0
+            },
+            "NOR": {
+              "patients": 16,
+              "correct": 15
+            },
+            "RV": {
+              "patients": 4,
+              "correct": 0
+            }
+          },
+          "with_uncertain": {
+            "called": 43,
+            "coverage": 1.0,
+            "correct_when_called": 25,
+            "accuracy_when_called": 0.5813953488372093
+          },
+          "confusion_matrix": {
+            "labels": [
+              "DCM",
+              "HCM",
+              "MINF",
+              "NOR",
+              "RV"
+            ],
+            "rows_true_columns_predicted": [
+              [
+                4,
+                0,
+                5,
+                1,
+                1
+              ],
+              [
+                0,
+                6,
+                1,
+                4,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                1,
+                0,
+                15,
+                0
+              ],
+              [
+                0,
+                0,
+                1,
+                3,
+                0
+              ]
+            ]
+          }
+        }
+      }
+    }
+  },
+  "minutes": 7.270796106666724
+}
