@@ -205,7 +205,8 @@ def main() -> None:
     torch.manual_seed(SEED)
     data, stats = pools()
     for split, part in data.items():
-        print(split, {m: f"{len(y)} ({y.mean():.0%} disease)" for m, (_, y) in part.items()}, flush=True)
+        print(split, {m: f"{len(y)} ({y.mean():.0%} disease)" for m, (_, y) in part.items() if m in MODALITIES},
+              flush=True)
 
     val_batch, val_y = virtual_patients(data["val"], 3000, np.random.default_rng(1))
     test_batch, test_y = virtual_patients(data["test"], 5000, np.random.default_rng(2))
@@ -275,6 +276,14 @@ def main() -> None:
         p_val = calibrated(logits_for(model, val_batch, masks(len(val_y), subset, cal_rng))[0])
         fpr, tpr, cut = roc_curve(val_y, p_val)
         thresholds["+".join(subset)] = float(cut[np.argmax(tpr - fpr)])
+    # One-frame MRIs give the network less to go on, so their probabilities sit differently:
+    # their own thresholds, from the same validation patients with each MRI reduced to one frame.
+    val_single, _ = virtual_patients(data["val"], 3000, np.random.default_rng(1), single_frame=1.0)
+    for subset in SUBSETS:
+        if "mri" in subset:
+            p_val = calibrated(logits_for(model, val_single, masks(len(val_y), subset, cal_rng))[0])
+            fpr, tpr, cut = roc_curve(val_y, p_val)
+            thresholds["+".join(subset) + " (MRI: one frame only)"] = float(cut[np.argmax(tpr - fpr)])
 
     report = {"target": "heart disease present (ECG not normal; MRI not NOR; UCI num > 0)",
               "training_data": {split: {m: {"records": int(len(y)), "with_disease": int(y.sum())}
@@ -307,8 +316,9 @@ def main() -> None:
     assert np.array_equal(single_y, test_y) and np.array_equal(single_batch["ecg"], test_batch["ecg"])
     for subset in (("ecg", "mri", "clinical"), ("mri",)):
         z, _, _ = logits_for(model, single_batch, masks(len(test_y), subset, test_rng))
-        entry = metrics(test_y, calibrated(z), thresholds["+".join(subset)])
-        report["test"]["+".join(subset) + " (MRI: one frame only)"] = entry
+        key = "+".join(subset) + " (MRI: one frame only)"
+        entry = metrics(test_y, calibrated(z), thresholds[key])
+        report["test"][key] = entry
         print(f"test {'+'.join(subset) + ' one MRI frame':22} AUROC {entry['auroc']['estimate']:.3f}  F1 {entry['f1']:.3f}",
               flush=True)
     baseline = np.mean([solo_probs[m] for m in MODALITIES], axis=0)
