@@ -254,25 +254,35 @@ def evaluate(resamples: int) -> None:
     for source in SOURCES:
         batch, meta = [], []
         headers = source_headers(source)
+
+        def score(batch, meta):
+            with torch.no_grad():
+                logits = model(torch.from_numpy(np.stack(batch)).to(device)).numpy()
+            probabilities = 1.0 / (1.0 + np.exp(-(logits * scale + bias)))
+            for (record, codes), p in zip(meta, probabilities):
+                rows.append({"source": source, "record": record, "codes": " ".join(sorted(codes)),
+                             **labels_for(codes), **{f"p_{c}": float(v) for c, v in zip(classes, p)}})
+
         for header in headers:
             if not header.with_suffix(".mat").exists():
                 skipped[source] = skipped.get(source, 0) + 1
                 continue
-            signal, fs, codes = read_record(header)
+            try:
+                signal, fs, codes = read_record(header)
+            except (IndexError, ValueError, OSError, KeyError):  # a malformed header or signal file
+                skipped[source] = skipped.get(source, 0) + 1
+                continue
             prepared = prepare(signal, fs)
             if prepared is None:
                 skipped[source] = skipped.get(source, 0) + 1
                 continue
             batch.append(prepared)
             meta.append((header.stem, codes))
-            if len(batch) == 256 or header == headers[-1]:
-                with torch.no_grad():
-                    logits = model(torch.from_numpy(np.stack(batch)).to(device)).numpy()
-                probabilities = 1.0 / (1.0 + np.exp(-(logits * scale + bias)))
-                for (record, codes), p in zip(meta, probabilities):
-                    rows.append({"source": source, "record": record, "codes": " ".join(sorted(codes)),
-                                 **labels_for(codes), **{f"p_{c}": float(v) for c, v in zip(classes, p)}})
+            if len(batch) == 256:
+                score(batch, meta)
                 batch, meta = [], []
+        if batch:  # the last partial batch, whether or not the final record was usable
+            score(batch, meta)
         print(f"{source}: {sum(r['source'] == source for r in rows)} recordings scored, "
               f"{skipped.get(source, 0)} skipped", flush=True)
 
