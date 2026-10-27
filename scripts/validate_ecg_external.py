@@ -202,7 +202,9 @@ def read_record(header: Path):
         fields = line.split()
         gains.append(float(fields[2].split("/")[0].split("(")[0]))
         baselines.append(float(fields[2].split("(")[1].split(")")[0]) if "(" in fields[2] else 0.0)
-    codes = next((l.split(":", 1)[1].strip().split(",") for l in lines if l.startswith("# Dx")), [])
+    # "# Dx:" in the Challenge files, "#Dx:" in the ECG Arrhythmia database
+    codes = next((l.split(":", 1)[1].strip().split(",") for l in lines
+                  if l.lstrip("#").strip().startswith("Dx:")), [])
     values = scipy.io.loadmat(str(header.with_suffix(".mat")))["val"].astype(np.float64)
     signal = (values - np.asarray(baselines)[:, None]) / np.asarray(gains)[:, None]
     return signal, float(fs), {c.strip() for c in codes if c.strip()}
